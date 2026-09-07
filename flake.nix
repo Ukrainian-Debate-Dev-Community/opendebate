@@ -21,9 +21,9 @@
           pkgs.beamPackages.expert
           pkgs.postgresql
           pkgs.nodejs_22
-          pkgs.nodePackages.vscode-langservers-extracted
-          pkgs.nodePackages.pnpm
-          pkgs.nodePackages.prettier
+          pkgs.vscode-langservers-extracted
+          pkgs.pnpm
+          pkgs.prettier
         ];
         shellHook = ''
           export PG=$PWD/.dev_postgres
