@@ -18,7 +18,7 @@
           pkgs.fswatch
           erlang
           elixir
-          pkgs.lexical
+          pkgs.beamPackages.expert
           pkgs.postgresql
           pkgs.nodejs_22
           pkgs.nodePackages.vscode-langservers-extracted
