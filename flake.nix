@@ -10,8 +10,8 @@
       system = "aarch64-darwin";
       project_name = "uadebate";
       pkgs = import nixpkgs { inherit system; };
-      erlang = pkgs.beam.packages.erlang_26.erlang;
-      elixir = pkgs.beam.packages.erlang_26.elixir;
+      erlang = pkgs.beam.packages.erlang_27.erlang;
+      elixir = pkgs.beam.packages.erlang_27.elixir;
     in {
       devShells.${system}.default = pkgs.mkShell {
         packages = [
