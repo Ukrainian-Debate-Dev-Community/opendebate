@@ -1,7 +1,18 @@
 import Config
 
-# OAuth credentials are read at runtime in every env. In dev, load them
-# with `source .env` before starting the server (see flake mix_start alias).
+# In dev, load .env into the environment ourselves: `source .env` only
+# creates shell variables, it does not export them to the mix process.
+# Exported variables still win over .env values.
+if config_env() == :dev and File.exists?(".env") do
+  for line <- File.stream!(".env"),
+      line = String.trim(line),
+      line != "" and not String.starts_with?(line, "#"),
+      [key, value] = String.split(line, "=", parts: 2),
+      System.get_env(key) == nil do
+    System.put_env(key, String.trim(value, "\""))
+  end
+end
+
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET")
