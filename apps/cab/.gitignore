@@ -35,3 +35,6 @@ cab-*.tar
 npm-debug.log
 /assets/node_modules/
 
+
+# secrets
+.env

@@ -1,5 +1,11 @@
 import Config
 
+# OAuth credentials are read at runtime in every env. In dev, load them
+# with `source .env` before starting the server (see flake mix_start alias).
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
