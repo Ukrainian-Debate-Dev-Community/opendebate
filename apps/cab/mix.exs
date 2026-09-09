@@ -72,7 +72,9 @@ defmodule Cab.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:ueberauth, "~> 0.10"},
-      {:ueberauth_github, "~> 0.8"}
+      {:ueberauth_github, "~> 0.8"},
+      {:req, "~> 0.5"},
+      {:joken, "~> 2.6"}
     ]
   end
 

@@ -1,0 +1,119 @@
+defmodule Cab.Engine do
+  @moduledoc """
+  HTTP client for the Node tab engine.
+
+  The engine trusts HS256 JWTs signed with a shared secret
+  (`ENGINE_JWT_SECRET`), payload `{id, isAdmin}` — compatible with the
+  Node `jsonwebtoken` verify on the other side. The gateway mints
+  short-lived tokens per request instead of storing engine sessions.
+  """
+
+  @token_ttl_seconds 300
+  @provision_attempts 3
+
+  @doc """
+  Mints a short-lived HS256 JWT the engine accepts as authentication
+  for the engine user `node_user_id`.
+  """
+  def mint_token(node_user_id, is_admin \\ false) do
+    now = System.os_time(:second)
+
+    claims = %{
+      "id" => node_user_id,
+      "isAdmin" => is_admin,
+      "iat" => now,
+      "exp" => now + @token_ttl_seconds
+    }
+
+    Joken.generate_and_sign!(%{}, claims, signer())
+  end
+
+  @doc """
+  Creates an engine user for `username` via `POST /api/users/register`
+  with a random strong password (OAuth users never learn it; the JWT
+  shared secret is the real credential).
+
+  Returns `{:ok, engine_user_id}` parsed from the `id` claim of the
+  token in the register response. On a username conflict retries with
+  a random suffix a few times.
+  """
+  def provision_user(username), do: provision_user(username, username, @provision_attempts)
+
+  defp provision_user(_username, _candidate, 0), do: {:error, :username_conflict}
+
+  defp provision_user(username, candidate, attempts) do
+    password = :crypto.strong_rand_bytes(24) |> Base.url_encode64(padding: false)
+
+    case Req.post(base_req(),
+           url: "/api/users/register",
+           json: %{username: candidate, password: password}
+         ) do
+      {:ok, %Req.Response{status: status, body: %{"token" => token}}} when status in 200..299 ->
+        id_from_token(token)
+
+      {:ok, %Req.Response{status: status}} when status in [400, 409] ->
+        suffix = :crypto.strong_rand_bytes(2) |> Base.encode16(case: :lower)
+        provision_user(username, "#{username}-#{suffix}", attempts - 1)
+
+      {:ok, %Req.Response{status: status}} ->
+        {:error, {:unexpected_status, status}}
+
+      {:error, exception} ->
+        {:error, exception}
+    end
+  end
+
+  @doc """
+  GET on the engine as `node_user_id` (Bearer of a freshly minted token).
+  """
+  def get(node_user_id, path, opts \\ []) do
+    Req.get(authed_req(node_user_id), Keyword.put(opts, :url, path))
+  end
+
+  @doc """
+  POST a JSON body to the engine as `node_user_id`.
+  """
+  def post(node_user_id, path, body, opts \\ []) do
+    Req.post(
+      authed_req(node_user_id),
+      opts |> Keyword.put(:url, path) |> Keyword.put(:json, body)
+    )
+  end
+
+  @doc """
+  GET on an engine endpoint that requires no authentication
+  (e.g. the public `GET /api/events`).
+  """
+  def public_get(path, opts \\ []) do
+    Req.get(base_req(), Keyword.put(opts, :url, path))
+  end
+
+  defp id_from_token(token) do
+    case Joken.verify(token, signer()) do
+      {:ok, %{"id" => id}} -> {:ok, id}
+      {:ok, _claims} -> {:error, :missing_id_claim}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp authed_req(node_user_id) do
+    Req.merge(base_req(), auth: {:bearer, mint_token(node_user_id)})
+  end
+
+  defp base_req do
+    config = config()
+
+    Req.new(
+      base_url: Keyword.get(config, :base_url, "http://localhost:3100"),
+      retry: false
+    )
+    # test env injects [plug: {Req.Test, Cab.Engine}] here to stub the engine
+    |> Req.merge(Keyword.get(config, :req_options, []))
+  end
+
+  defp signer do
+    Joken.Signer.create("HS256", Keyword.fetch!(config(), :jwt_secret))
+  end
+
+  defp config, do: Application.get_env(:cab, __MODULE__, [])
+end

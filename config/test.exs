@@ -21,6 +21,15 @@ config :cab, CabWeb.Endpoint,
   secret_key_base: "pcTGx24RetJ4w8tsy07/57TzZuynVVvB3y+aJ3jBYkW6951u7HKhCf0RX044fX0O",
   server: false
 
+# Stub the Node engine at the HTTP boundary (Req.Test); no live engine
+# is required in tests.
+config :cab, Cab.Engine,
+  base_url: "http://engine.test",
+  jwt_secret: "test-engine-secret",
+  req_options: [plug: {Req.Test, Cab.Engine}]
+
+config :cab, :portal_api_token, "portal-test-token"
+
 # Print only warnings and errors during test
 config :logger, level: :warning
 

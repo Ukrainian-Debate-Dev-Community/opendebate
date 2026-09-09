@@ -17,6 +17,16 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET")
 
+# Node engine + portal API. Test config pins its own deterministic
+# values in config/test.exs; runtime.exs runs after it, so skip :test.
+if config_env() != :test do
+  config :cab, Cab.Engine,
+    base_url: System.get_env("ENGINE_URL", "http://localhost:3100"),
+    jwt_secret: System.get_env("ENGINE_JWT_SECRET", "insecure-dev-engine-secret")
+
+  config :cab, :portal_api_token, System.get_env("PORTAL_API_TOKEN")
+end
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
