@@ -17,6 +17,12 @@ defmodule CabWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Server-to-server API for the uadebate.com portal (static bearer token).
+  pipeline :public_api do
+    plug :accepts, ["json"]
+    plug CabWeb.Plugs.PortalApiAuth
+  end
+
   scope "/", CabWeb do
     pipe_through :browser
 
@@ -31,10 +37,11 @@ defmodule CabWeb.Router do
     get "/:provider/callback", AuthController, :callback
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", CabWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/public", CabWeb do
+    pipe_through :public_api
+
+    get "/tournaments", PublicApiController, :tournaments
+  end
 
   # Enable LiveDashboard in development
   if Application.compile_env(:cab, :dev_routes) do
