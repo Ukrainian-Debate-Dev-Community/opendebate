@@ -6,6 +6,8 @@ defmodule Cab.Accounts do
 
   import Ecto.Query
 
+  require Logger
+
   alias Cab.Accounts.{Identity, User}
   alias Cab.Repo
 
@@ -51,6 +53,42 @@ defmodule Cab.Accounts do
 
       user
     end)
+  end
+
+  @doc """
+  Makes sure the user has a counterpart in the Node engine, provisioning
+  one on first need. Non-fatal by design: if the engine is unreachable
+  the user is returned unchanged and provisioning happens lazily on the
+  next engine-touching action.
+  """
+  def ensure_node_user(%User{node_user_id: nil} = user) do
+    case Cab.Engine.provision_user(user.username) do
+      {:ok, engine_id} ->
+        case set_node_user_id(user, engine_id) do
+          {:ok, updated} ->
+            updated
+
+          {:error, changeset} ->
+            Logger.warning("could not persist node_user_id: #{inspect(changeset.errors)}")
+            user
+        end
+
+      {:error, reason} ->
+        Logger.warning(
+          "engine provisioning failed for #{user.username}: #{inspect(reason)} " <>
+            "(continuing sign-in; will retry lazily)"
+        )
+
+        user
+    end
+  end
+
+  def ensure_node_user(%User{} = user), do: user
+
+  def set_node_user_id(%User{} = user, node_user_id) do
+    user
+    |> User.changeset(%{node_user_id: node_user_id})
+    |> Repo.update()
   end
 
   defp ensure_free_username(changeset) do
