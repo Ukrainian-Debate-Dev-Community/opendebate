@@ -13,6 +13,8 @@ defmodule Cab.Accounts do
 
   def get_user(id), do: Repo.get(User, id)
 
+  def list_users, do: Repo.all(from u in User, order_by: u.username)
+
   @doc """
   Finds the user for an Ueberauth result, creating user + identity on
   first login. Profile fields are refreshed from the provider each time.
