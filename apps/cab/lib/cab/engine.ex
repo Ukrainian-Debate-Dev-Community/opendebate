@@ -65,18 +65,53 @@ defmodule Cab.Engine do
 
   @doc """
   GET on the engine as `node_user_id` (Bearer of a freshly minted token).
+
+  Pass `admin: true` in `opts` to mint the token with the `isAdmin`
+  claim set (the engine trusts the claim as-is).
   """
   def get(node_user_id, path, opts \\ []) do
-    Req.get(authed_req(node_user_id), Keyword.put(opts, :url, path))
+    {admin, opts} = Keyword.pop(opts, :admin, false)
+    Req.get(authed_req(node_user_id, admin), Keyword.put(opts, :url, path))
   end
 
   @doc """
   POST a JSON body to the engine as `node_user_id`.
   """
   def post(node_user_id, path, body, opts \\ []) do
-    Req.post(
-      authed_req(node_user_id),
-      opts |> Keyword.put(:url, path) |> Keyword.put(:json, body)
+    request(:post, node_user_id, path, body, opts)
+  end
+
+  @doc """
+  PUT a JSON body to the engine as `node_user_id`.
+  """
+  def put(node_user_id, path, body, opts \\ []) do
+    request(:put, node_user_id, path, body, opts)
+  end
+
+  @doc """
+  PATCH a JSON body to the engine as `node_user_id`.
+  """
+  def patch(node_user_id, path, body, opts \\ []) do
+    request(:patch, node_user_id, path, body, opts)
+  end
+
+  @doc """
+  DELETE on the engine as `node_user_id`.
+  """
+  def delete(node_user_id, path, opts \\ []) do
+    {admin, opts} = Keyword.pop(opts, :admin, false)
+    Req.delete(authed_req(node_user_id, admin), Keyword.put(opts, :url, path))
+  end
+
+  defp request(method, node_user_id, path, body, opts) do
+    {admin, opts} = Keyword.pop(opts, :admin, false)
+
+    Req.request(
+      authed_req(node_user_id, admin),
+      opts
+      |> Keyword.put(:method, method)
+      |> Keyword.put(:url, path)
+      |> Keyword.put(:json, body)
     )
   end
 
@@ -96,8 +131,8 @@ defmodule Cab.Engine do
     end
   end
 
-  defp authed_req(node_user_id) do
-    Req.merge(base_req(), auth: {:bearer, mint_token(node_user_id)})
+  defp authed_req(node_user_id, is_admin) do
+    Req.merge(base_req(), auth: {:bearer, mint_token(node_user_id, is_admin)})
   end
 
   defp base_req do
