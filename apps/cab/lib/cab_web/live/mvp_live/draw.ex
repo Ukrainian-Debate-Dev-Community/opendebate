@@ -1,5 +1,5 @@
 defmodule CabWeb.MvpLive.Draw do
-  @moduledoc "Round draw: rooms table, team-slot swaps, motion set/release."
+  @moduledoc "Round draw: rooms table (OG/OO/CG/CO), team-slot swaps, motion set/release."
 
   use CabWeb, :live_view
 
@@ -7,6 +7,8 @@ defmodule CabWeb.MvpLive.Draw do
 
   alias Cab.{EngineApi, Mvp}
   alias CabWeb.MvpAuth
+
+  @positions %{1 => "OG", 2 => "OO", 3 => "CG", 4 => "CO"}
 
   def mount(%{"id" => id, "n" => n}, _session, socket) do
     socket =
@@ -40,8 +42,7 @@ defmodule CabWeb.MvpLive.Draw do
 
   def handle_event("swap", %{"slot_a" => a, "slot_b" => b}, socket) do
     with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
-         {:ok, _} <-
-           EngineApi.swap_teams(actor, socket.assigns.round["id"], a, b) do
+         {:ok, _} <- EngineApi.swap_teams(actor, socket.assigns.round["id"], a, b) do
       {:noreply, socket |> assign(notice: "teams swapped") |> load()}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -72,82 +73,158 @@ defmodule CabWeb.MvpLive.Draw do
     for room <- rooms,
         room_team <- Enum.sort_by(room["RoomTeams"] || [], & &1["position"]) do
       label =
-        "Room #{room["id"]} pos #{room_team["position"]}: #{get_in(room_team, ["Team", "name"])}"
+        "Room #{room["id"]} #{@positions[room_team["position"]] || room_team["position"]}: " <>
+          "#{get_in(room_team, ["Team", "name"])}"
 
       {room_team["id"], label}
     end
   end
 
+  defp team_cell(room, position) do
+    case Enum.find(room["RoomTeams"] || [], &(&1["position"] == position)) do
+      nil -> "—"
+      room_team -> get_in(room_team, ["Team", "name"])
+    end
+  end
+
+  defp judges_cell(room) do
+    Enum.map_join(room["RoomAdjudicators"] || [], ", ", fn adjudicator ->
+      get_in(adjudicator, ["EventParticipant", "display_name"])
+    end)
+  end
+
+  defp steps_done(rooms, motion) do
+    cond do
+      rooms == [] -> 0
+      motion && motion["is_released"] -> 2
+      true -> 1
+    end
+  end
+
   def render(assigns) do
-    assigns = assign(assigns, :slots, slot_options(assigns.rooms))
+    assigns = assign(assigns, slots: slot_options(assigns.rooms))
 
     ~H"""
-    <div style="font-family: sans-serif; margin: 1em;">
-      <.mvp_nav current_user={@current_user} event_id={@event_id} rounds={@rounds} />
-      <h1>Round {@sequence} — draw &amp; motion</h1>
-      <.mvp_error error={@error} />
-      <p :if={@notice} style="color: #080;">{@notice}</p>
+    <.mvp_shell
+      current_user={@current_user}
+      dev_routes={@dev_routes}
+      dev_users={@dev_users}
+      context={"Tournament ##{@event_id}"}
+      return_to={"/mvp/t/#{@event_id}/r/#{@sequence}/draw"}
+      title={"Round #{@sequence} — draw + motion"}
+      error={@error}
+      notice={@notice}
+    >
+      <:head_tag>
+        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+      </:head_tag>
 
-      <h2>Motion</h2>
-      <form phx-submit="save_motion">
-        <input
-          type="text"
-          name="text"
-          size="80"
-          value={@motion && @motion["motion_text"]}
-          placeholder="This House would..."
-        />
-        <button type="submit">Save motion</button>
-      </form>
-      <p :if={@motion}>
-        Released: <strong>{if @motion["is_released"], do: "yes", else: "no"}</strong>
-        <button :if={!@motion["is_released"]} phx-click="release_motion">Release motion</button>
-      </p>
+      <.td_flow
+        event_id={@event_id}
+        rounds={@rounds}
+        seq={@sequence}
+        steps_done={steps_done(@rooms, @motion)}
+        active="draw"
+      />
 
-      <h2>Rooms</h2>
-      <div :for={room <- @rooms} style="margin-bottom: 1em;">
-        <h3>Room {room["id"]} — status: {room["status"]}</h3>
-        <p>
-          Judges: {Enum.map_join(room["RoomAdjudicators"] || [], ", ", fn adjudicator ->
-            "#{get_in(adjudicator, ["EventParticipant", "display_name"])} (#{adjudicator["role"]})"
-          end)}
-        </p>
-        <table border="1" cellpadding="4">
-          <tr>
-            <th>Pos</th>
-            <th>Team</th>
-            <th>Speakers</th>
-            <th>Rank</th>
-          </tr>
-          <tr :for={room_team <- Enum.sort_by(room["RoomTeams"] || [], & &1["position"])}>
-            <td>{room_team["position"]}</td>
-            <td>{get_in(room_team, ["Team", "name"])} (slot {room_team["id"]})</td>
-            <td>
-              {Enum.map_join(room_team["RoomSpeakers"] || [], ", ", fn speaker ->
-                get_in(speaker, ["EventParticipant", "display_name"])
-              end)}
-            </td>
-            <td>{room_team["rank"]}</td>
-          </tr>
+      <.guide :if={@rooms == []}>
+        No rooms yet — make them on the check-in page first.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}>
+            Check-in
+          </a>
+        </:action>
+      </.guide>
+      <.guide :if={@rooms != [] && is_nil(@motion)}>
+        Rooms are set. Write the motion below and save it, then release it to the speakers.
+      </.guide>
+      <.guide :if={@rooms != [] && @motion && !@motion["is_released"]}>
+        Motion saved but still hidden. Release it when the teams are seated.
+        <:action>
+          <button class="btn btn--cta btn--sm" phx-click="release_motion">Release motion</button>
+        </:action>
+      </.guide>
+      <.guide :if={@rooms != [] && @motion && @motion["is_released"]}>
+        Motion is out — the debate is on. Enter results when it ends.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/ballots"}>
+            Ballots
+          </a>
+        </:action>
+      </.guide>
+
+      <div class="motionline">
+        <span class="tag tag--gold">R{@sequence} motion</span>
+        <form phx-submit="save_motion" class="f-row" style="flex:1;">
+          <input
+            class="input"
+            type="text"
+            name="text"
+            value={@motion && @motion["motion_text"]}
+            placeholder="This House would…"
+            style="flex:1; min-width:260px;"
+          />
+          <button class="btn btn--primary btn--sm" type="submit">Save</button>
+          <button
+            :if={@motion && !@motion["is_released"]}
+            class="btn btn--cta btn--sm"
+            type="button"
+            phx-click="release_motion"
+          >
+            Release
+          </button>
+          <span :if={@motion && @motion["is_released"]} class="tag tag--ok">released</span>
+        </form>
+      </div>
+
+      <div class="section-title">Draw</div>
+      <div class="table-card card scroll-x">
+        <table class="tbl drawtbl">
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>OG</th>
+              <th>OO</th>
+              <th>CG</th>
+              <th>CO</th>
+              <th>Judge</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :for={room <- @rooms}>
+              <td class="room"><b>#{room["id"]}</b></td>
+              <td>{team_cell(room, 1)}</td>
+              <td>{team_cell(room, 2)}</td>
+              <td>{team_cell(room, 3)}</td>
+              <td>{team_cell(room, 4)}</td>
+              <td>{judges_cell(room)}</td>
+              <td><.status_tag status={room["status"]} /></td>
+            </tr>
+            <tr :if={@rooms == []}>
+              <td colspan="7" class="text-muted">Waiting for rooms.</td>
+            </tr>
+          </tbody>
         </table>
       </div>
-      <p :if={@rooms == []}>
-        No rooms yet — generate them on the
-        <a href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}>check-in</a> page.
-      </p>
 
-      <h2 :if={length(@slots) > 1}>Swap team slots</h2>
-      <form :if={length(@slots) > 1} phx-submit="swap">
-        <select name="slot_a">
-          <option :for={{id, label} <- @slots} value={id}>{label}</option>
-        </select>
-        &lt;-&gt;
-        <select name="slot_b">
-          <option :for={{id, label} <- @slots} value={id}>{label}</option>
-        </select>
-        <button type="submit">Swap</button>
-      </form>
-    </div>
+      <div :if={length(@slots) > 1} class="card">
+        <div class="card__head"><b>Fix the draw — swap two team slots</b></div>
+        <div class="card__pad">
+          <form phx-submit="swap" class="f-row">
+            <select name="slot_a">
+              <option :for={{id, label} <- @slots} value={id}>{label}</option>
+            </select>
+            <span class="text-muted">⇄</span>
+            <select name="slot_b">
+              <option :for={{id, label} <- @slots} value={id}>{label}</option>
+            </select>
+            <button class="btn btn--soft btn--sm" type="submit">Swap</button>
+            <span class="f-help">only while both rooms are still pending</span>
+          </form>
+        </div>
+      </div>
+    </.mvp_shell>
     """
   end
 end

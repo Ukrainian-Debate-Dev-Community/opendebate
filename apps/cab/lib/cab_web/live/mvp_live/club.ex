@@ -13,6 +13,8 @@ defmodule CabWeb.MvpLive.Club do
   alias Cab.{Clubs, EngineApi, Mvp}
   alias CabWeb.MvpAuth
 
+  @example_teams "Reds: Ann, Andy\nBlues: Ben, Bea\nGreens: Cam, Cal\nGolds: Dee, Dan"
+
   def mount(_params, _session, socket) do
     {:ok,
      assign(socket,
@@ -25,7 +27,8 @@ defmodule CabWeb.MvpLive.Club do
        room: nil,
        winner: nil,
        history: [],
-       notice: nil
+       notice: nil,
+       example_teams: @example_teams
      )}
   end
 
@@ -59,7 +62,12 @@ defmodule CabWeb.MvpLive.Club do
          {:ok, round} <- EngineApi.create_round(actor, event["id"], "Club round", 1),
          {:ok, _count} <- Mvp.create_teams_from_lines(actor, event["id"], teams_text),
          {:ok, judge_participant} <-
-           EngineApi.provision_participant(actor, event["id"], presence(judge, "Club judge"), "adjudicator"),
+           EngineApi.provision_participant(
+             actor,
+             event["id"],
+             presence(judge, "Club judge"),
+             "adjudicator"
+           ),
          {:ok, teams} <- EngineApi.list_teams(actor, event["id"]),
          {:ok, _} <- club_room(actor, round, teams, judge_participant),
          {:ok, [room | _]} <- EngineApi.list_rooms(actor, round["id"]) do
@@ -74,7 +82,7 @@ defmodule CabWeb.MvpLive.Club do
     end
   end
 
-  def handle_event("pick_winner", %{"room_team_id" => room_team_id}, socket) do
+  def handle_event("pick_winner", %{"room-team-id" => room_team_id}, socket) do
     %{room: room, round: round, event: event} = socket.assigns
 
     with {winner_id, ""} <- Integer.parse(room_team_id),
@@ -89,8 +97,7 @@ defmodule CabWeb.MvpLive.Club do
         |> Enum.find(&(&1["id"] == winner_id))
         |> get_in(["Team", "name"])
 
-      {:noreply,
-       socket |> assign(step: :done, winner: winner, error: nil) |> load_history()}
+      {:noreply, socket |> assign(step: :done, winner: winner, error: nil) |> load_history()}
     else
       :error -> {:noreply, assign(socket, error: "pick a team first")}
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -108,8 +115,6 @@ defmodule CabWeb.MvpLive.Club do
     end
   end
 
-  # The engine org backing this club: reuse the linked one (making sure
-  # the actor is an owner) or create + link a fresh one.
   defp ensure_club_org(actor, club) do
     case club.engine_organisation_id do
       nil ->
@@ -149,75 +154,161 @@ defmodule CabWeb.MvpLive.Club do
     end
   end
 
+  defp stage_index(:pick, club), do: if(club, do: 1, else: 0)
+  defp stage_index(:running, _club), do: 2
+  defp stage_index(:done, _club), do: 3
+
+  defp speakers_of(room_team) do
+    Enum.map_join(room_team["RoomSpeakers"] || [], ", ", fn speaker ->
+      get_in(speaker, ["EventParticipant", "display_name"])
+    end)
+  end
+
   def render(assigns) do
+    assigns = assign(assigns, :stage, stage_index(assigns.step, assigns.club))
+
     ~H"""
-    <div style="font-family: sans-serif; margin: 1em;">
-      <.mvp_nav current_user={@current_user} />
-      <h1>Club session</h1>
-      <.mvp_error error={@error} />
+    <.mvp_shell
+      current_user={@current_user}
+      dev_routes={@dev_routes}
+      dev_users={@dev_users}
+      context={@club && "#{@club.name} — club session"}
+      return_to="/mvp/club"
+      title="Club session"
+      error={@error}
+      notice={@notice}
+    >
+      <:head_tag>
+        <span :if={@club} class="tag tag--info">{@club.name}</span>
+      </:head_tag>
 
-      <h2>1. Pick a club</h2>
-      <p>
-        <span :for={club <- @clubs} style="margin-right: 0.8em;">
-          <button phx-click="select_club" phx-value-club-id={club.id}>
-            {club.name}{if @club && @club.id == club.id, do: " (selected)"}
-          </button>
+      <div class="progressline">
+        <span
+          :for={{label, index} <- Enum.with_index(["club", "set up", "debate", "done"])}
+          class={["pseg", index < @stage && "done", index == @stage && "live"]}
+        >
+          {label}
         </span>
-      </p>
-      <form phx-submit="create_club">
-        <input type="text" name="name" placeholder="New club name" />
-        <button type="submit">Create club</button>
-      </form>
-
-      <div :if={@club && @step == :pick}>
-        <h2>2. Start a session at {@club.name}</h2>
-        <form phx-submit="start_session">
-          <p><input type="text" name="event_name" size="40" placeholder="Session name (optional)" /></p>
-          <p>4 teams, one per line (<code>Team: Speaker1, Speaker2</code>):</p>
-          <textarea name="teams" rows="4" cols="60" placeholder="Reds: Ann, Andy&#10;Blues: Ben, Bea&#10;Greens: Cam, Cal&#10;Golds: Dee, Dan"></textarea>
-          <p><input type="text" name="judge" size="30" placeholder="Judge name" /></p>
-          <button type="submit">Start session (creates event, room, everyone)</button>
-        </form>
       </div>
 
-      <div :if={@step == :running && @room}>
-        <h2>3. Pick the winner — {@event["name"]}</h2>
-        <form phx-submit="pick_winner">
-          <p :for={room_team <- Enum.sort_by(@room["RoomTeams"] || [], & &1["position"])}>
-            <label>
-              <input type="radio" name="room_team_id" value={room_team["id"]} />
-              {get_in(room_team, ["Team", "name"])} —
-              {Enum.map_join(room_team["RoomSpeakers"] || [], ", ", fn speaker ->
-                get_in(speaker, ["EventParticipant", "display_name"])
-              end)}
-            </label>
-          </p>
-          <button type="submit">Finish session with this winner</button>
-        </form>
+      <.guide :if={@step == :pick && is_nil(@club)}>
+        Pick your club below — or create one — then set up tonight's session.
+      </.guide>
+      <.guide :if={@step == :pick && @club}>
+        Set up tonight's session at <b>{@club.name}</b>: 4 teams, 1 judge, one room.
+      </.guide>
+      <.guide :if={@step == :running}>
+        Debate in progress. When it ends, click the winning team.
+      </.guide>
+      <.guide :if={@step == :done}>
+        Session finished and recorded to club history.
+        <:action>
+          <button class="btn btn--cta btn--sm" phx-click="new_session">Start another</button>
+        </:action>
+      </.guide>
+
+      <div :if={@step == :pick} class="card">
+        <div class="card__head"><b>1 · Your club</b></div>
+        <div class="card__pad">
+          <div class="f-row">
+            <button
+              :for={club <- @clubs}
+              class={["btn", "btn--sm", (@club && @club.id == club.id && "btn--primary") || "btn--soft"]}
+              phx-click="select_club"
+              phx-value-club-id={club.id}
+            >
+              {club.name}
+            </button>
+          </div>
+          <form phx-submit="create_club" class="f-row" style="margin-top:10px;">
+            <input class="input" type="text" name="name" placeholder="New club name" />
+            <button class="btn btn--soft btn--sm" type="submit">Create club</button>
+          </form>
+        </div>
       </div>
 
-      <div :if={@step == :done}>
-        <h2 style="color: #080;">Session finished — winner: {@winner}</h2>
-        <button phx-click="new_session">Start another session</button>
+      <div :if={@step == :pick && @club} class="card">
+        <div class="card__head"><b>2 · Tonight's session</b></div>
+        <div class="card__pad">
+          <form phx-submit="start_session">
+            <div class="f-row" style="margin-bottom:10px;">
+              <input
+                class="input"
+                type="text"
+                name="event_name"
+                placeholder="Session name (optional)"
+                style="flex:1; min-width:220px;"
+              />
+              <input class="input" type="text" name="judge" placeholder="Judge name" />
+            </div>
+            <span class="f-label">4 teams — one per line: Team: Speaker1, Speaker2</span>
+            <textarea name="teams" rows="4" style="width:100%;">{@example_teams}</textarea>
+            <div class="f-row" style="margin-top:10px;">
+              <button class="btn btn--cta" type="submit">Make the room</button>
+              <span class="f-help">creates the event, speakers, teams and the room</span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div :if={@step == :running && @room} class="table-card card scroll-x">
+        <table class="tbl drawtbl">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Speakers</th>
+              <th>Winner?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :for={room_team <- Enum.sort_by(@room["RoomTeams"] || [], & &1["position"])}>
+              <td><b>{get_in(room_team, ["Team", "name"])}</b></td>
+              <td>{speakers_of(room_team)}</td>
+              <td>
+                <button
+                  class="btn btn--soft btn--sm"
+                  phx-click="pick_winner"
+                  phx-value-room-team-id={room_team["id"]}
+                >
+                  This team won
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div :if={@step == :done} class="alert alert--ok" style="font-size:1rem;">
+        <b>🏆</b> Winner: <b>{@winner}</b>
       </div>
 
       <div :if={@club}>
-        <h2>History — {@club.name}</h2>
-        <table border="1" cellpadding="4">
-          <tr>
-            <th>ID</th>
-            <th>Session</th>
-            <th>Status</th>
-          </tr>
-          <tr :for={event <- @history}>
-            <td>{event["id"]}</td>
-            <td><a href={~p"/mvp/t/#{event["id"]}"}>{event["name"]}</a></td>
-            <td>{event["status"]}</td>
-          </tr>
-        </table>
-        <p :if={@history == []}>No sessions yet.</p>
+        <div class="section-title">Club history</div>
+        <div class="table-card card scroll-x">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Session</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr :for={event <- @history}>
+                <td><b>{event["name"]}</b></td>
+                <td><.status_tag status={event["status"]} /></td>
+                <td>
+                  <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{event["id"]}"}>Open</a>
+                </td>
+              </tr>
+              <tr :if={@history == []}>
+                <td colspan="3" class="text-muted">No sessions yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </.mvp_shell>
     """
   end
 end

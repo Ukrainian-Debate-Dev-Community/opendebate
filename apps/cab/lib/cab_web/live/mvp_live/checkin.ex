@@ -64,46 +64,89 @@ defmodule CabWeb.MvpLive.Checkin do
   end
 
   def render(assigns) do
+    assigns = assign(assigns, :checked_count, Enum.count(assigns.teams, & &1["checked_in"]))
+
     ~H"""
-    <div style="font-family: sans-serif; margin: 1em;">
-      <.mvp_nav current_user={@current_user} event_id={@event_id} rounds={@rounds} />
-      <h1>Round {@sequence} — check-in</h1>
-      <.mvp_error error={@error} />
+    <.mvp_shell
+      current_user={@current_user}
+      dev_routes={@dev_routes}
+      dev_users={@dev_users}
+      context={"Tournament ##{@event_id}"}
+      return_to={"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}
+      title={"Round #{@sequence} — check-in"}
+      error={@error}
+    >
+      <:head_tag>
+        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+      </:head_tag>
 
-      <table border="1" cellpadding="4">
-        <tr>
-          <th>Checked in</th>
-          <th>Team</th>
-          <th>Speakers</th>
-        </tr>
-        <tr :for={team <- @teams}>
-          <td style="text-align: center;">
-            <input
-              type="checkbox"
-              checked={team["checked_in"]}
-              phx-click="toggle"
-              phx-value-team-id={team["id"]}
-            />
-          </td>
-          <td>{team["name"]}</td>
-          <td>{Enum.map_join(team["speakers"], ", ", & &1["name"])}</td>
-        </tr>
-      </table>
-      <p :if={@teams == []}>No teams yet — create them on the Setup page.</p>
+      <.td_flow
+        event_id={@event_id}
+        rounds={@rounds}
+        seq={@sequence}
+        steps_done={if @rooms != [], do: 1, else: 0}
+        active="checkin"
+      />
 
-      <p>
-        Checked-in teams: {Enum.count(@teams, & &1["checked_in"])} / {length(@teams)}.
-        Rooms in this round: {length(@rooms)}.
-      </p>
+      <.guide :if={@rooms != []}>
+        Rooms for this round are made — continue to the draw and motion.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/draw"}>
+            Go to draw
+          </a>
+        </:action>
+      </.guide>
+      <.guide :if={@rooms == [] && @teams == []}>
+        No teams yet — add them on the Setup page first.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/setup"}>Setup</a>
+        </:action>
+      </.guide>
+      <.guide :if={@rooms == [] && @teams != [] && @checked_count < length(@teams)}>
+        Tick every team that is present ({@checked_count} / {length(@teams)} checked in),
+        then press <b>Make rooms</b>. Rooms hold {Cab.Mvp.teams_per_room()} teams, 1 judge each.
+        <:action>
+          <button class="btn btn--cta btn--sm" phx-click="generate_rooms">Make rooms</button>
+        </:action>
+      </.guide>
+      <.guide :if={@rooms == [] && @teams != [] && @checked_count == length(@teams)}>
+        Everyone is checked in — make the rooms.
+        <:action>
+          <button class="btn btn--cta btn--sm" phx-click="generate_rooms">Make rooms</button>
+        </:action>
+      </.guide>
 
-      <button phx-click="generate_rooms" disabled={@rooms != []}>
-        Generate rooms (groups of {Cab.Mvp.teams_per_room()} from checked-in teams)
-      </button>
-      <span :if={@rooms != []}>
-        — rooms already exist, go to
-        <a href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/draw"}>draw</a>
-      </span>
-    </div>
+      <div class="section-title">Teams present ({@checked_count} / {length(@teams)})</div>
+      <div class="table-card card scroll-x">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Present?</th>
+              <th>Team</th>
+              <th>Speakers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :for={team <- @teams}>
+              <td style="text-align:center;">
+                <input
+                  type="checkbox"
+                  checked={team["checked_in"]}
+                  phx-click="toggle"
+                  phx-value-team-id={team["id"]}
+                  style="width:18px;height:18px;accent-color:#66347E;cursor:pointer;"
+                />
+              </td>
+              <td><b>{team["name"]}</b></td>
+              <td>{Enum.map_join(team["speakers"], ", ", & &1["name"])}</td>
+            </tr>
+            <tr :if={@teams == []}>
+              <td colspan="3" class="text-muted">No teams yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </.mvp_shell>
     """
   end
 end

@@ -1,5 +1,5 @@
 defmodule CabWeb.MvpLive.Dashboard do
-  @moduledoc "MVP dashboard: public engine event list, create tournament, dev user switcher."
+  @moduledoc "MVP dashboard: engine event cards, create tournament, dev user switcher."
 
   use CabWeb, :live_view
 
@@ -15,14 +15,7 @@ defmodule CabWeb.MvpLive.Dashboard do
         {:error, message} -> {[], message}
       end
 
-    {:ok,
-     assign(socket,
-       page_title: "MVP dashboard",
-       events: events,
-       error: error,
-       dev_routes: Application.get_env(:cab, :dev_routes, false),
-       dev_users: if(Application.get_env(:cab, :dev_routes, false), do: Cab.Accounts.list_users(), else: [])
-     )}
+    {:ok, assign(socket, page_title: "MVP dashboard", events: events, error: error)}
   end
 
   def handle_event("create_tournament", %{"name" => name}, socket) do
@@ -52,52 +45,76 @@ defmodule CabWeb.MvpLive.Dashboard do
 
   def render(assigns) do
     ~H"""
-    <div style="font-family: sans-serif; margin: 1em;">
-      <.mvp_nav current_user={@current_user} />
-      <h1>MVP dashboard</h1>
-      <.mvp_error error={@error} />
+    <.mvp_shell
+      current_user={@current_user}
+      dev_routes={@dev_routes}
+      dev_users={@dev_users}
+      title="My events"
+      subtitle="MVP dashboard — create a tournament and run it end to end, or run a quick club session."
+      error={@error}
+    >
+      <.guide :if={is_nil(@current_user) && @dev_routes}>
+        <b>Start here:</b>&nbsp; open the user menu in the top-right corner and pick who you
+        are — every action is done as that user.
+      </.guide>
+      <.guide :if={@current_user}>
+        Create a tournament below (you become its organiser, rounds 1–3 are made for you),
+        or open an existing event.
+      </.guide>
 
-      <h2>Create tournament</h2>
-      <form phx-submit="create_tournament">
-        <input type="text" name="name" placeholder="Tournament name" />
-        <button type="submit">Create tournament (with rounds 1-3)</button>
-      </form>
+      <div class="cardgrid">
+        <div class="card">
+          <div class="card__head"><b>New tournament</b><span class="tag tag--gold">start</span></div>
+          <div class="card__pad">
+            <div class="kv"><span>format</span><b>BP — 4 teams per room</b></div>
+            <div class="kv"><span>rounds</span><b>3 + final</b></div>
+            <div class="kv"><span>you need</span><b>8 teams, 2 judges</b></div>
+            <form phx-submit="create_tournament" class="f-row" style="margin-top:10px;">
+              <input class="input" type="text" name="name" placeholder="e.g. Friday Night Open" />
+              <button class="btn btn--cta btn--sm" type="submit">Create</button>
+            </form>
+          </div>
+        </div>
 
-      <h2>Engine events (public list)</h2>
-      <table border="1" cellpadding="4">
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Organisation</th>
-          <th></th>
-        </tr>
-        <tr :for={event <- @events}>
-          <td>{event["id"]}</td>
-          <td>{event["name"]}</td>
-          <td>{event["status"]}</td>
-          <td>{get_in(event, ["Organisation", "name"])}</td>
-          <td><a href={~p"/mvp/t/#{event["id"]}"}>open</a></td>
-        </tr>
-      </table>
-      <p :if={@events == []}>No events yet.</p>
-
-      <div :if={@dev_routes} style="margin-top: 2em; border: 2px dashed #c60; padding: 0.5em;">
-        <h2>Dev user switcher (DEV ONLY)</h2>
-        <p>Bypasses OAuth; sets the session user. Not available in production builds.</p>
-        <form action="/dev/switch-user" method="get">
-          <input type="hidden" name="return_to" value="/mvp" />
-          <input type="text" name="username" placeholder="username (created if missing)" />
-          <button type="submit">Switch user</button>
-        </form>
-        <p>
-          Cast:
-          <a :for={user <- @dev_users} href={"/dev/switch-user?username=#{user.username}&return_to=/mvp"} style="margin-right: 0.6em;">
-            {user.username}
-          </a>
-        </p>
+        <div class="card">
+          <div class="card__head"><b>Club session</b><span class="tag tag--info">casual</span></div>
+          <div class="card__pad">
+            <div class="kv"><span>one room</span><b>4 teams × 2 speakers</b></div>
+            <div class="kv"><span>result</span><b>winner pick, saved to history</b></div>
+            <div class="f-row" style="margin-top:10px;">
+              <a class="btn btn--primary btn--sm" href={~p"/mvp/club"}>Open</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="section-title">All events</div>
+      <div class="table-card card scroll-x">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Organisation</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :for={event <- @events}>
+              <td><b>{event["name"]}</b></td>
+              <td><.status_tag status={event["status"]} /></td>
+              <td>{get_in(event, ["Organisation", "name"])}</td>
+              <td>
+                <a class="btn btn--primary btn--sm" href={~p"/mvp/t/#{event["id"]}"}>Open</a>
+              </td>
+            </tr>
+            <tr :if={@events == []}>
+              <td colspan="4" class="text-muted">No events yet — create the first one above.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </.mvp_shell>
     """
   end
 end

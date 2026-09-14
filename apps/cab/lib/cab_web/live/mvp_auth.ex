@@ -11,7 +11,15 @@ defmodule CabWeb.MvpAuth do
 
   def on_mount(:current_user, _params, session, socket) do
     user = session["user_id"] && Accounts.get_user(session["user_id"])
-    {:cont, assign(socket, current_user: user, error: nil)}
+    dev_routes = Application.get_env(:cab, :dev_routes, false)
+
+    {:cont,
+     assign(socket,
+       current_user: user,
+       error: nil,
+       dev_routes: dev_routes,
+       dev_users: if(dev_routes, do: Accounts.list_users(), else: [])
+     )}
   end
 
   @doc """

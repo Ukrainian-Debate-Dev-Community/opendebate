@@ -12,6 +12,13 @@ defmodule CabWeb.MvpLive.Ballots do
   alias Cab.{EngineApi, Mvp}
   alias CabWeb.MvpAuth
 
+  @position_names %{
+    1 => "Opening Government",
+    2 => "Opening Opposition",
+    3 => "Closing Government",
+    4 => "Closing Opposition"
+  }
+
   def mount(%{"id" => id, "n" => n}, _session, socket) do
     socket =
       assign(socket,
@@ -48,7 +55,7 @@ defmodule CabWeb.MvpLive.Ballots do
          {:ok, team_rankings, speaker_scores} <- Mvp.ballot_payload(room, parsed),
          {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
          {:ok, _} <- EngineApi.submit_scores(actor, room["id"], team_rankings, speaker_scores) do
-      {:noreply, socket |> assign(notice: "ballot submitted for room #{room_id}") |> load()}
+      {:noreply, socket |> assign(notice: "ballot submitted for room ##{room_id}") |> load()}
     else
       false -> {:noreply, assign(socket, error: "unknown room")}
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -99,84 +106,187 @@ defmodule CabWeb.MvpLive.Ballots do
 
   defp all_confirmed?(rooms), do: rooms != [] and Enum.all?(rooms, &(&1["status"] == "confirmed"))
 
-  defp speakers_in_order(room) do
-    for room_team <- Enum.sort_by(room["RoomTeams"] || [], & &1["position"]),
-        speaker <- room_team["RoomSpeakers"] || [] do
-      {speaker, room_team}
+  defp round_completed?(round), do: round && round["status"] == "completed"
+
+  defp confirmed_count(rooms), do: Enum.count(rooms, &(&1["status"] == "confirmed"))
+
+  defp position_name(position), do: Map.get(@position_names, position, "Position #{position}")
+
+  defp next_round(rounds, sequence), do: Enum.find(rounds, &(&1["sequence"] == sequence + 1))
+
+  defp steps_done(rooms, round) do
+    cond do
+      round_completed?(round) -> 4
+      all_confirmed?(rooms) -> 3
+      rooms != [] -> 2
+      true -> 0
     end
   end
 
   def render(assigns) do
-    ~H"""
-    <div style="font-family: sans-serif; margin: 1em;">
-      <.mvp_nav current_user={@current_user} event_id={@event_id} rounds={@rounds} />
-      <h1>Round {@sequence} — ballots</h1>
-      <.mvp_error error={@error} />
-      <p :if={@notice} style="color: #080;">{@notice}</p>
-      <p :if={@round}>Round status: <strong>{@round["status"]}</strong></p>
+    assigns = assign(assigns, :next_round, next_round(assigns.rounds, assigns.sequence))
 
-      <div :for={room <- @rooms} style="border: 1px solid #666; padding: 0.5em; margin-bottom: 1em;">
-        <h2>Room {room["id"]} — status: {room["status"]}</h2>
+    ~H"""
+    <.mvp_shell
+      current_user={@current_user}
+      dev_routes={@dev_routes}
+      dev_users={@dev_users}
+      context={"Tournament ##{@event_id}"}
+      return_to={"/mvp/t/#{@event_id}/r/#{@sequence}/ballots"}
+      title={"Round #{@sequence} — ballots"}
+      error={@error}
+      notice={@notice}
+    >
+      <:head_tag>
+        <span :if={@rooms != []} class="tag tag--info">
+          {confirmed_count(@rooms)}/{length(@rooms)} confirmed
+        </span>
+        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+      </:head_tag>
+
+      <.td_flow
+        event_id={@event_id}
+        rounds={@rounds}
+        seq={@sequence}
+        steps_done={steps_done(@rooms, @round)}
+        active="ballots"
+      />
+
+      <.guide :if={@rooms == []}>
+        No rooms in this round yet — make them on the check-in page.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}>
+            Check-in
+          </a>
+        </:action>
+      </.guide>
+      <.guide :if={@rooms != [] && !all_confirmed?(@rooms)}>
+        Enter 8 speaker scores per room (50–100) and submit — team places are computed from
+        the totals. Then <b>confirm</b> each ballot to lock it.
+      </.guide>
+      <.guide :if={all_confirmed?(@rooms) && !round_completed?(@round)}>
+        All ballots confirmed — complete the round.
+        <:action>
+          <button class="btn btn--cta btn--sm" phx-click="complete_round">Complete round</button>
+        </:action>
+      </.guide>
+      <.guide :if={round_completed?(@round) && @next_round}>
+        Round {@sequence} is done.
+        <:action>
+          <a
+            class="btn btn--cta btn--sm"
+            href={~p"/mvp/t/#{@event_id}/r/#{@next_round["sequence"]}/checkin"}
+          >
+            {if @next_round["name"] == "Final",
+              do: "Final",
+              else: "Start #{@next_round["name"]}"}
+          </a>
+        </:action>
+      </.guide>
+      <.guide :if={round_completed?(@round) && is_nil(@next_round)}>
+        Round {@sequence} is done — back to the overview to break or see standings.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+        </:action>
+      </.guide>
+
+      <div :for={room <- @rooms} class="card" style="max-width:680px;">
+        <div class="card__head">
+          <b>Room #{room["id"]}</b>
+          <.status_tag status={room["status"]} />
+        </div>
 
         <form :if={room["status"] in ["pending", "judging"]} phx-submit="submit_ballot">
           <input type="hidden" name="room_id" value={room["id"]} />
-          <table border="1" cellpadding="4">
-            <tr>
-              <th>Team (pos)</th>
-              <th>Speaker</th>
-              <th>Score (50-100)</th>
-            </tr>
-            <tr :for={{speaker, room_team} <- speakers_in_order(room)}>
-              <td>{get_in(room_team, ["Team", "name"])} ({room_team["position"]})</td>
-              <td>{get_in(speaker, ["EventParticipant", "display_name"])}</td>
-              <td>
+          <div
+            :for={room_team <- Enum.sort_by(room["RoomTeams"] || [], & &1["position"])}
+            class="ballot-team"
+          >
+            <div>
+              <h4>{get_in(room_team, ["Team", "name"])}</h4>
+              <div class="f-help">{position_name(room_team["position"])}</div>
+            </div>
+            <span class="tag tag--info">{position_name(room_team["position"]) |> abbrev()}</span>
+            <div class="spk-row">
+              <div :for={speaker <- room_team["RoomSpeakers"] || []} class="spk">
+                <span class="nm">{get_in(speaker, ["EventParticipant", "display_name"])}</span>
                 <input
                   type="number"
                   name={"scores[#{speaker["id"]}]"}
                   min="50"
                   max="100"
                   step="0.5"
+                  value="75"
                   required
                 />
-              </td>
-            </tr>
-          </table>
-          <button type="submit">Submit ballot (ranks derived from team totals)</button>
+              </div>
+            </div>
+          </div>
+          <div class="f-row" style="padding:14px 18px;">
+            <button class="btn btn--cta" type="submit">Submit ballot</button>
+            <span class="f-help">places are derived from team totals</span>
+          </div>
         </form>
 
-        <div :if={room["status"] in ["completed", "confirmed"]}>
-          <table border="1" cellpadding="4">
-            <tr>
-              <th>Rank</th>
-              <th>Team</th>
-            </tr>
-            <tr :for={room_team <- Enum.sort_by(room["RoomTeams"] || [], & &1["rank"])}>
-              <td>{room_team["rank"]}</td>
-              <td>{get_in(room_team, ["Team", "name"])}</td>
-            </tr>
-          </table>
-          <button :if={room["status"] == "completed"} phx-click="confirm" phx-value-room-id={room["id"]}>
-            Confirm ballot
-          </button>
-          <button :if={room["status"] == "completed"} phx-click="reopen" phx-value-room-id={room["id"]}>
-            Reopen (edit scores)
-          </button>
-          <button :if={room["status"] == "confirmed"} phx-click="unconfirm" phx-value-room-id={room["id"]}>
-            Unconfirm
-          </button>
+        <div :if={room["status"] in ["completed", "confirmed"]} class="card__pad">
+          <div
+            :for={room_team <- Enum.sort_by(room["RoomTeams"] || [], & &1["rank"])}
+            class="kv"
+          >
+            <span>{ordinal(room_team["rank"])}</span>
+            <b>{get_in(room_team, ["Team", "name"])}</b>
+          </div>
+          <div class="f-row" style="margin-top:10px;">
+            <button
+              :if={room["status"] == "completed"}
+              class="btn btn--primary btn--sm"
+              phx-click="confirm"
+              phx-value-room-id={room["id"]}
+            >
+              Confirm ballot
+            </button>
+            <button
+              :if={room["status"] == "completed"}
+              class="btn btn--soft btn--sm"
+              phx-click="reopen"
+              phx-value-room-id={room["id"]}
+            >
+              Reopen (edit scores)
+            </button>
+            <button
+              :if={room["status"] == "confirmed"}
+              class="btn btn--soft btn--sm"
+              phx-click="unconfirm"
+              phx-value-room-id={room["id"]}
+            >
+              Unconfirm
+            </button>
+          </div>
         </div>
       </div>
-      <p :if={@rooms == []}>No rooms in this round yet.</p>
 
-      <p>
+      <div class="f-row" style="margin-top:6px;">
         <button
+          class="btn btn--primary"
           phx-click="complete_round"
-          disabled={not all_confirmed?(@rooms) or (@round && @round["status"] == "completed")}
+          disabled={not all_confirmed?(@rooms) or round_completed?(@round)}
         >
-          Complete round (all ballots confirmed)
+          Complete round
         </button>
-      </p>
-    </div>
+        <span :if={round_completed?(@round)} class="tag tag--ok">round completed</span>
+      </div>
+    </.mvp_shell>
     """
   end
+
+  defp abbrev("Opening Government"), do: "OG"
+  defp abbrev("Opening Opposition"), do: "OO"
+  defp abbrev("Closing Government"), do: "CG"
+  defp abbrev("Closing Opposition"), do: "CO"
+  defp abbrev(other), do: other
+
+  defp ordinal(1), do: "1st"
+  defp ordinal(2), do: "2nd"
+  defp ordinal(3), do: "3rd"
+  defp ordinal(rank), do: "#{rank}th"
 end

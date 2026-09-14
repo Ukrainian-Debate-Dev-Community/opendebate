@@ -12,6 +12,9 @@ defmodule CabWeb.MvpLive.Setup do
   alias Cab.{EngineApi, Mvp}
   alias CabWeb.MvpAuth
 
+  @example_teams "Alpha: Alice, Aaron\nBravo: Bella, Bruno\nCharlie: Cara, Carl\nDelta: Dana, Dino\nEcho: Elle, Enzo\nFoxtrot: Fay, Finn\nGolf: Gia, Gus\nHotel: Hana, Hugo"
+  @example_judges "Judge One\nJudge Two"
+
   def mount(%{"id" => id}, _session, socket) do
     socket =
       assign(socket,
@@ -92,88 +95,154 @@ defmodule CabWeb.MvpLive.Setup do
     end
   end
 
+  defp judges(participants), do: Enum.filter(participants, &(&1["role"] == "adjudicator"))
+
+  defp ready?(teams, participants) do
+    n = length(teams)
+    n >= 4 and rem(n, 4) == 0 and length(judges(participants)) >= div(n, 4)
+  end
+
   def render(assigns) do
+    assigns =
+      assign(assigns,
+        example_teams: @example_teams,
+        example_judges: @example_judges,
+        judge_count: length(judges(assigns.participants)),
+        ready: ready?(assigns.teams, assigns.participants)
+      )
+
     ~H"""
-    <div style="font-family: sans-serif; margin: 1em;">
-      <.mvp_nav current_user={@current_user} event_id={@event_id} rounds={@rounds} />
-      <h1>Setup</h1>
-      <.mvp_error error={@error} />
-      <p :if={@notice} style="color: #080;">{@notice}</p>
+    <.mvp_shell
+      current_user={@current_user}
+      dev_routes={@dev_routes}
+      dev_users={@dev_users}
+      context={"Tournament ##{@event_id}"}
+      return_to={"/mvp/t/#{@event_id}/setup"}
+      title="Setup — teams, judges, roles"
+      subtitle="Add everyone once, then run the rounds. Rooms hold 4 teams and need 1 judge each — for the full flow use 8 teams and 2 judges."
+      error={@error}
+      notice={@notice}
+    >
+      <:head_tag>
+        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+      </:head_tag>
 
-      <h2>Create teams</h2>
-      <p>One team per line: <code>Team name: Speaker1, Speaker2</code></p>
-      <form phx-submit="create_teams">
-        <textarea name="lines" rows="10" cols="60" placeholder="Alpha: Alice, Aaron&#10;Bravo: Bob, Bella"></textarea>
-        <br />
-        <button type="submit">Provision speakers + create teams</button>
-      </form>
+      <.td_flow event_id={@event_id} rounds={@rounds} />
 
-      <h2>Add judges</h2>
-      <p>One judge name per line.</p>
-      <form phx-submit="add_judges">
-        <textarea name="names" rows="3" cols="40" placeholder="Judge Judy&#10;Judge Dredd"></textarea>
-        <br />
-        <button type="submit">Provision judges</button>
-      </form>
+      <.guide :if={@ready}>
+        You have <b>{length(@teams)} teams</b> and <b>{@judge_count} judge(s)</b> — enough to
+        start Round 1.
+        <:action>
+          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/1/checkin"}>
+            Round 1 check-in
+          </a>
+        </:action>
+      </.guide>
+      <.guide :if={!@ready}>
+        Add teams and judges below. So far: <b>{length(@teams)}</b> teams (need a multiple
+        of 4) and <b>{@judge_count}</b> judge(s) (need 1 per room).
+      </.guide>
 
-      <h2>Appoint organizer role</h2>
-      <form phx-submit="add_organizer">
-        <input type="text" name="user_id" placeholder="engine user id" size="12" />
-        <select name="role">
-          <option value="organiser">organiser</option>
-          <option value="tab">tab</option>
-          <option value="adjcore">adjcore</option>
-        </select>
-        <button type="submit">Grant role</button>
-      </form>
+      <div class="cardgrid">
+        <div class="card">
+          <div class="card__head"><b>1 · Teams</b><span class="tag tag--info">{length(@teams)} so far</span></div>
+          <div class="card__pad">
+            <span class="f-label">One team per line — Team name: Speaker1, Speaker2</span>
+            <p class="f-help" style="margin:0 0 8px;">
+              Speakers are created automatically. Prefilled with 8 examples — edit or submit as-is.
+            </p>
+            <form phx-submit="create_teams">
+              <textarea name="lines" rows="9" style="width:100%;">{@example_teams}</textarea>
+              <div class="f-row" style="margin-top:8px;">
+                <button class="btn btn--primary btn--sm" type="submit">Create these teams</button>
+              </div>
+            </form>
+          </div>
+        </div>
 
-      <h2>Teams ({length(@teams)})</h2>
-      <table border="1" cellpadding="4">
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Speakers</th>
-          <th>Flags</th>
-        </tr>
-        <tr :for={team <- @teams}>
-          <td>{team["id"]}</td>
-          <td>{team["name"]}</td>
-          <td>{Enum.map_join(team["speakers"], ", ", & &1["name"])}</td>
-          <td>
-            {if team["is_swing"], do: "swing "}{if team["is_eliminated"], do: "eliminated "}{if team[
-              "is_temporary"
-            ],
-              do: "temp"}
-          </td>
-        </tr>
-      </table>
+        <div class="card">
+          <div class="card__head"><b>2 · Judges</b><span class="tag tag--info">{@judge_count} so far</span></div>
+          <div class="card__pad">
+            <span class="f-label">One judge name per line</span>
+            <form phx-submit="add_judges">
+              <textarea name="names" rows="3" style="width:100%;">{@example_judges}</textarea>
+              <div class="f-row" style="margin-top:8px;">
+                <button class="btn btn--primary btn--sm" type="submit">Add these judges</button>
+              </div>
+            </form>
+            <div style="margin-top:14px;">
+              <span class="f-label">3 · Optional: co-organizer role</span>
+              <form phx-submit="add_organizer" class="f-row">
+                <input class="input" type="text" name="user_id" placeholder="engine user id" style="width:130px;" />
+                <select name="role">
+                  <option value="organiser">organiser</option>
+                  <option value="tab">tab</option>
+                  <option value="adjcore">adjcore</option>
+                </select>
+                <button class="btn btn--soft btn--sm" type="submit">Grant</button>
+              </form>
+              <p :if={@organizers != []} class="f-help" style="margin-top:8px;">
+                Current: {Enum.map_join(@organizers, ", ", fn organizer ->
+                  "#{get_in(organizer, ["User", "username"]) || "user #{organizer["user_id"]}"} (#{organizer["role"]})"
+                end)}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <h2>Participants ({length(@participants)})</h2>
-      <table border="1" cellpadding="4">
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Role</th>
-          <th>Engine user</th>
-          <th>Checked in</th>
-        </tr>
-        <tr :for={participant <- @participants}>
-          <td>{participant["id"]}</td>
-          <td>{participant["display_name"]}</td>
-          <td>{participant["role"]}</td>
-          <td>{participant["user_id"]}</td>
-          <td>{if participant["checked_in"], do: "yes", else: "no"}</td>
-        </tr>
-      </table>
+      <div class="section-title">Teams</div>
+      <div class="table-card card scroll-x">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Speakers</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :for={team <- @teams}>
+              <td><b>{team["name"]}</b></td>
+              <td>{Enum.map_join(team["speakers"], ", ", & &1["name"])}</td>
+              <td>
+                <span :if={team["is_swing"]} class="tag tag--muted">swing</span>
+                <span :if={team["is_eliminated"]} class="tag tag--warn">eliminated</span>
+              </td>
+            </tr>
+            <tr :if={@teams == []}>
+              <td colspan="3" class="text-muted">No teams yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <h2>Organizers</h2>
-      <ul>
-        <li :for={organizer <- @organizers}>
-          user {organizer["user_id"]}
-          ({get_in(organizer, ["User", "username"])}) — {organizer["role"]}
-        </li>
-      </ul>
-    </div>
+      <div class="section-title">All participants ({length(@participants)})</div>
+      <div class="table-card card scroll-x">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Checked in</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :for={participant <- @participants}>
+              <td>{participant["display_name"]}</td>
+              <td>{participant["role"]}</td>
+              <td>
+                <span :if={participant["checked_in"]} class="tag tag--ok">yes</span>
+                <span :if={!participant["checked_in"]} class="tag tag--muted">—</span>
+              </td>
+            </tr>
+            <tr :if={@participants == []}>
+              <td colspan="3" class="text-muted">No participants yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </.mvp_shell>
     """
   end
 end
