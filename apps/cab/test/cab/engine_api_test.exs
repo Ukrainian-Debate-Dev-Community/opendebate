@@ -34,11 +34,11 @@ defmodule Cab.EngineApiTest do
     assert {:ok, [%{"id" => 1, "name" => "Open"}]} = EngineApi.list_public_events()
   end
 
-  test "create_organisation uses an isAdmin token" do
+  test "create_organisation uses an isAdmin token and defaults owner to actor" do
     stub(fn conn, params ->
       assert conn.method == "POST"
       assert conn.request_path == "/api/organisations"
-      assert params == %{"name" => "Org"}
+      assert params == %{"name" => "Org", "owner_id" => 9}
       assert %{"id" => 9, "isAdmin" => true} = claims(conn)
       ok(conn, %{"id" => 3, "name" => "Org"})
     end)
@@ -275,16 +275,13 @@ defmodule Cab.EngineApiTest do
              EngineApi.provision_participant(9, 11, "Judge Judy", "adjudicator")
   end
 
-  test "create_tournament chains org, owner and event" do
+  test "create_tournament chains org (actor as owner) and event" do
     stub(fn conn, params ->
       case conn.request_path do
         "/api/organisations" ->
           assert params["name"] == "Kyiv Open (org)"
+          assert params["owner_id"] == 9
           ok(conn, %{"id" => 3})
-
-        "/api/organisations/3/owners" ->
-          assert params["targetUserId"] == 9
-          Req.Test.json(conn, %{"status" => "success", "message" => "ok"})
 
         "/api/events/3" ->
           assert params["name"] == "Kyiv Open"

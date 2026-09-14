@@ -114,7 +114,6 @@ defmodule CabWeb.MvpLive.Club do
     case club.engine_organisation_id do
       nil ->
         with {:ok, org} <- EngineApi.create_organisation(actor, "#{club.name} (club)"),
-             {:ok, _} <- EngineApi.add_owner(actor, org["id"], actor),
              {:ok, _} <- Clubs.update_club(club, %{engine_organisation_id: org["id"]}) do
           {:ok, org["id"]}
         end

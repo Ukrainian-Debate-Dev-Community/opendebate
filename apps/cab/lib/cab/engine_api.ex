@@ -28,7 +28,8 @@ defmodule Cab.EngineApi do
   - `POST /users/login` {username,password} -> {token}
 
   ### Organisations
-  - `POST /organisations` {name} — ADMIN ONLY -> 201 data{id,name}
+  - `POST /organisations` {name, owner_id, type?} — ADMIN ONLY;
+    creates the Owner row for owner_id too -> 201 data{id,name}
   - `POST /organisations/:orgId/owners` {targetUserId} — owner-of-org
     or admin -> 201
   - `GET /organisations`, `GET /organisations/:id` — any authed user
@@ -158,8 +159,16 @@ defmodule Cab.EngineApi do
   # Organisations (org creation is admin-only in the engine)
   # ---------------------------------------------------------------
 
-  def create_organisation(actor, name) do
-    Engine.post(actor, "/api/organisations", %{name: name}, admin: true) |> unwrap()
+  @doc """
+  Creates an organisation (admin-only in the engine, so this call uses
+  an isAdmin token). The engine requires an initial owner; it defaults
+  to the actor, giving them full control.
+  """
+  def create_organisation(actor, name, owner_id \\ nil) do
+    Engine.post(actor, "/api/organisations", %{name: name, owner_id: owner_id || actor},
+      admin: true
+    )
+    |> unwrap()
   end
 
   def add_owner(actor, org_id, target_user_id) do
@@ -394,13 +403,12 @@ defmodule Cab.EngineApi do
 
   @doc """
   Creates a fresh organisation owned by `actor` (org creation is
-  admin-only in the engine, so the org is created with an isAdmin token
-  and the actor is added as owner) and an event in it.
+  admin-only in the engine, so the org is created with an isAdmin
+  token and the actor as initial owner) and an event in it.
   Returns `{:ok, %{"org" => org, "event" => event}}`.
   """
   def create_tournament(actor, name, attrs \\ %{}) do
     with {:ok, org} <- create_organisation(actor, "#{name} (org)"),
-         {:ok, _} <- add_owner(actor, org["id"], actor),
          {:ok, event} <- create_event(actor, org["id"], name, attrs) do
       {:ok, %{"org" => org, "event" => event}}
     end
