@@ -1,12 +1,12 @@
-defmodule CabWeb.MvpLive.Dashboard do
-  @moduledoc "MVP dashboard: engine event cards, create tournament, dev user switcher."
+defmodule CabWeb.DashboardLive do
+  @moduledoc "Dashboard: engine event cards, create tournament, dev user switcher."
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
   alias Cab.EngineApi
-  alias CabWeb.MvpAuth
+  alias CabWeb.LiveAuth
 
   def mount(_params, _session, socket) do
     {events, error} =
@@ -15,17 +15,17 @@ defmodule CabWeb.MvpLive.Dashboard do
         {:error, message} -> {[], message}
       end
 
-    {:ok, assign(socket, page_title: "MVP dashboard", events: events, error: error)}
+    {:ok, assign(socket, page_title: "Dashboard", events: events, error: error)}
   end
 
   def handle_event("create_tournament", %{"name" => name}, socket) do
     name = String.trim(name)
 
     with :ok <- validate_name(name),
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, %{"event" => event}} <- EngineApi.create_tournament(actor, name),
          {:ok, _} <- create_prelim_rounds(actor, event["id"]) do
-      {:noreply, push_navigate(socket, to: ~p"/mvp/t/#{event["id"]}/setup")}
+      {:noreply, push_navigate(socket, to: ~p"/t/#{event["id"]}/setup")}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
     end
@@ -45,12 +45,12 @@ defmodule CabWeb.MvpLive.Dashboard do
 
   def render(assigns) do
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       title="My events"
-      subtitle="MVP dashboard — create a tournament and run it end to end, or run a quick club session."
+      subtitle="Create a tournament and run it end to end, or run a quick club session."
       error={@error}
     >
       <.guide :if={is_nil(@current_user) && @dev_routes}>
@@ -82,7 +82,7 @@ defmodule CabWeb.MvpLive.Dashboard do
             <div class="kv"><span>one room</span><b>4 teams × 2 speakers</b></div>
             <div class="kv"><span>result</span><b>winner pick, saved to history</b></div>
             <div class="f-row" style="margin-top:10px;">
-              <a class="btn btn--primary btn--sm" href={~p"/mvp/club"}>Open</a>
+              <a class="btn btn--primary btn--sm" href={~p"/club"}>Open</a>
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@ defmodule CabWeb.MvpLive.Dashboard do
               <td><.status_tag status={event["status"]} /></td>
               <td>{get_in(event, ["Organisation", "name"])}</td>
               <td>
-                <a class="btn btn--primary btn--sm" href={~p"/mvp/t/#{event["id"]}"}>Open</a>
+                <a class="btn btn--primary btn--sm" href={~p"/t/#{event["id"]}"}>Open</a>
               </td>
             </tr>
             <tr :if={@events == []}>
@@ -114,7 +114,7 @@ defmodule CabWeb.MvpLive.Dashboard do
           </tbody>
         </table>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 end

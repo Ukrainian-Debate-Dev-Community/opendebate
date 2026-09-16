@@ -1,12 +1,12 @@
-defmodule CabWeb.MvpLive.Checkin do
+defmodule CabWeb.CheckinLive do
   @moduledoc "Per-round team check-in and room generation."
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
-  alias Cab.{EngineApi, Mvp}
-  alias CabWeb.MvpAuth
+  alias Cab.{EngineApi, Tournaments}
+  alias CabWeb.LiveAuth
 
   def mount(%{"id" => id, "n" => n}, _session, socket) do
     socket =
@@ -26,10 +26,10 @@ defmodule CabWeb.MvpLive.Checkin do
   defp load(socket) do
     %{event_id: event_id, sequence: sequence} = socket.assigns
 
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, rounds} <- EngineApi.list_rounds(actor, event_id),
-         {:ok, round} <- Mvp.round_by_sequence(actor, event_id, sequence),
-         {:ok, teams} <- Mvp.teams_with_checkin(actor, event_id),
+         {:ok, round} <- Tournaments.round_by_sequence(actor, event_id, sequence),
+         {:ok, teams} <- Tournaments.teams_with_checkin(actor, event_id),
          {:ok, rooms} <- EngineApi.list_rooms(actor, round["id"]) do
       assign(socket, rounds: rounds, round: round, teams: teams, rooms: rooms, error: nil)
     else
@@ -41,9 +41,9 @@ defmodule CabWeb.MvpLive.Checkin do
     team = Enum.find(socket.assigns.teams, &(to_string(&1["id"]) == team_id))
 
     with true <- team != nil,
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <-
-           Mvp.set_team_checkin(actor, socket.assigns.event_id, team, !team["checked_in"]) do
+           Tournaments.set_team_checkin(actor, socket.assigns.event_id, team, !team["checked_in"]) do
       {:noreply, load(socket)}
     else
       false -> {:noreply, assign(socket, error: "unknown team")}
@@ -52,11 +52,11 @@ defmodule CabWeb.MvpLive.Checkin do
   end
 
   def handle_event("generate_rooms", _params, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
-         {:ok, _count} <- Mvp.generate_rooms(actor, socket.assigns.event_id, socket.assigns.round) do
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
+         {:ok, _count} <- Tournaments.generate_rooms(actor, socket.assigns.event_id, socket.assigns.round) do
       {:noreply,
        push_navigate(socket,
-         to: ~p"/mvp/t/#{socket.assigns.event_id}/r/#{socket.assigns.sequence}/draw"
+         to: ~p"/t/#{socket.assigns.event_id}/r/#{socket.assigns.sequence}/draw"
        )}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -67,17 +67,17 @@ defmodule CabWeb.MvpLive.Checkin do
     assigns = assign(assigns, :checked_count, Enum.count(assigns.teams, & &1["checked_in"]))
 
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       context={"Tournament ##{@event_id}"}
-      return_to={"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}
+      return_to={"/t/#{@event_id}/r/#{@sequence}/checkin"}
       title={"Round #{@sequence} — check-in"}
       error={@error}
     >
       <:head_tag>
-        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+        <a class="btn btn--soft btn--sm" href={~p"/t/#{@event_id}"}>Overview</a>
       </:head_tag>
 
       <.td_flow
@@ -91,7 +91,7 @@ defmodule CabWeb.MvpLive.Checkin do
       <.guide :if={@rooms != []}>
         Rooms for this round are made — continue to the draw and motion.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/draw"}>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}/r/#{@sequence}/draw"}>
             Go to draw
           </a>
         </:action>
@@ -99,12 +99,12 @@ defmodule CabWeb.MvpLive.Checkin do
       <.guide :if={@rooms == [] && @teams == []}>
         No teams yet — add them on the Setup page first.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/setup"}>Setup</a>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}/setup"}>Setup</a>
         </:action>
       </.guide>
       <.guide :if={@rooms == [] && @teams != [] && @checked_count < length(@teams)}>
         Tick every team that is present ({@checked_count} / {length(@teams)} checked in),
-        then press <b>Make rooms</b>. Rooms hold {Cab.Mvp.teams_per_room()} teams, 1 judge each.
+        then press <b>Make rooms</b>. Rooms hold {Cab.Tournaments.teams_per_room()} teams, 1 judge each.
         <:action>
           <button class="btn btn--cta btn--sm" phx-click="generate_rooms">Make rooms</button>
         </:action>
@@ -146,7 +146,7 @@ defmodule CabWeb.MvpLive.Checkin do
           </tbody>
         </table>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 end

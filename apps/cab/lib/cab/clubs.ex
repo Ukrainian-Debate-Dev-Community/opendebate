@@ -34,4 +34,15 @@ defmodule Cab.Clubs do
   def delete_club(%Club{} = club), do: Repo.delete(club)
 
   def change_club(%Club{} = club, attrs \\ %{}), do: Club.changeset(club, attrs)
+
+  @doc """
+  Session history of a club's engine organisation: its events, each
+  annotated with `"winner"` (winner of the event's last round; club
+  sessions have exactly one round — no finals involved).
+  """
+  def club_history(actor, org_id) do
+    with {:ok, events} <- Cab.EngineApi.list_organisation_events(actor, org_id) do
+      {:ok, Enum.map(events, &Map.put(&1, "winner", Cab.Tournaments.event_winner(actor, &1)))}
+    end
+  end
 end

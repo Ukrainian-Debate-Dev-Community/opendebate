@@ -1,6 +1,6 @@
-defmodule CabWeb.MvpAuth do
+defmodule CabWeb.LiveAuth do
   @moduledoc """
-  on_mount hook for the MVP LiveViews: loads the session user (if any)
+  on_mount hook for the cab LiveViews: loads the session user (if any)
   and provides the `actor/1` helper resolving a gateway user to their
   engine user id, provisioning lazily when needed.
   """
@@ -25,7 +25,7 @@ defmodule CabWeb.MvpAuth do
   @doc """
   Resolves the acting engine user id for `user`.
   """
-  def actor(nil), do: {:error, "please sign in first (dev user switcher on /mvp, or GitHub)"}
+  def actor(nil), do: {:error, "please sign in first (dev user switcher in the top bar, or GitHub)"}
 
   def actor(user) do
     case Accounts.ensure_node_user(user) do

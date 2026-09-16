@@ -1,14 +1,14 @@
-# Full MVP acceptance walkthrough against a LIVE engine.
+# Full acceptance walkthrough against a LIVE engine.
 #
-#     cd cab/gateway && mix run priv/mvp_walkthrough.exs
+#     cd cab/gateway && mix run priv/walkthrough.exs
 #
 # Requires: the Node engine running on ENGINE_URL (default
 # http://localhost:3100) with the shared ENGINE_JWT_SECRET, and the
 # gateway dev database. Exercises every Cab.EngineApi call used by the
-# MVP LiveViews: tournament (8 teams, 2 judges, 3 rounds + final,
+# LiveViews: tournament (8 teams, 2 judges, 3 rounds + final,
 # champion) and the club session flow.
 
-alias Cab.{Accounts, Clubs, EngineApi, Mvp, Repo}
+alias Cab.{Accounts, Clubs, EngineApi, Tournaments, Repo}
 alias Cab.Accounts.User
 
 defmodule Walk do
@@ -60,7 +60,7 @@ IO.puts("== 1. Dashboard: public list + create tournament ==")
 Walk.check!("list_public_events", EngineApi.list_public_events())
 
 %{"event" => event, "org" => org} =
-  Walk.check!("create_tournament", EngineApi.create_tournament(actor, "MVP Open #{stamp}"))
+  Walk.check!("create_tournament", EngineApi.create_tournament(actor, "Cab Open #{stamp}"))
 
 event_id = event["id"]
 
@@ -84,7 +84,7 @@ team_lines =
   Hotel: Hana #{stamp}, Hugo #{stamp}
   """
 
-8 = Walk.check!("create_teams_from_lines (8)", Mvp.create_teams_from_lines(actor, event_id, team_lines))
+8 = Walk.check!("create_teams_from_lines (8)", Tournaments.create_teams_from_lines(actor, event_id, team_lines))
 
 _judge1 = Walk.check!("provision judge 1", EngineApi.provision_participant(actor, event_id, "Judge One", "adjudicator"))
 _judge2 = Walk.check!("provision judge 2", EngineApi.provision_participant(actor, event_id, "Judge Two", "adjudicator"))
@@ -100,18 +100,18 @@ participants = Walk.check!("list_participants (18)", EngineApi.list_participants
 
 run_round = fn n, first? ->
   IO.puts("== Round #{n} ==")
-  round = Walk.check!("round_by_sequence #{n}", Mvp.round_by_sequence(actor, event_id, n))
+  round = Walk.check!("round_by_sequence #{n}", Tournaments.round_by_sequence(actor, event_id, n))
 
   if first? do
-    teams_ci = Walk.check!("teams_with_checkin", Mvp.teams_with_checkin(actor, event_id))
+    teams_ci = Walk.check!("teams_with_checkin", Tournaments.teams_with_checkin(actor, event_id))
 
     for team <- teams_ci do
-      Walk.check!("check in #{team["name"]}", Mvp.set_team_checkin(actor, event_id, team, true))
+      Walk.check!("check in #{team["name"]}", Tournaments.set_team_checkin(actor, event_id, team, true))
     end
   end
 
-  Walk.check!("set motion R#{n}", Mvp.set_round_motion(actor, event_id, n, "THW test motion #{n} (#{stamp})"))
-  Walk.check!("generate_rooms R#{n}", Mvp.generate_rooms(actor, event_id, round))
+  Walk.check!("set motion R#{n}", Tournaments.set_round_motion(actor, event_id, n, "THW test motion #{n} (#{stamp})"))
+  Walk.check!("generate_rooms R#{n}", Tournaments.generate_rooms(actor, event_id, round))
   rooms = Walk.check!("list_rooms R#{n} (2)", EngineApi.list_rooms(actor, round["id"]))
   2 = length(rooms)
 
@@ -123,7 +123,7 @@ run_round = fn n, first? ->
     Walk.check!("swap_teams back", EngineApi.swap_teams(actor, round["id"], slot_b["id"], slot_a["id"]))
   end
 
-  Walk.check!("release motion R#{n}", Mvp.release_round_motion(actor, event_id, n))
+  Walk.check!("release motion R#{n}", Tournaments.release_round_motion(actor, event_id, n))
 
   rooms = Walk.check!("re-list rooms R#{n}", EngineApi.list_rooms(actor, round["id"]))
 
@@ -136,7 +136,7 @@ run_round = fn n, first? ->
       |> Enum.with_index()
       |> Map.new(fn {id, i} -> {id, 70 + rem(i * 3 + n + index, 11)} end)
 
-    {:ok, rankings, speaker_scores} = Mvp.ballot_payload(room, scores)
+    {:ok, rankings, speaker_scores} = Tournaments.ballot_payload(room, scores)
     Walk.check!("submit ballot room #{room["id"]}", EngineApi.submit_scores(actor, room["id"], rankings, speaker_scores))
 
     if first? and index == 1 do
@@ -166,7 +166,7 @@ Enum.each(Enum.take(standings, 4), fn t ->
 end)
 
 IO.puts("== Final ==")
-final = Walk.check!("break_to_final", Mvp.break_to_final(actor, event_id))
+final = Walk.check!("break_to_final", Tournaments.break_to_final(actor, event_id))
 [final_room] = Walk.check!("list final rooms (1)", EngineApi.list_rooms(actor, final["id"]))
 
 bottom_ids = standings |> Enum.drop(4) |> Enum.map(& &1["id"])
@@ -177,13 +177,13 @@ final_speakers = for rt <- final_room["RoomTeams"], sp <- rt["RoomSpeakers"], do
 final_scores =
   final_speakers |> Enum.with_index() |> Map.new(fn {id, i} -> {id, 80 + rem(i * 5, 15)} end)
 
-{:ok, final_rankings, final_speaker_scores} = Mvp.ballot_payload(final_room, final_scores)
+{:ok, final_rankings, final_speaker_scores} = Tournaments.ballot_payload(final_room, final_scores)
 
 Walk.check!("submit final ballot", EngineApi.submit_scores(actor, final_room["id"], final_rankings, final_speaker_scores))
 Walk.check!("confirm final", EngineApi.confirm_room(actor, final_room["id"]))
 Walk.check!("complete final round", EngineApi.update_round(actor, final["id"], %{status: "completed"}))
 
-champion = Walk.check!("champion", Mvp.champion(actor, event_id))
+champion = Walk.check!("champion", Tournaments.champion(actor, event_id))
 IO.puts("      CHAMPION: #{champion}")
 if champion == nil, do: raise("no champion resolved")
 
@@ -208,7 +208,7 @@ club_lines =
   Golds: Goldie #{stamp}, Grant #{stamp}
   """
 
-4 = Walk.check!("club teams", Mvp.create_teams_from_lines(actor, club_event["id"], club_lines))
+4 = Walk.check!("club teams", Tournaments.create_teams_from_lines(actor, club_event["id"], club_lines))
 club_judge = Walk.check!("club judge", EngineApi.provision_participant(actor, club_event["id"], "Club Judge", "adjudicator"))
 club_teams = Walk.check!("club list_teams", EngineApi.list_teams(actor, club_event["id"]))
 
@@ -225,7 +225,7 @@ Walk.check!(
 [club_room] = Walk.check!("club list_rooms (1)", EngineApi.list_rooms(actor, club_round["id"]))
 
 winner_slot = Enum.at(Enum.sort_by(club_room["RoomTeams"], & &1["position"]), 1)
-{:ok, w_rankings, w_scores} = Mvp.winner_ballot_payload(club_room, winner_slot["id"])
+{:ok, w_rankings, w_scores} = Tournaments.winner_ballot_payload(club_room, winner_slot["id"])
 
 Walk.check!("club winner ballot", EngineApi.submit_scores(actor, club_room["id"], w_rankings, w_scores))
 Walk.check!("club confirm", EngineApi.confirm_room(actor, club_room["id"]))

@@ -1,6 +1,6 @@
-defmodule Cab.Mvp do
+defmodule Cab.Tournaments do
   @moduledoc """
-  Tournament-director ("full control") flow logic for the MVP pages.
+  Tournament-director ("full control") flow logic for the cab pages.
   Pure orchestration over `Cab.EngineApi`: pairing checked-in teams
   into rooms, deriving team ranks from speaker scores, breaking to a
   final and finding the champion. Engine data is kept as the raw
@@ -277,26 +277,47 @@ defmodule Cab.Mvp do
   end
 
   @doc """
-  The champion is the rank-1 team of the final's confirmed room.
+  Winner of a round: the rank-1 team of its completed/confirmed rooms.
+  Shared by the tournament champion and the club session history.
+  Returns `{:ok, team_name | nil}`.
+  """
+  def round_winner(actor, round) do
+    with {:ok, rooms} <- EngineApi.list_rooms(actor, round["id"]) do
+      winner =
+        rooms
+        |> Enum.filter(&(&1["status"] in ["completed", "confirmed"]))
+        |> Enum.flat_map(&(&1["RoomTeams"] || []))
+        |> Enum.find(&(&1["rank"] == 1))
+
+      {:ok, winner && get_in(winner, ["Team", "name"])}
+    end
+  end
+
+  @doc """
+  The champion is the winner of the round named "#{@final_name}".
   Returns `{:ok, team_name | nil}`.
   """
   def champion(actor, event_id) do
     with {:ok, rounds} <- EngineApi.list_rounds(actor, event_id) do
       case Enum.find(rounds, &(&1["name"] == @final_name)) do
-        nil ->
-          {:ok, nil}
-
-        final ->
-          with {:ok, rooms} <- EngineApi.list_rooms(actor, final["id"]) do
-            winner =
-              rooms
-              |> Enum.filter(&(&1["status"] in ["completed", "confirmed"]))
-              |> Enum.flat_map(&(&1["RoomTeams"] || []))
-              |> Enum.find(&(&1["rank"] == 1))
-
-            {:ok, winner && get_in(winner, ["Team", "name"])}
-          end
+        nil -> {:ok, nil}
+        final -> round_winner(actor, final)
       end
+    end
+  end
+
+  @doc """
+  Winner of an event: the winner of its last round. Used by the club
+  session history (one-round events).
+  """
+  def event_winner(actor, event) do
+    with {:ok, rounds} <- EngineApi.list_rounds(actor, event["id"]),
+         last_round when not is_nil(last_round) <-
+           Enum.max_by(rounds, & &1["sequence"], fn -> nil end),
+         {:ok, winner} <- round_winner(actor, last_round) do
+      winner
+    else
+      _ -> nil
     end
   end
 

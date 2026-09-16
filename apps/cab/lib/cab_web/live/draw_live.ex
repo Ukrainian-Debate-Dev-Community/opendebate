@@ -1,12 +1,12 @@
-defmodule CabWeb.MvpLive.Draw do
+defmodule CabWeb.DrawLive do
   @moduledoc "Round draw: rooms table (OG/OO/CG/CO), team-slot swaps, motion set/release."
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
-  alias Cab.{EngineApi, Mvp}
-  alias CabWeb.MvpAuth
+  alias Cab.{EngineApi, Tournaments}
+  alias CabWeb.LiveAuth
 
   @positions %{1 => "OG", 2 => "OO", 3 => "CG", 4 => "CO"}
 
@@ -29,11 +29,11 @@ defmodule CabWeb.MvpLive.Draw do
   defp load(socket) do
     %{event_id: event_id, sequence: sequence} = socket.assigns
 
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, rounds} <- EngineApi.list_rounds(actor, event_id),
-         {:ok, round} <- Mvp.round_by_sequence(actor, event_id, sequence),
+         {:ok, round} <- Tournaments.round_by_sequence(actor, event_id, sequence),
          {:ok, rooms} <- EngineApi.list_rooms(actor, round["id"]),
-         {:ok, motion} <- Mvp.round_motion(actor, event_id, sequence) do
+         {:ok, motion} <- Tournaments.round_motion(actor, event_id, sequence) do
       assign(socket, rounds: rounds, round: round, rooms: rooms, motion: motion, error: nil)
     else
       {:error, message} -> assign(socket, error: message)
@@ -41,7 +41,7 @@ defmodule CabWeb.MvpLive.Draw do
   end
 
   def handle_event("swap", %{"slot_a" => a, "slot_b" => b}, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <- EngineApi.swap_teams(actor, socket.assigns.round["id"], a, b) do
       {:noreply, socket |> assign(notice: "teams swapped") |> load()}
     else
@@ -50,9 +50,9 @@ defmodule CabWeb.MvpLive.Draw do
   end
 
   def handle_event("save_motion", %{"text" => text}, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <-
-           Mvp.set_round_motion(actor, socket.assigns.event_id, socket.assigns.sequence, text) do
+           Tournaments.set_round_motion(actor, socket.assigns.event_id, socket.assigns.sequence, text) do
       {:noreply, socket |> assign(notice: "motion saved") |> load()}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -60,9 +60,9 @@ defmodule CabWeb.MvpLive.Draw do
   end
 
   def handle_event("release_motion", _params, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <-
-           Mvp.release_round_motion(actor, socket.assigns.event_id, socket.assigns.sequence) do
+           Tournaments.release_round_motion(actor, socket.assigns.event_id, socket.assigns.sequence) do
       {:noreply, socket |> assign(notice: "motion released") |> load()}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -105,18 +105,18 @@ defmodule CabWeb.MvpLive.Draw do
     assigns = assign(assigns, slots: slot_options(assigns.rooms))
 
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       context={"Tournament ##{@event_id}"}
-      return_to={"/mvp/t/#{@event_id}/r/#{@sequence}/draw"}
+      return_to={"/t/#{@event_id}/r/#{@sequence}/draw"}
       title={"Round #{@sequence} — draw + motion"}
       error={@error}
       notice={@notice}
     >
       <:head_tag>
-        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+        <a class="btn btn--soft btn--sm" href={~p"/t/#{@event_id}"}>Overview</a>
       </:head_tag>
 
       <.td_flow
@@ -130,7 +130,7 @@ defmodule CabWeb.MvpLive.Draw do
       <.guide :if={@rooms == []}>
         No rooms yet — make them on the check-in page first.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}/r/#{@sequence}/checkin"}>
             Check-in
           </a>
         </:action>
@@ -147,7 +147,7 @@ defmodule CabWeb.MvpLive.Draw do
       <.guide :if={@rooms != [] && @motion && @motion["is_released"]}>
         Motion is out — the debate is on. Enter results when it ends.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/ballots"}>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}/r/#{@sequence}/ballots"}>
             Ballots
           </a>
         </:action>
@@ -175,6 +175,11 @@ defmodule CabWeb.MvpLive.Draw do
           </button>
           <span :if={@motion && @motion["is_released"]} class="tag tag--ok">released</span>
         </form>
+        <span class="f-help" style="flex-basis:100%;">
+          One motion per round, shared by all its rooms. (The engine attaches a motion to a
+          room only at creation and has no per-room motion editing — participants see motions
+          per event once released.)
+        </span>
       </div>
 
       <div class="section-title">Draw</div>
@@ -224,7 +229,7 @@ defmodule CabWeb.MvpLive.Draw do
           </form>
         </div>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 end

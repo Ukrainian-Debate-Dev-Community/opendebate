@@ -1,4 +1,4 @@
-defmodule CabWeb.MvpLive.Setup do
+defmodule CabWeb.SetupLive do
   @moduledoc """
   Full-control setup: bulk-create teams from "Team: Speaker1, Speaker2"
   lines (each speaker becomes a gateway-provisioned shadow engine
@@ -7,10 +7,10 @@ defmodule CabWeb.MvpLive.Setup do
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
-  alias Cab.{EngineApi, Mvp}
-  alias CabWeb.MvpAuth
+  alias Cab.{EngineApi, Tournaments}
+  alias CabWeb.LiveAuth
 
   @example_teams "Alpha: Alice, Aaron\nBravo: Bella, Bruno\nCharlie: Cara, Carl\nDelta: Dana, Dino\nEcho: Elle, Enzo\nFoxtrot: Fay, Finn\nGolf: Gia, Gus\nHotel: Hana, Hugo"
   @example_judges "Judge One\nJudge Two"
@@ -31,7 +31,7 @@ defmodule CabWeb.MvpLive.Setup do
   end
 
   defp load(socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, rounds} <- EngineApi.list_rounds(actor, socket.assigns.event_id),
          {:ok, teams} <- EngineApi.list_teams(actor, socket.assigns.event_id),
          {:ok, participants} <- EngineApi.list_participants(actor, socket.assigns.event_id),
@@ -49,8 +49,8 @@ defmodule CabWeb.MvpLive.Setup do
   end
 
   def handle_event("create_teams", %{"lines" => lines}, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
-         {:ok, count} <- Mvp.create_teams_from_lines(actor, socket.assigns.event_id, lines) do
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
+         {:ok, count} <- Tournaments.create_teams_from_lines(actor, socket.assigns.event_id, lines) do
       {:noreply, socket |> assign(notice: "created #{count} team(s)") |> load()}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -61,7 +61,7 @@ defmodule CabWeb.MvpLive.Setup do
     judge_names =
       names |> String.split(~r/\R/) |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))
 
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, count} <- add_judges(actor, socket.assigns.event_id, judge_names) do
       {:noreply, socket |> assign(notice: "added #{count} judge(s)") |> load()}
     else
@@ -71,7 +71,7 @@ defmodule CabWeb.MvpLive.Setup do
 
   def handle_event("add_organizer", %{"user_id" => user_id, "role" => role}, socket) do
     with {:ok, target} <- parse_int(user_id, "engine user id"),
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <- EngineApi.add_organizer(actor, socket.assigns.event_id, target, role) do
       {:noreply, socket |> assign(notice: "organizer role granted") |> load()}
     else
@@ -112,19 +112,19 @@ defmodule CabWeb.MvpLive.Setup do
       )
 
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       context={"Tournament ##{@event_id}"}
-      return_to={"/mvp/t/#{@event_id}/setup"}
+      return_to={"/t/#{@event_id}/setup"}
       title="Setup — teams, judges, roles"
       subtitle="Add everyone once, then run the rounds. Rooms hold 4 teams and need 1 judge each — for the full flow use 8 teams and 2 judges."
       error={@error}
       notice={@notice}
     >
       <:head_tag>
-        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+        <a class="btn btn--soft btn--sm" href={~p"/t/#{@event_id}"}>Overview</a>
       </:head_tag>
 
       <.td_flow event_id={@event_id} rounds={@rounds} />
@@ -133,7 +133,7 @@ defmodule CabWeb.MvpLive.Setup do
         You have <b>{length(@teams)} teams</b> and <b>{@judge_count} judge(s)</b> — enough to
         start Round 1.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/1/checkin"}>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}/r/1/checkin"}>
             Round 1 check-in
           </a>
         </:action>
@@ -242,7 +242,7 @@ defmodule CabWeb.MvpLive.Setup do
           </tbody>
         </table>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 end

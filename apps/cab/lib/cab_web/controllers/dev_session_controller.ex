@@ -4,7 +4,7 @@ defmodule CabWeb.DevSessionController do
   the `:dev_routes` compile-time guard in the router, so this is
   unreachable in prod builds. Signs the session in as the named
   gateway user, creating them (and their engine counterpart) if
-  needed — bypasses OAuth for local testing of the MVP flows.
+  needed — bypasses OAuth for local testing.
   """
 
   use CabWeb, :controller
@@ -33,5 +33,5 @@ defmodule CabWeb.DevSessionController do
   end
 
   defp return_to(%{"return_to" => "/" <> _ = path}), do: path
-  defp return_to(_params), do: "/mvp"
+  defp return_to(_params), do: "/"
 end

@@ -26,7 +26,15 @@ defmodule CabWeb.Router do
   scope "/", CabWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live_session :app, on_mount: {CabWeb.LiveAuth, :current_user} do
+      live "/", DashboardLive
+      live "/club", ClubLive
+      live "/t/:id", TournamentLive
+      live "/t/:id/setup", SetupLive
+      live "/t/:id/r/:n/checkin", CheckinLive
+      live "/t/:id/r/:n/draw", DrawLive
+      live "/t/:id/r/:n/ballots", BallotsLive
+    end
   end
 
   scope "/auth", CabWeb do
@@ -35,21 +43,6 @@ defmodule CabWeb.Router do
     get "/logout", AuthController, :logout
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
-  end
-
-  # Robust plain-HTML MVP: full-control tournament direction.
-  scope "/mvp", CabWeb do
-    pipe_through :browser
-
-    live_session :mvp, on_mount: {CabWeb.MvpAuth, :current_user} do
-      live "/", MvpLive.Dashboard
-      live "/club", MvpLive.Club
-      live "/t/:id", MvpLive.Tournament
-      live "/t/:id/setup", MvpLive.Setup
-      live "/t/:id/r/:n/checkin", MvpLive.Checkin
-      live "/t/:id/r/:n/draw", MvpLive.Draw
-      live "/t/:id/r/:n/ballots", MvpLive.Ballots
-    end
   end
 
   scope "/api/public", CabWeb do
@@ -72,7 +65,7 @@ defmodule CabWeb.Router do
 
       live_dashboard "/dashboard", metrics: CabWeb.Telemetry
 
-      # DEV ONLY: session user switcher for the MVP pages (bypasses OAuth).
+      # DEV ONLY: session user switcher (bypasses OAuth).
       get "/switch-user", CabWeb.DevSessionController, :switch
     end
   end

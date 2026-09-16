@@ -1,7 +1,6 @@
 defmodule Cab.EngineApi do
   @moduledoc """
-  Typed, thin wrappers over `Cab.Engine` for every engine call the MVP
-  needs. Every function takes the acting engine user id (`actor` =
+  Typed, thin wrappers over `Cab.Engine` for every engine call the gateway  needs. Every function takes the acting engine user id (`actor` =
   `user.node_user_id`) first and returns `{:ok, data}` or
   `{:error, message}` with a human-readable message suitable for
   inline display.
@@ -132,7 +131,7 @@ defmodule Cab.EngineApi do
     4 teams/room, 2 speakers/team, scores 50..100. Writes admin-only.
 
   ### Conclusion
-  Everything the MVP needs exists. The one gap-shaped item — organiser
+  Everything the gateway needs exists. The one gap-shaped item — organiser
   score submission — is already covered by `restrictToChair`'s
   owner/organiser fall-through, so no engine patch was required.
   Room "auto-generate" does not exist; the gateway pairs teams itself
@@ -384,7 +383,7 @@ defmodule Cab.EngineApi do
   end
 
   # ---------------------------------------------------------------
-  # Composite helpers used by the MVP LiveViews
+  # Composite helpers used by the LiveViews
   # ---------------------------------------------------------------
 
   @doc """

@@ -1,20 +1,20 @@
-defmodule Cab.MvpTest do
+defmodule Cab.TournamentsTest do
   use ExUnit.Case, async: true
 
-  alias Cab.Mvp
+  alias Cab.Tournaments
 
   describe "parse_team_lines/1" do
     test "parses team and speaker names, skipping blank lines" do
       assert {:ok, [{"Alpha", ["Alice", "Aaron"]}, {"Bravo", ["Bob"]}]} =
-               Mvp.parse_team_lines("Alpha: Alice, Aaron\n\nBravo: Bob\n")
+               Tournaments.parse_team_lines("Alpha: Alice, Aaron\n\nBravo: Bob\n")
     end
 
     test "rejects lines without a colon" do
-      assert {:error, "bad line" <> _} = Mvp.parse_team_lines("just some words")
+      assert {:error, "bad line" <> _} = Tournaments.parse_team_lines("just some words")
     end
 
     test "rejects more than two speakers" do
-      assert {:error, "bad line" <> _} = Mvp.parse_team_lines("Alpha: A, B, C")
+      assert {:error, "bad line" <> _} = Tournaments.parse_team_lines("Alpha: A, B, C")
     end
   end
 
@@ -39,7 +39,7 @@ defmodule Cab.MvpTest do
     test "derives ranks from team score sums" do
       scores = %{11 => 70, 12 => 70, 21 => 80, 22 => 80}
 
-      assert {:ok, rankings, speaker_scores} = Mvp.ballot_payload(room(), scores)
+      assert {:ok, rankings, speaker_scores} = Tournaments.ballot_payload(room(), scores)
 
       assert rankings == [
                %{room_team_id: 2, rank: 1},
@@ -54,11 +54,11 @@ defmodule Cab.MvpTest do
       scores = %{11 => 75, 12 => 75, 21 => 75, 22 => 75}
 
       assert {:ok, [%{room_team_id: 1, rank: 1}, %{room_team_id: 2, rank: 2}], _} =
-               Mvp.ballot_payload(room(), scores)
+               Tournaments.ballot_payload(room(), scores)
     end
 
     test "reports missing scores" do
-      assert {:error, message} = Mvp.ballot_payload(room(), %{11 => 70})
+      assert {:error, message} = Tournaments.ballot_payload(room(), %{11 => 70})
       assert message =~ "3 missing"
     end
   end
@@ -73,7 +73,7 @@ defmodule Cab.MvpTest do
       }
 
       assert {:ok, [%{room_team_id: 2, rank: 1}, %{room_team_id: 1, rank: 2}], scores} =
-               Mvp.winner_ballot_payload(room, 2)
+               Tournaments.winner_ballot_payload(room, 2)
 
       assert %{room_speaker_id: 21, score: 76} in scores
       assert %{room_speaker_id: 11, score: 75} in scores

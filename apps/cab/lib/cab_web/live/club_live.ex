@@ -1,4 +1,4 @@
-defmodule CabWeb.MvpLive.Club do
+defmodule CabWeb.ClubLive do
   @moduledoc """
   Club session flow: create/select a club (gateway record linked to an
   engine organisation), run a one-round session (4 teams x 2 speakers,
@@ -8,10 +8,10 @@ defmodule CabWeb.MvpLive.Club do
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
-  alias Cab.{Clubs, EngineApi, Mvp}
-  alias CabWeb.MvpAuth
+  alias Cab.{Clubs, EngineApi, Tournaments}
+  alias CabWeb.LiveAuth
 
   @example_teams "Reds: Ann, Andy\nBlues: Ben, Bea\nGreens: Cam, Cal\nGolds: Dee, Dan"
 
@@ -55,12 +55,12 @@ defmodule CabWeb.MvpLive.Club do
     club = socket.assigns.club
 
     with true <- club != nil,
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, org_id} <- ensure_club_org(actor, club),
          {:ok, event} <-
            EngineApi.create_event(actor, org_id, presence(event_name, "Club session")),
          {:ok, round} <- EngineApi.create_round(actor, event["id"], "Club round", 1),
-         {:ok, _count} <- Mvp.create_teams_from_lines(actor, event["id"], teams_text),
+         {:ok, _count} <- Tournaments.create_teams_from_lines(actor, event["id"], teams_text),
          {:ok, judge_participant} <-
            EngineApi.provision_participant(
              actor,
@@ -86,8 +86,8 @@ defmodule CabWeb.MvpLive.Club do
     %{room: room, round: round, event: event} = socket.assigns
 
     with {winner_id, ""} <- Integer.parse(room_team_id),
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
-         {:ok, rankings, scores} <- Mvp.winner_ballot_payload(room, winner_id),
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
+         {:ok, rankings, scores} <- Tournaments.winner_ballot_payload(room, winner_id),
          {:ok, _} <- EngineApi.submit_scores(actor, room["id"], rankings, scores),
          {:ok, _} <- EngineApi.confirm_room(actor, room["id"]),
          {:ok, _} <- EngineApi.update_round(actor, round["id"], %{status: "completed"}),
@@ -146,13 +146,29 @@ defmodule CabWeb.MvpLive.Club do
   defp load_history(socket) do
     with %{engine_organisation_id: org_id} when not is_nil(org_id) <-
            socket.assigns.club && Clubs.get_club(socket.assigns.club.id),
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
-         {:ok, events} <- EngineApi.list_organisation_events(actor, org_id) do
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
+         {:ok, events} <- Clubs.club_history(actor, org_id) do
       assign(socket, history: events)
     else
       _ -> assign(socket, history: [])
     end
   end
+
+  @stages ["club", "set up", "debate", "done"]
+
+  defp stage_items(step, club) do
+    current = stage_index(step, club)
+
+    @stages
+    |> Enum.with_index()
+    |> Enum.map(fn {label, index} ->
+      %{label: label, state: stage_state(index, current)}
+    end)
+  end
+
+  defp stage_state(index, current) when index < current, do: "done"
+  defp stage_state(index, current) when index == current, do: "live"
+  defp stage_state(_index, _current), do: nil
 
   defp stage_index(:pick, club), do: if(club, do: 1, else: 0)
   defp stage_index(:running, _club), do: 2
@@ -165,15 +181,13 @@ defmodule CabWeb.MvpLive.Club do
   end
 
   def render(assigns) do
-    assigns = assign(assigns, :stage, stage_index(assigns.step, assigns.club))
-
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       context={@club && "#{@club.name} — club session"}
-      return_to="/mvp/club"
+      return_to="/club"
       title="Club session"
       error={@error}
       notice={@notice}
@@ -182,14 +196,7 @@ defmodule CabWeb.MvpLive.Club do
         <span :if={@club} class="tag tag--info">{@club.name}</span>
       </:head_tag>
 
-      <div class="progressline">
-        <span
-          :for={{label, index} <- Enum.with_index(["club", "set up", "debate", "done"])}
-          class={["pseg", index < @stage && "done", index == @stage && "live"]}
-        >
-          {label}
-        </span>
-      </div>
+      <.statusline items={stage_items(@step, @club)} />
 
       <.guide :if={@step == :pick && is_nil(@club)}>
         Pick your club below — or create one — then set up tonight's session.
@@ -290,7 +297,7 @@ defmodule CabWeb.MvpLive.Club do
               <tr>
                 <th>Session</th>
                 <th>Status</th>
-                <th></th>
+                <th>Winner</th>
               </tr>
             </thead>
             <tbody>
@@ -298,7 +305,8 @@ defmodule CabWeb.MvpLive.Club do
                 <td><b>{event["name"]}</b></td>
                 <td><.status_tag status={event["status"]} /></td>
                 <td>
-                  <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{event["id"]}"}>Open</a>
+                  <b :if={event["winner"]}>{event["winner"]}</b>
+                  <span :if={is_nil(event["winner"])} class="text-muted">—</span>
                 </td>
               </tr>
               <tr :if={@history == []}>
@@ -308,7 +316,7 @@ defmodule CabWeb.MvpLive.Club do
           </table>
         </div>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 end

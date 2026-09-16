@@ -1,4 +1,4 @@
-defmodule CabWeb.MvpDashboardLiveTest do
+defmodule CabWeb.DashboardLiveTest do
   use CabWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
@@ -20,9 +20,9 @@ defmodule CabWeb.MvpDashboardLiveTest do
       })
     end)
 
-    {:ok, _view, html} = live(conn, ~p"/mvp")
+    {:ok, _view, html} = live(conn, ~p"/")
 
-    assert html =~ "MVP dashboard"
+    assert html =~ "My events"
     assert html =~ "Kyiv Open"
     assert html =~ "not signed in"
   end
@@ -32,7 +32,7 @@ defmodule CabWeb.MvpDashboardLiveTest do
       Req.Test.transport_error(conn, :econnrefused)
     end)
 
-    {:ok, _view, html} = live(conn, ~p"/mvp")
+    {:ok, _view, html} = live(conn, ~p"/")
 
     assert html =~ "engine unreachable"
   end

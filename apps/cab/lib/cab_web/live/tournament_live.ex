@@ -1,12 +1,12 @@
-defmodule CabWeb.MvpLive.Tournament do
+defmodule CabWeb.TournamentLive do
   @moduledoc "Tournament overview: round flow, standings, break to final, champion."
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
-  alias Cab.{EngineApi, Mvp}
-  alias CabWeb.MvpAuth
+  alias Cab.{EngineApi, Tournaments}
+  alias CabWeb.LiveAuth
 
   def mount(%{"id" => id}, _session, socket) do
     socket =
@@ -23,12 +23,12 @@ defmodule CabWeb.MvpLive.Tournament do
   end
 
   defp load(socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, event} <- EngineApi.get_event(actor, socket.assigns.event_id),
          {:ok, rounds} <- EngineApi.list_rounds(actor, socket.assigns.event_id),
          {:ok, team_standings} <- EngineApi.team_standings(actor, socket.assigns.event_id),
          {:ok, speaker_standings} <- EngineApi.speaker_standings(actor, socket.assigns.event_id),
-         {:ok, champion} <- Mvp.champion(actor, socket.assigns.event_id) do
+         {:ok, champion} <- Tournaments.champion(actor, socket.assigns.event_id) do
       assign(socket,
         page_title: event["name"],
         event: event,
@@ -44,11 +44,11 @@ defmodule CabWeb.MvpLive.Tournament do
   end
 
   def handle_event("break_final", _params, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
-         {:ok, round} <- Mvp.break_to_final(actor, socket.assigns.event_id) do
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
+         {:ok, round} <- Tournaments.break_to_final(actor, socket.assigns.event_id) do
       {:noreply,
        push_navigate(socket,
-         to: ~p"/mvp/t/#{socket.assigns.event_id}/r/#{round["sequence"]}/ballots"
+         to: ~p"/t/#{socket.assigns.event_id}/r/#{round["sequence"]}/ballots"
        )}
     else
       {:error, message} -> {:noreply, assign(socket, error: message)}
@@ -61,10 +61,15 @@ defmodule CabWeb.MvpLive.Tournament do
 
   defp current_round(rounds), do: Enum.find(rounds, &(&1["status"] != "completed"))
 
+  # A final only makes sense for multi-round tournaments; one-round
+  # events (club sessions) never see break-to-final chrome.
+  defp breakable?(rounds), do: length(prelims(rounds)) >= 2
+
   defp prelims_done?(rounds) do
-    prelims = Enum.reject(rounds, &(&1["name"] == "Final"))
-    prelims != [] and Enum.all?(prelims, &(&1["status"] == "completed"))
+    breakable?(rounds) and Enum.all?(prelims(rounds), &(&1["status"] == "completed"))
   end
+
+  defp prelims(rounds), do: Enum.reject(rounds, &(&1["name"] == "Final"))
 
   defp has_final?(rounds), do: Enum.any?(rounds, &(&1["name"] == "Final"))
 
@@ -72,18 +77,18 @@ defmodule CabWeb.MvpLive.Tournament do
     assigns = assign(assigns, :current_round, current_round(assigns.rounds))
 
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       context={@event && @event["name"]}
-      return_to={"/mvp/t/#{@event_id}"}
+      return_to={"/t/#{@event_id}"}
       title={(@event && @event["name"]) || "Tournament ##{@event_id}"}
       error={@error}
     >
       <:head_tag>
         <.status_tag :if={@event} status={@event["status"]} />
-        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}/setup"}>Setup</a>
+        <a class="btn btn--soft btn--sm" href={~p"/t/#{@event_id}/setup"}>Setup</a>
         <button class="btn btn--soft btn--sm" phx-click="refresh">Refresh</button>
       </:head_tag>
 
@@ -98,7 +103,7 @@ defmodule CabWeb.MvpLive.Tournament do
         <:action>
           <a
             class="btn btn--cta btn--sm"
-            href={~p"/mvp/t/#{@event_id}/r/#{@current_round["sequence"]}/ballots"}
+            href={~p"/t/#{@event_id}/r/#{@current_round["sequence"]}/ballots"}
           >
             Final ballot
           </a>
@@ -108,11 +113,11 @@ defmodule CabWeb.MvpLive.Tournament do
       <.guide :if={is_nil(@champion) && @current_round && @current_round["name"] != "Final"}>
         Next: run <b>{@current_round["name"]}</b> — check-in → draw + motion → ballots.
         First time here? Add teams and judges in
-        <a href={~p"/mvp/t/#{@event_id}/setup"}>Setup</a> first.
+        <a href={~p"/t/#{@event_id}/setup"}>Setup</a> first.
         <:action>
           <a
             class="btn btn--cta btn--sm"
-            href={~p"/mvp/t/#{@event_id}/r/#{@current_round["sequence"]}/checkin"}
+            href={~p"/t/#{@event_id}/r/#{@current_round["sequence"]}/checkin"}
           >
             Run {@current_round["name"]}
           </a>
@@ -143,19 +148,19 @@ defmodule CabWeb.MvpLive.Tournament do
               <td>
                 <a
                   class="btn btn--soft btn--sm"
-                  href={~p"/mvp/t/#{@event_id}/r/#{round["sequence"]}/checkin"}
+                  href={~p"/t/#{@event_id}/r/#{round["sequence"]}/checkin"}
                 >
                   Check-in
                 </a>
                 <a
                   class="btn btn--soft btn--sm"
-                  href={~p"/mvp/t/#{@event_id}/r/#{round["sequence"]}/draw"}
+                  href={~p"/t/#{@event_id}/r/#{round["sequence"]}/draw"}
                 >
                   Draw
                 </a>
                 <a
                   class="btn btn--soft btn--sm"
-                  href={~p"/mvp/t/#{@event_id}/r/#{round["sequence"]}/ballots"}
+                  href={~p"/t/#{@event_id}/r/#{round["sequence"]}/ballots"}
                 >
                   Ballots
                 </a>
@@ -207,7 +212,7 @@ defmodule CabWeb.MvpLive.Tournament do
           </tbody>
         </table>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 end

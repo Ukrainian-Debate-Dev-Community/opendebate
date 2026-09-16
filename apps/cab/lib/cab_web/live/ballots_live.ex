@@ -1,4 +1,4 @@
-defmodule CabWeb.MvpLive.Ballots do
+defmodule CabWeb.BallotsLive do
   @moduledoc """
   Per-room ballots for a round: 8 speaker score inputs (team ranks are
   derived from team score sums), submit/reopen/confirm, and completing
@@ -7,10 +7,10 @@ defmodule CabWeb.MvpLive.Ballots do
 
   use CabWeb, :live_view
 
-  import CabWeb.MvpComponents
+  import CabWeb.Ui
 
-  alias Cab.{EngineApi, Mvp}
-  alias CabWeb.MvpAuth
+  alias Cab.{EngineApi, Tournaments}
+  alias CabWeb.LiveAuth
 
   @position_names %{
     1 => "Opening Government",
@@ -37,9 +37,9 @@ defmodule CabWeb.MvpLive.Ballots do
   defp load(socket) do
     %{event_id: event_id, sequence: sequence} = socket.assigns
 
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, rounds} <- EngineApi.list_rounds(actor, event_id),
-         {:ok, round} <- Mvp.round_by_sequence(actor, event_id, sequence),
+         {:ok, round} <- Tournaments.round_by_sequence(actor, event_id, sequence),
          {:ok, rooms} <- EngineApi.list_rooms(actor, round["id"]) do
       assign(socket, rounds: rounds, round: round, rooms: rooms, error: nil)
     else
@@ -52,8 +52,8 @@ defmodule CabWeb.MvpLive.Ballots do
 
     with true <- room != nil,
          {:ok, parsed} <- parse_scores(scores),
-         {:ok, team_rankings, speaker_scores} <- Mvp.ballot_payload(room, parsed),
-         {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+         {:ok, team_rankings, speaker_scores} <- Tournaments.ballot_payload(room, parsed),
+         {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <- EngineApi.submit_scores(actor, room["id"], team_rankings, speaker_scores) do
       {:noreply, socket |> assign(notice: "ballot submitted for room ##{room_id}") |> load()}
     else
@@ -75,7 +75,7 @@ defmodule CabWeb.MvpLive.Ballots do
   end
 
   def handle_event("complete_round", _params, socket) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <-
            EngineApi.update_round(actor, socket.assigns.round["id"], %{status: "completed"}) do
       {:noreply, socket |> assign(notice: "round completed") |> load()}
@@ -85,7 +85,7 @@ defmodule CabWeb.MvpLive.Ballots do
   end
 
   defp room_action(socket, room_id, fun, notice) do
-    with {:ok, actor} <- MvpAuth.actor(socket.assigns.current_user),
+    with {:ok, actor} <- LiveAuth.actor(socket.assigns.current_user),
          {:ok, _} <- fun.(actor, room_id) do
       {:noreply, socket |> assign(notice: notice) |> load()}
     else
@@ -127,12 +127,12 @@ defmodule CabWeb.MvpLive.Ballots do
     assigns = assign(assigns, :next_round, next_round(assigns.rounds, assigns.sequence))
 
     ~H"""
-    <.mvp_shell
+    <.shell
       current_user={@current_user}
       dev_routes={@dev_routes}
       dev_users={@dev_users}
       context={"Tournament ##{@event_id}"}
-      return_to={"/mvp/t/#{@event_id}/r/#{@sequence}/ballots"}
+      return_to={"/t/#{@event_id}/r/#{@sequence}/ballots"}
       title={"Round #{@sequence} — ballots"}
       error={@error}
       notice={@notice}
@@ -141,7 +141,7 @@ defmodule CabWeb.MvpLive.Ballots do
         <span :if={@rooms != []} class="tag tag--info">
           {confirmed_count(@rooms)}/{length(@rooms)} confirmed
         </span>
-        <a class="btn btn--soft btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+        <a class="btn btn--soft btn--sm" href={~p"/t/#{@event_id}"}>Overview</a>
       </:head_tag>
 
       <.td_flow
@@ -155,7 +155,7 @@ defmodule CabWeb.MvpLive.Ballots do
       <.guide :if={@rooms == []}>
         No rooms in this round yet — make them on the check-in page.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}/r/#{@sequence}/checkin"}>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}/r/#{@sequence}/checkin"}>
             Check-in
           </a>
         </:action>
@@ -175,7 +175,7 @@ defmodule CabWeb.MvpLive.Ballots do
         <:action>
           <a
             class="btn btn--cta btn--sm"
-            href={~p"/mvp/t/#{@event_id}/r/#{@next_round["sequence"]}/checkin"}
+            href={~p"/t/#{@event_id}/r/#{@next_round["sequence"]}/checkin"}
           >
             {if @next_round["name"] == "Final",
               do: "Final",
@@ -186,7 +186,7 @@ defmodule CabWeb.MvpLive.Ballots do
       <.guide :if={round_completed?(@round) && is_nil(@next_round)}>
         Round {@sequence} is done — back to the overview to break or see standings.
         <:action>
-          <a class="btn btn--cta btn--sm" href={~p"/mvp/t/#{@event_id}"}>Overview</a>
+          <a class="btn btn--cta btn--sm" href={~p"/t/#{@event_id}"}>Overview</a>
         </:action>
       </.guide>
 
@@ -275,7 +275,7 @@ defmodule CabWeb.MvpLive.Ballots do
         </button>
         <span :if={round_completed?(@round)} class="tag tag--ok">round completed</span>
       </div>
-    </.mvp_shell>
+    </.shell>
     """
   end
 
