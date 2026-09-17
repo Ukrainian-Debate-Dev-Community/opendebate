@@ -1,9 +1,9 @@
 defmodule Dfu.MixProject do
   use Mix.Project
 
-  # L3 of the umbrella: NGO cabinet (dfu.uadebate.com) — digital post,
+  # L2 of the umbrella: NGO cabinet (dfu.uadebate.com) — digital post,
   # cases, votes (Danish document-handling model). Depends on core and
-  # cab (identity); nothing depends on dfu.
+  # cab (identity/SSO); uadebate above aggregates its public subset.
   def project do
     [
       app: :dfu,

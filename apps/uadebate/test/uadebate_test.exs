@@ -13,4 +13,8 @@ defmodule UadebateTest do
 
     assert {:ok, [%{"name" => "Kyiv Open"}]} = Uadebate.tournaments()
   end
+
+  test "portal aggregates public documents from dfu" do
+    assert is_list(Uadebate.documents())
+  end
 end

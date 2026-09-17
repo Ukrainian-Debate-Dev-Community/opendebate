@@ -1,8 +1,10 @@
 defmodule Uadebate.MixProject do
   use Mix.Project
 
-  # L2 of the umbrella: the public portal (uadebate.com). Reads through
-  # cab's public contexts; cab never depends on uadebate.
+  # L3 of the umbrella: the public portal (uadebate.com) — the facade
+  # at the top. Aggregates read-only data from cab (tournaments,
+  # clubs, motions) and dfu (public org documents); nothing depends
+  # on uadebate.
   def project do
     [
       app: :uadebate,
@@ -26,7 +28,8 @@ defmodule Uadebate.MixProject do
   defp deps do
     [
       {:core, in_umbrella: true},
-      {:cab, in_umbrella: true}
+      {:cab, in_umbrella: true},
+      {:dfu, in_umbrella: true}
     ]
   end
 end
