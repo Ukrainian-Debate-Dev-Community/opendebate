@@ -438,6 +438,7 @@ msgid "Grant the role"
 msgstr "Надати роль"
 
 #: lib/uadebate_web/controllers/manage/html/people.html.heex:27
+#: lib/uadebate_web/controllers/manage/html/people.html.heex:38
 #, elixir-autogen, elixir-format
 msgid "Granted by"
 msgstr "Надав"
@@ -758,6 +759,7 @@ msgstr "Забрати"
 
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:40
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:11
+#: lib/uadebate_web/controllers/manage/html/news_index.html.heex:19
 #, elixir-autogen, elixir-format
 msgid "Rubric"
 msgstr "Рубрика"
@@ -809,6 +811,7 @@ msgid "Sign out"
 msgstr "Вийти"
 
 #: lib/uadebate_web/controllers/manage/html/people.html.heex:26
+#: lib/uadebate_web/controllers/manage/html/people.html.heex:37
 #, elixir-autogen, elixir-format
 msgid "Since"
 msgstr "Від"
@@ -824,6 +827,7 @@ msgid "Starts"
 msgstr "Починається"
 
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:12
+#: lib/uadebate_web/controllers/manage/html/news_index.html.heex:20
 #, elixir-autogen, elixir-format
 msgid "Status"
 msgstr "Статус"

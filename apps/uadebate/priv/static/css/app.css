@@ -447,12 +447,24 @@ a { color:var(--brand); }
   .ua-right .cycle, .ua-right .langs summary { min-width:42px; min-height:42px; }
   .ua-right .ua-btn { min-height:42px; display:inline-flex; align-items:center; }
   select, input, textarea, .ua-inline select { font-size:16px; }
-  .ua-t--cards thead { display:none; }
-  .ua-t--cards, .ua-t--cards tbody, .ua-t--cards tr, .ua-t--cards td { display:block; }
-  .ua-t--cards tr { padding:12px 14px; border-top:1px solid var(--line); }
-  .ua-t--cards tbody tr:first-child { border-top:none; }
-  .ua-t--cards td { border:none; padding:2px 0; }
-  .ua-t--cards td[data-label]::before { content:attr(data-label) ": "; color:var(--muted);
-                                        font-size:.72rem; font-weight:700; }
-  .ua-t--cards td[data-label]:empty { display:none; }
+}
+
+/* phones: every table becomes cards, as in cab - the first column is
+   the card's title, the others label and value lines, a column without
+   a label (an action) sits at the right of the title */
+@media (max-width:760px) {
+  .ua-t, .ua-t tbody { display:block; width:100%; }
+  .ua-t thead { display:none; }
+  .ua-t tr { display:grid; grid-template-columns:1fr auto auto; column-gap:10px; padding:12px 14px;
+             border-top:1px solid var(--line); }
+  .ua-t tbody tr:first-child { border-top:none; }
+  .ua-t td { grid-column:1 / -1; display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+             padding:3px 0; border:none; text-align:right; min-width:0; overflow-wrap:anywhere; }
+  .ua-t td::before { content:attr(data-label); flex:none; text-align:left; color:var(--muted);
+                     font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  .ua-t td:first-child { grid-row:1; grid-column:1; display:block; text-align:left; padding-bottom:5px; }
+  .ua-t td:first-child::before, .ua-t td:not([data-label])::before { content:none; }
+  .ua-t td[data-label]:empty { display:none; }
+  .ua-t td:not(:first-child):not([data-label]) { grid-row:1; grid-column:2; justify-self:end; align-self:start; }
+  .ua-t td:not(:first-child):not([data-label]) ~ td:not([data-label]) { grid-column:3; }
 }
