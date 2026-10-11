@@ -24,6 +24,8 @@ defmodule UadebateWeb.Router do
   end
 
   scope "/", UadebateWeb do
+    # the container health check
+    get "/healthz", HealthController, :show
     get "/calendar.ics", CalendarController, :ics
     # the language menu: sets its own cookie, never the session
     get "/locale/:locale", LocaleController, :set
