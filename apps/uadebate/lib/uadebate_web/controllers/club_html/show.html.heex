@@ -1,8 +1,8 @@
 <div class="ua-crumbs">
-  <a href={~p"/clubs"}>{gettext("Clubs")}</a>{if @club.city, do: " / #{@club.city}"}
+  <a href={~p"/clubs"}>{gettext("Clubs")}</a>{if @club.city, do: " / #{city_label(@club.city)}"}
 </div>
 
-<.page_head kicker={@club.city || gettext("Club")} title={@club.name} lead={@club.description}>
+<.page_head kicker={(@club.city && city_label(@club.city)) || gettext("Club")} title={@club.name} lead={@club.description}>
   <:actions>
     <a class="ua-btn ua-btn--gold" href={cab_url("/c/#{@club.uuid}")}>{gettext("Open in cab")}</a>
   </:actions>

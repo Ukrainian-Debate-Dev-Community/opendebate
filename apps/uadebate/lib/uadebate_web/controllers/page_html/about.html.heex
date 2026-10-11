@@ -1,6 +1,8 @@
 <div class="ua-hist">
   <h1 class="ua-hist-title">
-    {gettext("Debate")}<br />{gettext("Federation")}<br />{gettext("of Ukraine")}
+    <%= for {line, i} <- Enum.with_index(String.split(gettext("Debate Federation of Ukraine"), " ", parts: 3)) do %>
+      <br :if={i > 0} />{line}
+    <% end %>
   </h1>
   <div class="ua-blobs">
     <div class="ua-blob b1">

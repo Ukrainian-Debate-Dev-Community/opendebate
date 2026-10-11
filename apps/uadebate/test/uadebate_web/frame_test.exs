@@ -53,4 +53,19 @@ defmodule UadebateWeb.FrameTest do
            |> get(~p"/")
            |> html_response(200) =~ ~r{<html[^>]*lang="en"}
   end
+
+  test "with the Ukrainian choice the pages speak Ukrainian", %{conn: conn} do
+    uk = put_req_cookie(conn, "uadebate_locale", "uk")
+
+    home = uk |> get(~p"/") |> html_response(200)
+    assert home =~ "\u0413\u043e\u043b\u043e\u0432\u043d\u0430"
+    assert home =~ ~s(class="beta-tag">\u0431\u0435\u0442\u0430)
+    refute home =~ ">Home<"
+
+    about = uk |> get(~p"/about") |> html_response(200)
+    assert about =~ "\u041c\u0456\u0441\u0456\u044f"
+    assert about =~ "\u0425\u0430\u0440\u043a\u0456\u0432"
+
+    assert get_resp_header(get(uk, ~p"/"), "set-cookie") == []
+  end
 end

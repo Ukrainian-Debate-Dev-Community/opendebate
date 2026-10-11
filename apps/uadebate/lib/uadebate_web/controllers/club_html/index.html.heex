@@ -12,7 +12,7 @@
         <select name="city">
           <option value="">{gettext("All cities")}</option>
           <option :for={city <- @cities} value={city} selected={@filters["city"] == city}>
-            {city}
+            {city_label(city)}
           </option>
         </select>
         <input
@@ -71,7 +71,7 @@
               <a href={~p"/clubs/#{club.uuid}"}><b>{club.name}</b></a>
               <div :if={club.meeting_info} class="ua-meta">{club.meeting_info}</div>
             </td>
-            <td>{club.city}</td>
+            <td>{city_label(club.city)}</td>
             <td>{labels(club.formats, &format_label/1)}</td>
             <td>{labels(club.languages, &language_label/1)}</td>
           </tr>

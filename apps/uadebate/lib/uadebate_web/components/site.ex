@@ -329,7 +329,7 @@ defmodule UadebateWeb.Site do
         href={~p"/clubs?#{[city: city]}"}
       >
         <circle cx={x} cy={y} r={r} />
-        <text :if={@labels} x={x + r + 5} y={y + 4}>{city}{if n > 1, do: " #{n}"}</text>
+        <text :if={@labels} x={x + r + 5} y={y + 4}>{city_label(city)}{if n > 1, do: " #{n}"}</text>
       </a>
     </svg>
     """
@@ -349,7 +349,7 @@ defmodule UadebateWeb.Site do
       <polygon class="ua-land" points={@outline} />
       <a :for={{city, {x, y}} <- @branches} class="ua-branch" href={~p"/clubs?#{[city: city]}"}>
         <circle cx={x} cy={y} r="5" />
-        <text {branch_label(city, x, y)}>{city}</text>
+        <text {branch_label(city, x, y)}>{city_label(city)}</text>
       </a>
     </svg>
     """
@@ -364,6 +364,29 @@ defmodule UadebateWeb.Site do
   # ---------------------------------------------------------------
   # words
   # ---------------------------------------------------------------
+
+  @doc """
+  A city's name in the page language for the cities the map knows;
+  any other name is shown as the club wrote it in cab.
+  """
+  def city_label("Chernihiv"), do: gettext("Chernihiv")
+  def city_label("Chernivtsi"), do: gettext("Chernivtsi")
+  def city_label("Dnipro"), do: gettext("Dnipro")
+  def city_label("Ivano-Frankivsk"), do: gettext("Ivano-Frankivsk")
+  def city_label("Kharkiv"), do: gettext("Kharkiv")
+  def city_label("Khmelnytskyi"), do: gettext("Khmelnytskyi")
+  def city_label("Kremenchuk"), do: gettext("Kremenchuk")
+  def city_label("Krolevets"), do: gettext("Krolevets")
+  def city_label("Kyiv"), do: gettext("Kyiv")
+  def city_label("Lutsk"), do: gettext("Lutsk")
+  def city_label("Lviv"), do: gettext("Lviv")
+  def city_label("Odesa"), do: gettext("Odesa")
+  def city_label("Ostroh"), do: gettext("Ostroh")
+  def city_label("Poltava"), do: gettext("Poltava")
+  def city_label("Rivne"), do: gettext("Rivne")
+  def city_label("Vinnytsia"), do: gettext("Vinnytsia")
+  def city_label("Zaporizhzhia"), do: gettext("Zaporizhzhia")
+  def city_label(city), do: city
 
   def rubric_label("announcements"), do: gettext("Announcements")
   def rubric_label("results"), do: gettext("Results")
@@ -406,7 +429,7 @@ defmodule UadebateWeb.Site do
         gettext("February"),
         gettext("March"),
         gettext("April"),
-        gettext("May"),
+        pgettext("short month", "May"),
         gettext("June"),
         gettext("July"),
         gettext("August"),
@@ -422,18 +445,18 @@ defmodule UadebateWeb.Site do
   def short_month(n) do
     Enum.at(
       [
-        gettext("Jan"),
-        gettext("Feb"),
-        gettext("Mar"),
-        gettext("Apr"),
-        gettext("May"),
-        gettext("Jun"),
-        gettext("Jul"),
-        gettext("Aug"),
-        gettext("Sep"),
-        gettext("Oct"),
-        gettext("Nov"),
-        gettext("Dec")
+        pgettext("short month", "Jan"),
+        pgettext("short month", "Feb"),
+        pgettext("short month", "Mar"),
+        pgettext("short month", "Apr"),
+        pgettext("short month", "May"),
+        pgettext("short month", "Jun"),
+        pgettext("short month", "Jul"),
+        pgettext("short month", "Aug"),
+        pgettext("short month", "Sep"),
+        pgettext("short month", "Oct"),
+        pgettext("short month", "Nov"),
+        pgettext("short month", "Dec")
       ],
       n - 1
     )
@@ -441,7 +464,29 @@ defmodule UadebateWeb.Site do
 
   def long_date(nil), do: gettext("Draft")
   def long_date(%DateTime{} = at), do: long_date(DateTime.to_date(at))
-  def long_date(%Date{} = d), do: "#{d.day} #{month_name(d.month)} #{d.year}"
+  def long_date(%Date{} = d), do: "#{d.day} #{date_month(d.month)} #{d.year}"
+
+  # the month as it reads inside a date (Ukrainian: "11 zhovtnia", not the
+  # month's own name)
+  defp date_month(n) do
+    Enum.at(
+      [
+        pgettext("in a date", "January"),
+        pgettext("in a date", "February"),
+        pgettext("in a date", "March"),
+        pgettext("in a date", "April"),
+        pgettext("in a date", "May"),
+        pgettext("in a date", "June"),
+        pgettext("in a date", "July"),
+        pgettext("in a date", "August"),
+        pgettext("in a date", "September"),
+        pgettext("in a date", "October"),
+        pgettext("in a date", "November"),
+        pgettext("in a date", "December")
+      ],
+      n - 1
+    )
+  end
 
   def read_minutes(body), do: max(1, div(length(String.split(body || "")), 200))
 
