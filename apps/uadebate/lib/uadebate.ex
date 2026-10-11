@@ -1,11 +1,9 @@
 defmodule Uadebate do
   @moduledoc """
-  Public portal facade (uadebate.com) - skeleton.
-
-  The facade at the top of the platform: it aggregates the other
-  services read-only. Tournaments, calendar and motions come from
-  cab; public org documents come from dfu. Dependencies point down
-  (uadebate -> dfu -> cab -> core), never up.
+  The public site, uadebate.com, at the top of the platform. It keeps
+  its own news, calendar and content-manager roles, and reads the other
+  services downward: clubs and accounts from cab, public documents from
+  dfu. Dependencies point down (uadebate -> dfu -> cab -> core).
   """
 
   @doc "Tournaments feed for the portal (calendar / front page)."
