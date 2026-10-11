@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100 != 11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10||n%100>=20) ? 1 : 2);\n"
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:51
-#: lib/uadebate_web/controllers/page_html/home.html.heex:36
+#: lib/uadebate_web/controllers/page_html/home.html.heex:40
 #, elixir-autogen, elixir-format
 msgid "%{count} city"
 msgid_plural "%{count} cities"
@@ -21,7 +21,7 @@ msgstr[1] "%{count} міста"
 msgstr[2] "%{count} міст"
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:51
-#: lib/uadebate_web/controllers/page_html/home.html.heex:36
+#: lib/uadebate_web/controllers/page_html/home.html.heex:40
 #, elixir-autogen, elixir-format
 msgid "%{count} club"
 msgid_plural "%{count} clubs"
@@ -67,12 +67,12 @@ msgstr "Про ФДУ"
 msgid "About the club"
 msgstr "Про клуб"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:54
+#: lib/uadebate_web/controllers/page_html/home.html.heex:58
 #, elixir-autogen, elixir-format
 msgid "About the federation"
 msgstr "Про Федерацію"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:72
+#: lib/uadebate_web/controllers/page_html/home.html.heex:76
 #, elixir-autogen, elixir-format
 msgid "Active clubs"
 msgstr "Активні клуби"
@@ -99,7 +99,7 @@ msgstr "Усі"
 msgid "All cities"
 msgstr "Усі міста"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:47
+#: lib/uadebate_web/controllers/page_html/home.html.heex:51
 #, elixir-autogen, elixir-format
 msgid "All news"
 msgstr "Усі новини"
@@ -145,7 +145,7 @@ msgid "Back to the home page"
 msgstr "На головну"
 
 #: lib/uadebate_web/controllers/page_html/about.html.heex:45
-#: lib/uadebate_web/controllers/page_html/home.html.heex:74
+#: lib/uadebate_web/controllers/page_html/home.html.heex:78
 #, elixir-autogen, elixir-format
 msgid "Branches"
 msgstr "Осередки"
@@ -184,12 +184,12 @@ msgstr "Підтримка кабінету"
 #: lib/uadebate_web/controllers/manage/html/calendar.html.heex:2
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:22
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:3
-#: lib/uadebate_web/controllers/page_html/home.html.heex:65
+#: lib/uadebate_web/controllers/page_html/home.html.heex:69
 #, elixir-autogen, elixir-format
 msgid "Calendar"
 msgstr "Календар"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:73
+#: lib/uadebate_web/controllers/page_html/home.html.heex:77
 #, elixir-autogen, elixir-format
 msgid "Cities"
 msgstr "Міста"
@@ -236,7 +236,7 @@ msgstr "Мапа клубів"
 msgid "Clubs"
 msgstr "Клуби"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:22
+#: lib/uadebate_web/controllers/page_html/home.html.heex:26
 #, elixir-autogen, elixir-format
 msgid "Clubs across the country. Register for tournaments, find a club near you and sharpen your critical thinking."
 msgstr "Клуби по всій країні. Реєструйтеся на турніри, знайдіть клуб поруч і розвивайте критичне мислення."
@@ -247,7 +247,7 @@ msgid "Coming up"
 msgstr "Найближче"
 
 #: lib/uadebate_web/components/site.ex:395
-#: lib/uadebate_web/controllers/page_html/home.html.heex:70
+#: lib/uadebate_web/controllers/page_html/home.html.heex:74
 #, elixir-autogen, elixir-format
 msgid "Community"
 msgstr "Спільнота"
@@ -272,7 +272,7 @@ msgstr "Контент-менеджери"
 
 #: lib/uadebate_web/components/site.ex:149
 #: lib/uadebate_web/controllers/page_html/about.html.heex:3
-#: lib/uadebate_web/controllers/page_html/home.html.heex:17
+#: lib/uadebate_web/controllers/page_html/home.html.heex:21
 #, elixir-autogen, elixir-format
 msgid "Debate Federation of Ukraine"
 msgstr "Федерація дебатів України"
@@ -298,7 +298,7 @@ msgid "Delete"
 msgstr "Видалити"
 
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:78
-#: lib/uadebate_web/controllers/page_html/home.html.heex:11
+#: lib/uadebate_web/controllers/page_html/home.html.heex:15
 #, elixir-autogen, elixir-format
 msgid "Details"
 msgstr "Докладніше"
@@ -372,7 +372,7 @@ msgstr "Лютий"
 msgid "Federation news"
 msgstr "Новини Федерації"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:30
+#: lib/uadebate_web/controllers/page_html/home.html.heex:34
 #, elixir-autogen, elixir-format
 msgid "Find a club"
 msgstr "Знайти клуб"
@@ -563,12 +563,12 @@ msgstr "Нова подія"
 #: lib/uadebate_web/controllers/news_controller.ex:12
 #: lib/uadebate_web/controllers/news_html/index.html.heex:2
 #: lib/uadebate_web/controllers/news_html/show.html.heex:2
-#: lib/uadebate_web/controllers/page_html/home.html.heex:47
+#: lib/uadebate_web/controllers/page_html/home.html.heex:51
 #, elixir-autogen, elixir-format
 msgid "News"
 msgstr "Новини"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:2
+#: lib/uadebate_web/controllers/page_html/home.html.heex:6
 #, elixir-autogen, elixir-format
 msgid "Next tournament"
 msgstr "Наступний турнір"
@@ -588,7 +588,7 @@ msgstr "Жоден клуб не відповідає цим фільтрам."
 msgid "No news here yet."
 msgstr "Тут поки немає новин."
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:51
+#: lib/uadebate_web/controllers/page_html/home.html.heex:55
 #, elixir-autogen, elixir-format
 msgid "No news yet."
 msgstr "Новин поки немає."
@@ -610,7 +610,7 @@ msgid "Nothing planned this month."
 msgstr "Цього місяця нічого не заплановано."
 
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:29
-#: lib/uadebate_web/controllers/page_html/home.html.heex:68
+#: lib/uadebate_web/controllers/page_html/home.html.heex:72
 #, elixir-autogen, elixir-format
 msgid "Nothing planned yet."
 msgstr "Поки нічого не заплановано."
@@ -660,7 +660,7 @@ msgstr "Інший формат"
 msgid "Other language"
 msgstr "Інша мова"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:54
+#: lib/uadebate_web/controllers/page_html/home.html.heex:58
 #, elixir-autogen, elixir-format
 msgid "Our story"
 msgstr "Наша історія"
@@ -944,7 +944,7 @@ msgstr "Вт"
 msgid "UAdebates, the Debate Federation of Ukraine"
 msgstr "UAdebates, Федерація дебатів України"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:19
+#: lib/uadebate_web/controllers/page_html/home.html.heex:23
 #, elixir-autogen, elixir-format
 msgid "Ukraine's debate community:"
 msgstr "Дебатна спільнота України:"
@@ -965,13 +965,13 @@ msgid "Unpublish"
 msgstr "Зняти з публікації"
 
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:17
-#: lib/uadebate_web/controllers/page_html/home.html.heex:65
-#: lib/uadebate_web/controllers/page_html/home.html.heex:75
+#: lib/uadebate_web/controllers/page_html/home.html.heex:69
+#: lib/uadebate_web/controllers/page_html/home.html.heex:79
 #, elixir-autogen, elixir-format
 msgid "Upcoming events"
 msgstr "Найближчі події"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:28
+#: lib/uadebate_web/controllers/page_html/home.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Upcoming tournaments"
 msgstr "Найближчі турніри"
@@ -1025,7 +1025,7 @@ msgstr "Ви бачите й приватні події: їх бачать ли
 msgid "set up from the server"
 msgstr "налаштовано із сервера"
 
-#: lib/uadebate_web/controllers/page_html/home.html.heex:19
+#: lib/uadebate_web/controllers/page_html/home.html.heex:23
 #, elixir-autogen, elixir-format
 msgid "tournaments, clubs, growth"
 msgstr "турніри, клуби, розвиток"
@@ -1353,3 +1353,8 @@ msgid_plural "%{count} cities. Click a city to see its clubs"
 msgstr[0] "%{count} місто. Натисніть на місто, щоб побачити його клуби"
 msgstr[1] "%{count} міста. Натисніть на місто, щоб побачити його клуби"
 msgstr[2] "%{count} міст. Натисніть на місто, щоб побачити його клуби"
+
+#: lib/uadebate_web/controllers/page_html/home.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "The site is under construction: some of its content is still being written."
+msgstr "Сайт у розробці: частину його змісту ще пишуть."

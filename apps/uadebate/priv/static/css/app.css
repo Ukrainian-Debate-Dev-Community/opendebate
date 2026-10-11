@@ -173,6 +173,8 @@ a { color:var(--brand); }
 .ua-grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
 
 /* home */
+.ua-wip { margin-bottom:14px; padding:9px 12px; font-size:.85rem; color:var(--muted); background:var(--surface-2);
+          border:1px dashed var(--line); border-radius:var(--r); }
 .ua-announce { display:flex; align-items:center; gap:12px; padding:9px 12px; font-size:.85rem; background:var(--surface);
                border:1px solid var(--line); border-radius:var(--r); }
 .ua-announce a { margin-left:auto; font-weight:700; }

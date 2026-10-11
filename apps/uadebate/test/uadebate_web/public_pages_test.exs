@@ -13,6 +13,10 @@ defmodule UadebateWeb.PublicPagesTest do
     end
   end
 
+  test "the home page says the site is under construction", %{conn: conn} do
+    assert conn |> get("/") |> html_response(200) =~ ~s(id="under-construction")
+  end
+
   test "a signed-in editor sees exactly what everyone sees", %{conn: conn} do
     editor = cab_user()
     {:ok, _} = Roles.grant(editor.id)
