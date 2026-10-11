@@ -1,10 +1,10 @@
 defmodule Uadebate.MixProject do
   use Mix.Project
 
-  # L3 of the umbrella: the public portal (uadebate.com) - the facade
-  # at the top. Aggregates read-only data from cab (tournaments,
-  # clubs, motions) and dfu (public org documents); nothing depends
-  # on uadebate.
+  # L3 of the umbrella: the public site (uadebate.com), at the top.
+  # It reads cab downward (clubs, accounts, the session cookie) and
+  # keeps its own news, events and content-manager roles; nothing
+  # depends on uadebate.
   def project do
     [
       app: :uadebate,
@@ -14,22 +14,53 @@ defmodule Uadebate.MixProject do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.17",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      aliases: aliases(),
+      deps: deps(),
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
   def application do
     [
+      mod: {Uadebate.Application, []},
       extra_applications: [:logger]
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
     [
       {:core, in_umbrella: true},
       {:cab, in_umbrella: true},
-      {:dfu, in_umbrella: true}
+      {:dfu, in_umbrella: true},
+      {:phoenix, "~> 1.8.13"},
+      {:phoenix_ecto, "~> 4.5"},
+      {:phoenix_html, "~> 4.1"},
+      {:phoenix_live_view, "~> 1.2.0"},
+      {:ecto_sql, "~> 3.13"},
+      {:postgrex, ">= 0.0.0"},
+      {:gettext, "~> 1.0"},
+      {:jason, "~> 1.2"},
+      {:bandit, "~> 1.5"},
+      {:mdex, "~> 0.14.2"},
+      {:lazy_html, ">= 0.1.0", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      # cab's database too: uadebate's tests read accounts and clubs there
+      test: [
+        "ecto.create --quiet -r Uadebate.Repo -r Cab.Repo",
+        "ecto.migrate --quiet -r Uadebate.Repo -r Cab.Repo",
+        "test"
+      ]
     ]
   end
 end

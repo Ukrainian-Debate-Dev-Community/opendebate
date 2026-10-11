@@ -1,0 +1,78 @@
+<div :if={@next_tournament} class="ua-announce">
+  <.tag kind="info">{gettext("Next tournament")}</.tag>
+  <span>
+    {@next_tournament.title}, {long_date(@next_tournament.starts_on)}{if @next_tournament.city,
+      do: ", #{@next_tournament.city}"}
+  </span>
+  <a href={
+    @next_tournament.link ||
+      ~p"/calendar?#{[month: Calendar.strftime(@next_tournament.starts_on, "%Y-%m")]}"
+  }>
+    {gettext("Details")}
+  </a>
+</div>
+
+<div class="ua-hero">
+  <div>
+    <span class="ua-kicker">{gettext("Debate Federation of Ukraine")}</span>
+    <h1>
+      {gettext("Ukraine's debate community:")} <em>{gettext("tournaments, clubs, growth")}</em>
+    </h1>
+    <p class="ua-lead">
+      {gettext(
+        "Clubs across the country. Register for tournaments, find a club near you and sharpen your critical thinking."
+      )}
+    </p>
+    <div class="ua-acts">
+      <a class="ua-btn ua-btn--gold" href={~p"/calendar?#{[kind: "tournament"]}"}>
+        {gettext("Upcoming tournaments")}
+      </a>
+      <a class="ua-btn ua-btn--line" href={~p"/clubs"}>{gettext("Find a club")}</a>
+    </div>
+  </div>
+  <div class="ua-hero-map">
+    <.club_map counts={@counts} labels={false} />
+    <div class="ua-meta">
+      {ngettext("%{count} club", "%{count} clubs", @club_count)}, {ngettext(
+        "%{count} city",
+        "%{count} cities",
+        @city_count
+      )}
+    </div>
+  </div>
+</div>
+
+<div class="ua-grid2">
+  <div>
+    <div class="ua-sec">{gettext("News")} <a href={~p"/news"}>{gettext("All news")}</a></div>
+    <div :if={@news != []} class="ua-grid3">
+      <.news_card :for={post <- @news} post={post} />
+    </div>
+    <div :if={@news == []} class="ua-card ua-empty">{gettext("No news yet.")}</div>
+
+    <div class="ua-sec">
+      {gettext("Our story")} <a href={~p"/about"}>{gettext("About the federation")}</a>
+    </div>
+    <div class="ua-card ua-pad">
+      <ol class="ua-story">
+        <li :for={{year, text} <- story()}><b>{year}</b><span>{text}</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <div>
+    <div class="ua-sec">
+      {gettext("Upcoming events")} <a href={~p"/calendar"}>{gettext("Calendar")}</a>
+    </div>
+    <.event_row :for={event <- @upcoming} event={event} />
+    <div :if={@upcoming == []} class="ua-card ua-empty">{gettext("Nothing planned yet.")}</div>
+
+    <div class="ua-sec">{gettext("Community")}</div>
+    <div class="ua-stats">
+      <div><b>{@club_count}</b><span>{gettext("Active clubs")}</span></div>
+      <div><b>{@city_count}</b><span>{gettext("Cities")}</span></div>
+      <div><b>16</b><span>{gettext("Branches")}</span></div>
+      <div><b>{length(@upcoming)}</b><span>{gettext("Upcoming events")}</span></div>
+    </div>
+  </div>
+</div>

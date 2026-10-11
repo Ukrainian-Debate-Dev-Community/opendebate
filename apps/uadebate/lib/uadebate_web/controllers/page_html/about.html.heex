@@ -1,0 +1,73 @@
+<div class="ua-hist">
+  <h1 class="ua-hist-title">
+    {gettext("Debate")}<br />{gettext("Federation")}<br />{gettext("of Ukraine")}
+  </h1>
+  <div class="ua-blobs">
+    <div class="ua-blob b1">
+      <h2>{gettext("Mission")}</h2>
+      <p>
+        {gettext(
+          "Developing the intellectual potential of active youth, the foundation of society, through the unique technology of debate"
+        )}
+      </p>
+    </div>
+    <div class="ua-blob b2">
+      <h2>{gettext("Goal")}</h2>
+      <p>
+        {gettext(
+          "Building a successful community of well-rounded, informed and socially active young people united by the game of debate"
+        )}
+      </p>
+    </div>
+    <div class="ua-blob b3">
+      <h2>{gettext("Means")}</h2>
+      <p>
+        {gettext(
+          "Debate is a game where you can develop the skills of argumentation across a wide range of topics."
+        )}
+      </p>
+    </div>
+  </div>
+
+  <div class="ua-tl">
+    <%= for {year, entries} <- timeline_sides() do %>
+      <div class="ua-tl-year"><span>{year}</span></div>
+      <div :for={{{date, text}, side} <- entries} class={["ua-tl-item", if(side == 0, do: "l", else: "r")]}>
+        <div class="ua-tl-card"><b>{date}</b><p>{text}</p></div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="ua-branches">
+    <div class="ua-branches-h">
+      <b>{gettext("Branches")}</b><span>{gettext("16 cities. Click a city to see its clubs")}</span>
+    </div>
+    <.branch_map />
+  </div>
+</div>
+
+<div class="ua-grid2">
+  <div>
+    <div class="ua-sec">{gettext("Documents")}</div>
+    <div class="ua-card ua-docs">
+      <a href={cab_url("/policy")}>
+        <b>{gettext("Privacy policy")}</b><span>{gettext("What we store and why")}</span>
+      </a>
+      <a href={cab_url("/terms")}>
+        <b>{gettext("Terms of use")}</b><span>{gettext("The rules for the site and the cabinet")}</span>
+      </a>
+    </div>
+  </div>
+  <div>
+    <div class="ua-sec">{gettext("Contact")}</div>
+    <div class="ua-card ua-pad ua-dl">
+      <div>
+        <span>{gettext("The federation")}</span><a href="mailto:ngo.dfu@uadebate.com">ngo.dfu@uadebate.com</a>
+      </div>
+      <div>
+        <span>{gettext("Cabinet support")}</span><a href="mailto:support@uadebate.com">support@uadebate.com</a>
+      </div>
+      <div><span>{gettext("Telegram")}</span><a href="https://t.me/fdu_ua">t.me/fdu_ua</a></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="ua-cmd">
+  <div class="cr">
+    <a href={~p"/manage/news"}>{gettext("News")}</a> / {if @post,
+      do: gettext("Edit"),
+      else: gettext("New")}
+  </div>
+  <div class="seg">
+    <a :if={@post && @post.published_at} href={~p"/news/#{@post.slug}"} class="ua-btn ua-btn--line ua-btn--sm">{gettext("View")}</a>
+    <.button_to
+      :if={@post && !@post.published_at}
+      action={~p"/manage/news/#{@post.id}/publish"}
+    >
+      {gettext("Publish")}
+    </.button_to>
+  </div>
+</div>
+
+<.form
+  for={@form}
+  action={if @post, do: ~p"/manage/news/#{@post.id}", else: ~p"/manage/news"}
+  method={if @post, do: "put", else: "post"}
+  class="ua-card form"
+>
+  <div class="f-head">
+    <h3>{if @post, do: @post.title, else: gettext("Write news")}</h3>
+    <p>{gettext("Saved as a draft until you publish it.")}</p>
+  </div>
+  <div class="f-block">
+    <label class="q" for="post_title">{gettext("Title")} <span class="req">*</span></label>
+    <input type="text" id="post_title" name="post[title]" value={@form[:title].value} />
+    <.errors form={@form} field={:title} />
+  </div>
+  <div class="f-block">
+    <label class="q" for="post_slug">{gettext("Address")}</label>
+    <input type="text" id="post_slug" name="post[slug]" value={@form[:slug].value} />
+    <div class="hint">{gettext("The end of the link, /news/... Left empty, it is made from the title.")}</div>
+    <.errors form={@form} field={:slug} />
+  </div>
+  <div class="f-block">
+    <label class="q" for="post_rubric">{gettext("Rubric")}</label>
+    <select id="post_rubric" name="post[rubric]">
+      <option
+        :for={r <- Uadebate.News.Post.rubrics()}
+        value={r}
+        selected={@form[:rubric].value == r}
+      >
+        {rubric_label(r)}
+      </option>
+    </select>
+  </div>
+  <div class="f-block">
+    <label class="q" for="post_summary">{gettext("Summary")}</label>
+    <textarea id="post_summary" name="post[summary]" style="min-height:70px">{@form[:summary].value}</textarea>
+    <div class="hint">{gettext("One or two sentences shown above the article.")}</div>
+  </div>
+  <div class="f-block">
+    <label class="q" for="post_body">{gettext("Text")}</label>
+    <textarea id="post_body" name="post[body]">{@form[:body].value}</textarea>
+    <div class="hint">
+      {gettext("Markdown: ## for a heading, **bold**, [a link](https://...), > for a quote.")}
+    </div>
+  </div>
+  <div class="f-block">
+    <button type="submit" class="ua-btn ua-btn--gold">{gettext("Save")}</button>
+  </div>
+</.form>

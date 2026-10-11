@@ -1,0 +1,38 @@
+<div class="ua-cmd">
+  <div class="cr">{gettext("News")}</div>
+  <div class="seg"><a class="go" href={~p"/manage/news/new"}>{gettext("Write news")}</a></div>
+</div>
+
+<div class="ua-card">
+  <table :if={@posts != []} class="ua-t">
+    <thead>
+      <tr>
+        <th>{gettext("Title")}</th>
+        <th>{gettext("Rubric")}</th>
+        <th>{gettext("Status")}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr :for={post <- @posts}>
+        <td><a href={~p"/manage/news/#{post.id}/edit"}><b>{post.title}</b></a></td>
+        <td>{rubric_label(post.rubric)}</td>
+        <td>
+          <.tag :if={post.published_at} kind="ok">
+            {gettext("Published %{date}", date: long_date(post.published_at))}
+          </.tag>
+          <.tag :if={!post.published_at}>{gettext("Draft")}</.tag>
+        </td>
+        <td class="r">
+          <.button_to :if={!post.published_at} action={~p"/manage/news/#{post.id}/publish"}>
+            {gettext("Publish")}
+          </.button_to>
+          <.button_to :if={post.published_at} action={~p"/manage/news/#{post.id}/unpublish"}>
+            {gettext("Unpublish")}
+          </.button_to>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div :if={@posts == []} class="ua-empty">{gettext("No news yet. Write the first one.")}</div>
+</div>

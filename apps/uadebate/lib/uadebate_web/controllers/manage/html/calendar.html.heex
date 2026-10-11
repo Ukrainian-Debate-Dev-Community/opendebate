@@ -1,0 +1,42 @@
+<.page_head
+  kicker={gettext("Calendar")}
+  title={gettext("Tournaments and events")}
+  lead={gettext("You see private events too: only content managers see them.")}
+>
+  <:actions>
+    <a class="ua-btn ua-btn--gold" href={~p"/manage/events/new"}>{gettext("New event")}</a>
+  </:actions>
+</.page_head>
+
+<UadebateWeb.CalendarHTML.toolbar first={@first} kind={@kind} base={~p"/manage/calendar"} />
+<.month_grid first={@first} events={@events} />
+
+<div class="ua-sec">{month_name(@first.month)}</div>
+<.event_row :for={event <- @events} event={event}>
+  <span class="ua-vis">
+    <.form
+      for={%{}}
+      action={~p"/manage/events/#{event.id}/visibility"}
+      method="post"
+      class="ua-inline-form"
+    >
+      <input type="hidden" name="visibility" value="public" />
+      <button type="submit" class={event.visibility == "public" && "on"}>{gettext("Public")}</button>
+    </.form>
+    <.form
+      for={%{}}
+      action={~p"/manage/events/#{event.id}/visibility"}
+      method="post"
+      class="ua-inline-form"
+    >
+      <input type="hidden" name="visibility" value="private" />
+      <button type="submit" class={event.visibility == "private" && "on"}>
+        {gettext("Private")}
+      </button>
+    </.form>
+  </span>
+  <a class="ua-btn ua-btn--line ua-btn--sm" href={~p"/manage/events/#{event.id}/edit"}>
+    {gettext("Edit")}
+  </a>
+</.event_row>
+<div :if={@events == []} class="ua-card ua-empty">{gettext("Nothing planned this month.")}</div>
