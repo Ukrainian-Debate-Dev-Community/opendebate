@@ -340,11 +340,12 @@ defmodule CabWeb.Ui do
     attr :code, :boolean
     attr :center, :boolean
     attr :class, :string, doc: "extra td class (the draw table's side color bands)"
+    attr :wide_only, :boolean, doc: "hidden when the table folds into cards on a phone"
   end
 
   def table(assigns) do
     ~H"""
-    <table class="t" id={@id}>
+    <table class="t t-rows" id={@id}>
       <thead>
         <tr>
           <th :if={@rank} style="width:40px">#</th>
@@ -374,11 +375,13 @@ defmodule CabWeb.Ui do
           <td :if={@rank} class="rank">{index}</td>
           <td
             :for={col <- @col}
+            data-label={col[:label]}
             class={[
               col[:code] && "code",
               (col[:num] || col[:float]) && "num",
               col[:center] && "c",
-              col[:class]
+              col[:class],
+              col[:wide_only] && "wide-only"
             ]}
           >
             {render_slot(col, row)}

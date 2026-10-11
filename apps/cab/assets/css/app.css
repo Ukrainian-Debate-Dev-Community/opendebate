@@ -640,11 +640,38 @@ table.t tr.linked:hover td { background:var(--brand-50); }
   .chrome .seg > * { flex:1 1 auto; justify-content:center; min-height:46px; padding:0 12px; text-align:center; }
   .chrome .seg .go { order:-1; }
 
-  /* wide tables scroll inside their own card, never the page; a column
-     takes the width it needs, up to 15rem, and wraps beyond that */
-  .card { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  table.t { width:max-content; min-width:100%; }
-  table.t th, table.t td { max-width:15rem; }
+  /* tables turn sideways: every row is a card, its first column the
+     title (with the rank beside it), the other columns label: value
+     lines; a column without a label (an action) sits on its own line */
+  table.t-rows, table.t-rows tbody { display:block; width:100%; }
+  table.t-rows thead { display:none; }
+  table.t-rows tr { display:grid; grid-template-columns:auto 1fr auto auto; column-gap:10px;
+                    padding:10px var(--px); border-bottom:1px solid var(--line); }
+  table.t-rows tr:last-child { border-bottom:none; }
+  table.t-rows td { grid-column:1 / -1; display:flex; align-items:baseline; justify-content:space-between;
+                    gap:12px; padding:3px 0; border:none; text-align:right; min-width:0;
+                    overflow-wrap:anywhere; }
+  table.t-rows td::before { content:attr(data-label); flex:none; text-align:left; color:var(--muted);
+                            font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  table.t-rows td:not([data-label])::before, table.t-rows td[data-label=""]::before { content:none; }
+  table.t-rows td.rank { grid-column:1; width:auto; padding-right:0; }
+  table.t-rows td:first-child, table.t-rows td.rank + td { display:block; text-align:left; font-size:.95rem;
+                                                          font-weight:650; padding-bottom:5px; }
+  table.t-rows td.rank + td { grid-column:2 / 3; }
+  table.t-rows td:first-child { grid-column:1 / 3; }
+  table.t-rows td[data-label]:not([data-label=""]):not(:first-child) { grid-column:1 / -1; }
+  /* columns without a label (copy, remove) sit at the right of the title */
+  table.t-rows td:first-child, table.t-rows td.rank, table.t-rows td.rank + td { grid-row:1; }
+  table.t-rows td:not(:first-child):not(.rank):not([data-label]),
+  table.t-rows td:not(:first-child):not(.rank)[data-label=""] { grid-row:1; grid-column:3; justify-self:end;
+                                                               align-self:start; padding-top:2px; }
+  table.t-rows td:not([data-label]) ~ td:not([data-label]),
+  table.t-rows td[data-label=""] ~ td[data-label=""] { grid-column:4; }
+  table.t-rows td.wide-only { display:none; }
+  table.t-rows td:first-child::before, table.t-rows td.rank + td::before { content:none; }
+  table.t-rows td.empty { display:block; text-align:left; }
+  table.t-rows td.empty::before { content:none; }
+  table.t-rows td.side { border-left:3px solid; padding-left:8px; }
 
   /* the allocator: one block per room, the four teams two by two,
      the adjudicator under them, slots and chips thumb-sized */
