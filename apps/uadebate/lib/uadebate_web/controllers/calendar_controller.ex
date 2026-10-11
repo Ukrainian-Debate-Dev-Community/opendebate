@@ -14,6 +14,7 @@ defmodule UadebateWeb.CalendarController do
       page_title: gettext("Calendar"),
       first: first,
       kind: kind,
+      calendar_public: Uadebate.Settings.calendar_public?(),
       events: Events.public_in_month(first, kind)
     )
   end

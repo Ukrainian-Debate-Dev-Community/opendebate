@@ -3,14 +3,20 @@
   title={gettext("Tournaments and events")}
   lead={gettext("Tournaments first, plus trainings and club events across Ukraine.")}
 >
-  <:actions>
+  <:actions :if={@calendar_public}>
     <a class="ua-btn ua-btn--gold" href={~p"/calendar.ics"}>{gettext("Subscribe to the calendar")}</a>
   </:actions>
 </.page_head>
 
-<.toolbar first={@first} kind={@kind} base={~p"/calendar"} />
-<.month_grid first={@first} events={@events} />
+<%= if @calendar_public do %>
+  <.toolbar first={@first} kind={@kind} base={~p"/calendar"} />
+  <.month_grid first={@first} events={@events} />
 
-<div class="ua-sec">{month_name(@first.month)}</div>
-<.event_row :for={event <- @events} event={event} />
-<div :if={@events == []} class="ua-card ua-empty">{gettext("Nothing planned this month.")}</div>
+  <div class="ua-sec">{month_name(@first.month)}</div>
+  <.event_row :for={event <- @events} event={event} />
+  <div :if={@events == []} class="ua-card ua-empty">{gettext("Nothing planned this month.")}</div>
+<% else %>
+  <div class="ua-card ua-empty" id="calendar-not-public">
+    {gettext("The calendar is not public yet. Tournaments will appear here soon.")}
+  </div>
+<% end %>

@@ -8,6 +8,29 @@
   </:actions>
 </.page_head>
 
+<div :if={!@calendar_public} class="ua-flash ua-flash--error" id="calendar-private-notice">
+  {gettext(
+    "The whole calendar is private: no event reaches the public site, the home page or the iCal feed. You can still prepare events here."
+  )}
+</div>
+
+<div :if={@access == :admin} class="ua-card ua-pad ua-calswitch" id="calendar-public-switch">
+  <div>
+    <b>{gettext("Calendar visible to the public")}</b>
+    <p>{gettext("Admins only. Turn it off to keep every event off the public site.")}</p>
+  </div>
+  <span class="ua-vis">
+    <.form for={%{}} action={~p"/manage/calendar/public"} method="post" class="ua-inline-form">
+      <input type="hidden" name="public" value="true" />
+      <button type="submit" class={@calendar_public && "on"}>{gettext("On")}</button>
+    </.form>
+    <.form for={%{}} action={~p"/manage/calendar/public"} method="post" class="ua-inline-form">
+      <input type="hidden" name="public" value="false" />
+      <button type="submit" class={!@calendar_public && "on"}>{gettext("Off")}</button>
+    </.form>
+  </span>
+</div>
+
 <UadebateWeb.CalendarHTML.toolbar first={@first} kind={@kind} base={~p"/manage/calendar"} />
 <.month_grid first={@first} events={@events} />
 

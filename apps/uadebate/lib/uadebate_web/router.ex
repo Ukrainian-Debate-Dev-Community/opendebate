@@ -55,6 +55,7 @@ defmodule UadebateWeb.Router do
     post "/news/:id/unpublish", NewsController, :unpublish
 
     get "/calendar", CalendarController, :index
+    post "/calendar/public", CalendarController, :set_public
     get "/events/new", EventController, :new
     post "/events", EventController, :create
     get "/events/:id/edit", EventController, :edit

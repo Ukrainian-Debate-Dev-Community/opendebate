@@ -346,7 +346,7 @@ msgstr ""
 msgid "Drafts"
 msgstr ""
 
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:39
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:62
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:26
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:4
 #, elixir-autogen, elixir-format
@@ -661,8 +661,8 @@ msgstr ""
 msgid "Nobody holds the role yet."
 msgstr ""
 
-#: lib/uadebate_web/controllers/calendar_html/index.html.heex:16
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:42
+#: lib/uadebate_web/controllers/calendar_html/index.html.heex:17
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "Nothing planned this month."
 msgstr ""
@@ -764,7 +764,7 @@ msgid "Privacy policy"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:240
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:34
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:57
 #, elixir-autogen, elixir-format
 msgid "Private"
 msgstr ""
@@ -774,7 +774,7 @@ msgstr ""
 msgid "Private: only content managers see it"
 msgstr ""
 
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:24
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:47
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:90
 #, elixir-autogen, elixir-format
 msgid "Public"
@@ -1152,4 +1152,44 @@ msgstr ""
 #: lib/uadebate_web/components/site.ex:27
 #, elixir-autogen, elixir-format
 msgid "beta"
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:20
+#, elixir-autogen, elixir-format
+msgid "Admins only. Turn it off to keep every event off the public site."
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:19
+#, elixir-autogen, elixir-format
+msgid "Calendar visible to the public"
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:29
+#, elixir-autogen, elixir-format
+msgid "Off"
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:25
+#, elixir-autogen, elixir-format
+msgid "On"
+msgstr ""
+
+#: lib/uadebate_web/controllers/calendar_html/index.html.heex:20
+#, elixir-autogen, elixir-format
+msgid "The calendar is not public yet. Tournaments will appear here soon."
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/calendar_controller.ex:35
+#, elixir-autogen, elixir-format
+msgid "The calendar is private: no event reaches the public site."
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/calendar_controller.ex:34
+#, elixir-autogen, elixir-format
+msgid "The calendar is public again."
+msgstr ""
+
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:12
+#, elixir-autogen, elixir-format
+msgid "The whole calendar is private: no event reaches the public site, the home page or the iCal feed. You can still prepare events here."
 msgstr ""
