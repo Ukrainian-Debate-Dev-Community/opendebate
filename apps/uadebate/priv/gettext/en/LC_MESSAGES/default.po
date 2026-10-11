@@ -1205,146 +1205,146 @@ msgid "Zaporizhzhia"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:477
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "April"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:481
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "August"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:485
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "December"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:475
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "February"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:474
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "January"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:480
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "July"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:479
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "June"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:476
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "March"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:478
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "May"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:484
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "November"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:483
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "October"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:482
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "September"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:451
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Apr"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:455
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Aug"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:459
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Dec"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:449
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Feb"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:448
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Jan"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:454
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Jul"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:453
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Jun"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:450
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Mar"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:432
 #: lib/uadebate_web/components/site.ex:452
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "May"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:458
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Nov"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:457
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Oct"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:456
-#, elixir-autogen, elixir-format, fuzzy
+#, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Sep"
 msgstr ""
