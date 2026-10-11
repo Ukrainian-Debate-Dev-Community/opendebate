@@ -1,6 +1,6 @@
 defmodule Uadebate do
   @moduledoc """
-  Public portal facade (uadebate.com) — skeleton.
+  Public portal facade (uadebate.com) - skeleton.
 
   The facade at the top of the platform: it aggregates the other
   services read-only. Tournaments, calendar and motions come from

@@ -1,7 +1,7 @@
 defmodule Uadebate.MixProject do
   use Mix.Project
 
-  # L3 of the umbrella: the public portal (uadebate.com) — the facade
+  # L3 of the umbrella: the public portal (uadebate.com) - the facade
   # at the top. Aggregates read-only data from cab (tournaments,
   # clubs, motions) and dfu (public org documents); nothing depends
   # on uadebate.
