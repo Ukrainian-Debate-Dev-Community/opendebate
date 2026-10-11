@@ -142,7 +142,33 @@ const Allocator = {
       if (accepts(slot)) this.pushEvent("place", {id, slot: slot.dataset.slot})
       else if (e.target.closest("[data-drop=tray]") && dragged.closest(".slot")) this.pushEvent("unplace", {id})
     })
+
+    // tap to place, for touch screens (drag and drop needs a mouse):
+    // tap a person, then a slot (a taken one swaps); tap Waiting to
+    // take a placed person out; tap the picked person again to drop it.
+    // The same place/unplace events as a drop.
+    this.picked = null
+    this.markPicked = () => this.el.querySelectorAll(".chip").forEach(c =>
+      c.classList.toggle("picked", this.picked !== null && c.dataset.id === String(this.picked)))
+    const pick = id => { this.picked = id; this.markPicked() }
+    this.el.addEventListener("click", e => {
+      const chip = e.target.closest(".chip")
+      const slot = e.target.closest(".slot")
+      const tray = e.target.closest("[data-drop=tray]")
+      if (this.picked === null) return chip ? pick(parseInt(chip.dataset.id, 10)) : undefined
+      if (chip && chip.dataset.id === String(this.picked)) return pick(null)
+      if (slot) {
+        this.pushEvent("place", {id: this.picked, slot: slot.dataset.slot})
+        return pick(null)
+      }
+      if (tray) {
+        if (this.el.querySelector(`.slot .chip[data-id="${this.picked}"]`)) this.pushEvent("unplace", {id: this.picked})
+        else if (chip) return pick(parseInt(chip.dataset.id, 10))
+        return pick(null)
+      }
+    })
   },
+  updated() { if (this.markPicked) this.markPicked() },
 }
 
 // the room card: a PNG people paste into a messenger - who, when, the
@@ -420,6 +446,20 @@ document.addEventListener("keydown", e => {
 })
 markTheme()
 window.addEventListener("phx:page-loading-stop", markTheme)
+
+// the phone menu: the sidenav folds into a top bar with a Menu button.
+// The open state lives on <html>, which LiveView never patches, so a
+// server update cannot close it under the reader's thumb.
+const setNav = open => {
+  document.documentElement.classList.toggle("nav-open", open)
+  document.querySelectorAll("[data-nav-toggle]").forEach(b => b.setAttribute("aria-expanded", String(open)))
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("[data-nav-toggle]")) return setNav(!document.documentElement.classList.contains("nav-open"))
+  if (e.target.closest("#sidenav-menu a")) setNav(false)
+})
+document.addEventListener("keydown", e => { if (e.key === "Escape") setNav(false) })
+window.addEventListener("phx:page-loading-stop", () => setNav(false))
 
 // copy affordance: [data-copy] buttons put their payload on the
 // clipboard (shared registration URL, personal guest links)
