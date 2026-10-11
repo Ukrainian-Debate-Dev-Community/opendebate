@@ -2,8 +2,6 @@ RUN_DIR = .run
 PSQL   ?= /opt/homebrew/Cellar/postgresql@16/16.12/bin/psql
 NIX     = nix develop --command
 
-PSQL_BIN ?= $(dir $(PSQL))
-
 .PHONY: setup dev build test test-all test-e2e test-phone lint fmt clean up down restart fresh backfill stress logs status sync-engine release image
 
 # ---------------------------------------------------------------
