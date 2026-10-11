@@ -29,7 +29,7 @@ defmodule UadebateWeb.CalendarHTML do
           class={k == @kind && "on"}
           href={link(@base, @first, k)}
         >
-          {kind_label(k)}
+          {kinds_label(k)}
         </a>
       </div>
     </div>

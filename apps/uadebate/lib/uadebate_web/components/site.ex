@@ -315,6 +315,11 @@ defmodule UadebateWeb.Site do
   def kind_label("club"), do: gettext("Club event")
   def kind_label(_), do: gettext("Event")
 
+  def kinds_label("tournament"), do: gettext("Tournaments")
+  def kinds_label("training"), do: gettext("Trainings")
+  def kinds_label("club"), do: gettext("Club events")
+  def kinds_label(_), do: gettext("Other events")
+
   def format_label("bp"), do: gettext("BP")
   def format_label("apf"), do: gettext("APF")
   def format_label(_), do: gettext("Other format")
