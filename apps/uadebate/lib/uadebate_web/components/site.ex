@@ -335,7 +335,7 @@ defmodule UadebateWeb.Site do
     """
   end
 
-  @doc "The old site's map of the sixteen branches; a city opens Clubs filtered to it."
+  @doc "The map of the active branches; a city opens Clubs filtered to it."
   def branch_map(assigns) do
     assigns = assign(assigns, branches: Geo.branches(), outline: Geo.outline())
 

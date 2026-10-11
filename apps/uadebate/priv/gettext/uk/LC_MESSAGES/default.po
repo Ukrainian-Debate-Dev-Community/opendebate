@@ -45,11 +45,6 @@ msgstr "%{n} хв читання"
 msgid "11 regional and 2 city branches; the first English-language league"
 msgstr "11 обласних і 2 міських осередки; перша англомовна ліга"
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:45
-#, elixir-autogen, elixir-format
-msgid "16 cities. Click a city to see its clubs"
-msgstr "16 міст. Натисніть на місто, щоб побачити його клуби"
-
 #: lib/uadebate_web/components/site.ex:150
 #, elixir-autogen, elixir-format
 msgid "A debate community since 2011"
@@ -175,7 +170,7 @@ msgstr "Кабінет"
 msgid "Cabinet (cab)"
 msgstr "Кабінет (cab)"
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:70
+#: lib/uadebate_web/controllers/page_html/about.html.heex:76
 #, elixir-autogen, elixir-format
 msgid "Cabinet support"
 msgstr "Підтримка кабінету"
@@ -259,7 +254,7 @@ msgstr "Спільнота"
 
 #: lib/uadebate_web/components/site.ex:166
 #: lib/uadebate_web/controllers/club_html/show.html.heex:24
-#: lib/uadebate_web/controllers/page_html/about.html.heex:64
+#: lib/uadebate_web/controllers/page_html/about.html.heex:70
 #, elixir-autogen, elixir-format
 msgid "Contact"
 msgstr "Контакти"
@@ -313,7 +308,7 @@ msgstr "Докладніше"
 msgid "Developing the intellectual potential of active youth, the foundation of society, through the unique technology of debate"
 msgstr "Розвиток інтелектуального потенціалу активної молоді, як фундаменту суспільства, через унікальну технологію дебати"
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:53
+#: lib/uadebate_web/controllers/page_html/about.html.heex:59
 #, elixir-autogen, elixir-format
 msgid "Documents"
 msgstr "Документи"
@@ -695,7 +690,7 @@ msgid "Platform"
 msgstr "Платформа"
 
 #: lib/uadebate_web/components/site.ex:162
-#: lib/uadebate_web/controllers/page_html/about.html.heex:56
+#: lib/uadebate_web/controllers/page_html/about.html.heex:62
 #, elixir-autogen, elixir-format
 msgid "Privacy policy"
 msgstr "Політика конфіденційності"
@@ -845,13 +840,13 @@ msgstr "Анонс"
 msgid "Sun"
 msgstr "Нд"
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:72
+#: lib/uadebate_web/controllers/page_html/about.html.heex:78
 #, elixir-autogen, elixir-format
 msgid "Telegram"
 msgstr "Telegram"
 
 #: lib/uadebate_web/components/site.ex:163
-#: lib/uadebate_web/controllers/page_html/about.html.heex:59
+#: lib/uadebate_web/controllers/page_html/about.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "Terms of use"
 msgstr "Умови користування"
@@ -866,7 +861,7 @@ msgstr "Текст"
 msgid "The end of the link, /news/... Left empty, it is made from the title."
 msgstr "Кінець посилання, /news/... Якщо лишити порожнім, його буде зроблено з заголовка."
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:67
+#: lib/uadebate_web/controllers/page_html/about.html.heex:73
 #, elixir-autogen, elixir-format
 msgid "The federation"
 msgstr "Федерація"
@@ -886,7 +881,7 @@ msgstr "Кількість осередків збільшилася до 11 о�
 msgid "The role is revoked; it takes effect on their next request."
 msgstr "Роль забрано; це діє з наступного запиту людини."
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:59
+#: lib/uadebate_web/controllers/page_html/about.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "The rules for the site and the cabinet"
 msgstr "Правила сайту і кабінету"
@@ -1001,7 +996,7 @@ msgstr "Видимість"
 msgid "Wed"
 msgstr "Ср"
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:56
+#: lib/uadebate_web/controllers/page_html/about.html.heex:62
 #, elixir-autogen, elixir-format
 msgid "What we store and why"
 msgstr "Що ми зберігаємо і навіщо"
@@ -1350,3 +1345,11 @@ msgstr "жов"
 msgctxt "short month"
 msgid "Sep"
 msgstr "вер"
+
+#: lib/uadebate_web/controllers/page_html/about.html.heex:46
+#, elixir-autogen, elixir-format
+msgid "%{count} city. Click a city to see its clubs"
+msgid_plural "%{count} cities. Click a city to see its clubs"
+msgstr[0] "%{count} місто. Натисніть на місто, щоб побачити його клуби"
+msgstr[1] "%{count} міста. Натисніть на місто, щоб побачити його клуби"
+msgstr[2] "%{count} міст. Натисніть на місто, щоб побачити його клуби"

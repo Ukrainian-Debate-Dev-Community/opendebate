@@ -43,11 +43,6 @@ msgstr ""
 msgid "11 regional and 2 city branches; the first English-language league"
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:45
-#, elixir-autogen, elixir-format
-msgid "16 cities. Click a city to see its clubs"
-msgstr ""
-
 #: lib/uadebate_web/components/site.ex:150
 #, elixir-autogen, elixir-format
 msgid "A debate community since 2011"
@@ -173,7 +168,7 @@ msgstr ""
 msgid "Cabinet (cab)"
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:70
+#: lib/uadebate_web/controllers/page_html/about.html.heex:76
 #, elixir-autogen, elixir-format
 msgid "Cabinet support"
 msgstr ""
@@ -257,7 +252,7 @@ msgstr ""
 
 #: lib/uadebate_web/components/site.ex:166
 #: lib/uadebate_web/controllers/club_html/show.html.heex:24
-#: lib/uadebate_web/controllers/page_html/about.html.heex:64
+#: lib/uadebate_web/controllers/page_html/about.html.heex:70
 #, elixir-autogen, elixir-format
 msgid "Contact"
 msgstr ""
@@ -311,7 +306,7 @@ msgstr ""
 msgid "Developing the intellectual potential of active youth, the foundation of society, through the unique technology of debate"
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:53
+#: lib/uadebate_web/controllers/page_html/about.html.heex:59
 #, elixir-autogen, elixir-format
 msgid "Documents"
 msgstr ""
@@ -693,7 +688,7 @@ msgid "Platform"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:162
-#: lib/uadebate_web/controllers/page_html/about.html.heex:56
+#: lib/uadebate_web/controllers/page_html/about.html.heex:62
 #, elixir-autogen, elixir-format
 msgid "Privacy policy"
 msgstr ""
@@ -843,13 +838,13 @@ msgstr ""
 msgid "Sun"
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:72
+#: lib/uadebate_web/controllers/page_html/about.html.heex:78
 #, elixir-autogen, elixir-format
 msgid "Telegram"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:163
-#: lib/uadebate_web/controllers/page_html/about.html.heex:59
+#: lib/uadebate_web/controllers/page_html/about.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "Terms of use"
 msgstr ""
@@ -864,7 +859,7 @@ msgstr ""
 msgid "The end of the link, /news/... Left empty, it is made from the title."
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:67
+#: lib/uadebate_web/controllers/page_html/about.html.heex:73
 #, elixir-autogen, elixir-format
 msgid "The federation"
 msgstr ""
@@ -884,7 +879,7 @@ msgstr ""
 msgid "The role is revoked; it takes effect on their next request."
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:59
+#: lib/uadebate_web/controllers/page_html/about.html.heex:65
 #, elixir-autogen, elixir-format
 msgid "The rules for the site and the cabinet"
 msgstr ""
@@ -999,7 +994,7 @@ msgstr ""
 msgid "Wed"
 msgstr ""
 
-#: lib/uadebate_web/controllers/page_html/about.html.heex:56
+#: lib/uadebate_web/controllers/page_html/about.html.heex:62
 #, elixir-autogen, elixir-format
 msgid "What we store and why"
 msgstr ""
@@ -1348,3 +1343,10 @@ msgstr ""
 msgctxt "short month"
 msgid "Sep"
 msgstr ""
+
+#: lib/uadebate_web/controllers/page_html/about.html.heex:46
+#, elixir-autogen, elixir-format
+msgid "%{count} city. Click a city to see its clubs"
+msgid_plural "%{count} cities. Click a city to see its clubs"
+msgstr[0] ""
+msgstr[1] ""

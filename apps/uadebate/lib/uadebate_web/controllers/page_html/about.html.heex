@@ -42,7 +42,13 @@
 
   <div class="ua-branches">
     <div class="ua-branches-h">
-      <b>{gettext("Branches")}</b><span>{gettext("16 cities. Click a city to see its clubs")}</span>
+      <b>{gettext("Branches")}</b><span>
+        {ngettext(
+          "%{count} city. Click a city to see its clubs",
+          "%{count} cities. Click a city to see its clubs",
+          length(Uadebate.Geo.branches())
+        )}
+      </span>
     </div>
     <.branch_map />
   </div>

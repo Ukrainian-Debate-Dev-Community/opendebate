@@ -28,8 +28,9 @@ defmodule Uadebate.Geo do
     "Zaporizhzhia" => {453.6, 242.8}
   }
 
-  # the sixteen branches on the old site's About map, in its order
-  @branches ~w(Kharkiv Odesa Kyiv Lutsk Chernihiv Zaporizhzhia Rivne Vinnytsia Khmelnytskyi Ostroh Dnipro Chernivtsi Kremenchuk Krolevets Lviv Ivano-Frankivsk)
+  # the active branches, as the Council decision of 5 September 2026
+  # lists them (Volyn's branch is in Lutsk)
+  @branches ~w(Vinnytsia Lutsk Dnipro Ivano-Frankivsk Kyiv Lviv Odesa Rivne Kharkiv)
 
   def outline, do: @outline
 
