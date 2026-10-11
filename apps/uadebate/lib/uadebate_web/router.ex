@@ -5,6 +5,7 @@ defmodule UadebateWeb.Router do
   # They look the same for everyone, content managers included.
   pipeline :public do
     plug :accepts, ["html"]
+    plug UadebateWeb.Locale
     plug :put_root_layout, html: {UadebateWeb.Layouts, :root}
     plug :put_secure_browser_headers
   end
@@ -14,6 +15,7 @@ defmodule UadebateWeb.Router do
   pipeline :manage do
     plug :accepts, ["html"]
     plug UadebateWeb.ManageAccess
+    plug UadebateWeb.Locale
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
@@ -23,6 +25,8 @@ defmodule UadebateWeb.Router do
 
   scope "/", UadebateWeb do
     get "/calendar.ics", CalendarController, :ics
+    # the language menu: sets its own cookie, never the session
+    get "/locale/:locale", LocaleController, :set
   end
 
   scope "/", UadebateWeb do

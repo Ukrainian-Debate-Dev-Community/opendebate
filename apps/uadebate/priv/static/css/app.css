@@ -20,8 +20,10 @@
   --co:#D99A2B; --co-bg:#FBF4E7; --co-ink:#7C5714;
   color-scheme:light;
 }
+/* dark: the system's choice unless the header's theme button says light,
+   or the button's dark */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --brand:#C9A2DD; --brand-700:#E2CBEE; --brand-50:#2B2232;
     --ink:#EEE8F2; --muted:#A99FB2; --line:#352D3C; --gold-ink:#2A1E05;
     --ok:#6CC6A6; --ok-bg:#16302A; --ok-ink:#9FE0C8;
@@ -30,6 +32,15 @@
     --co:#E3B262; --co-bg:#2E2416; --co-ink:#E9C27C;
     color-scheme:dark;
   }
+}
+:root[data-theme="dark"] {
+  --brand:#C9A2DD; --brand-700:#E2CBEE; --brand-50:#2B2232;
+  --ink:#EEE8F2; --muted:#A99FB2; --line:#352D3C; --gold-ink:#2A1E05;
+  --ok:#6CC6A6; --ok-bg:#16302A; --ok-ink:#9FE0C8;
+  --warn:#E3876A; --warn-bg:#3A221B; --warn-ink:#F4B8A4; --warn-surface:#2A1D1A;
+  --bg:#141017; --surface:#1C1720; --surface-2:#211B26;
+  --co:#E3B262; --co-bg:#2E2416; --co-ink:#E9C27C;
+  color-scheme:dark;
 }
 
 *, *::before, *::after { box-sizing:border-box; }
@@ -58,6 +69,12 @@ a { color:var(--brand); }
 .ua a { text-decoration:none; }
 .ua h1, .ua h2, .ua h3, .ua h4 { text-wrap:balance; letter-spacing:-.015em; }
 .ua .wordmark { font-family:"Cedarville Cursive",cursive; font-weight:400; color:var(--brand); letter-spacing:0; }
+/* the beta tag beside the wordmark: outlined in the wordmark's own colour, as in cab */
+.beta-tag { display:inline-block; vertical-align:top; margin:.35em 0 0 .45em;
+            font-family:-apple-system,"Inter","Segoe UI",system-ui,sans-serif;
+            font-size:max(10px,.18em); font-weight:700; line-height:1.3;
+            letter-spacing:.08em; text-transform:uppercase;
+            border:1px solid currentColor; border-radius:4px; padding:0 .45em; }
 
 /* header: one bar on every page */
 .ua-top { display:flex; align-items:center; gap:20px; padding:12px 28px; background:var(--surface);
@@ -68,6 +85,38 @@ a { color:var(--brand); }
 .ua-nav a:hover { opacity:1; background:var(--brand-50); }
 .ua-nav a.on { opacity:1; font-weight:700; color:var(--brand-700) !important; background:var(--brand-50); }
 .ua-right { display:flex; align-items:center; gap:10px; }
+
+/* the theme button and the language menu, as in cab: theme cycles
+   light / auto / dark on each click; language opens a menu below */
+.ua-switches { display:flex; align-items:center; gap:6px; }
+.cycle { position:relative; display:flex; align-items:center; justify-content:center;
+         width:30px; height:24px; padding:0; border-radius:7px; cursor:pointer; list-style:none;
+         background:var(--surface-2); border:1px solid var(--line); color:var(--brand);
+         font:inherit; font-size:.62rem; font-weight:800; letter-spacing:.04em;
+         transition:background .2s, border-color .2s; }
+.cycle::-webkit-details-marker { display:none; }
+.cycle:hover { border-color:var(--brand); }
+.cycle:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+.cycle svg { position:absolute; width:13px; height:13px; fill:none; stroke:currentColor;
+             stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;
+             opacity:0; transform:rotate(-90deg) scale(.6);
+             transition:opacity .22s, transform .32s cubic-bezier(.2,.8,.2,1); }
+.cycle svg .fill { fill:currentColor; stroke:none; }
+.cycle[data-state="light"] .i-light, .cycle[data-state="auto"] .i-auto,
+.cycle[data-state="dark"] .i-dark { opacity:1; transform:none; }
+.langs { position:relative; }
+.langs .menu { position:absolute; right:0; top:calc(100% + 6px); z-index:20; min-width:150px;
+               padding:4px; border-radius:9px; background:var(--surface); border:1px solid var(--line);
+               box-shadow:0 8px 24px rgba(28,23,34,.16); display:grid; gap:2px;
+               transform-origin:top right; animation:menu-in .16s ease-out; }
+.langs:not([open]) .menu { display:none; }
+.langs .menu a { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px;
+                 font-size:.84rem; font-weight:600; color:var(--ink); text-decoration:none; }
+.langs .menu a:hover { background:var(--brand-50); }
+.langs .menu a[aria-current="true"] { color:var(--brand); }
+.langs .menu .code { width:22px; font-size:.62rem; font-weight:800; color:var(--muted); }
+@keyframes menu-in { from { opacity:0; transform:translateY(-4px) scale(.97); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) { .cycle svg, .langs .menu { transition:none; animation:none; } }
 .ua-lang { font-size:.74rem; font-weight:700; color:var(--muted) !important; }
 .ua-edit { font-size:.8rem; font-weight:700; padding:6px 12px; border-radius:8px; background:var(--co-bg);
            color:var(--co-ink) !important; }

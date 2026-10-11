@@ -21,6 +21,13 @@ defmodule UadebateWeb.Site do
   # frame
   # ---------------------------------------------------------------
 
+  @doc "The beta tag beside the wordmark, until the site leaves beta."
+  def beta(assigns) do
+    ~H"""
+    <span class="beta-tag">{gettext("beta")}</span>
+    """
+  end
+
   attr :active, :atom, default: nil
 
   def site_header(assigns) do
@@ -35,14 +42,68 @@ defmodule UadebateWeb.Site do
 
     ~H"""
     <header class="ua-top">
-      <a class="ua-brand wordmark" href={~p"/"}>UAdebates</a>
+      <a class="ua-brand wordmark" href={~p"/"}>UAdebates<.beta /></a>
       <nav class="ua-nav">
         <a :for={{key, href, label} <- @items} class={key == @active && "on"} href={href}>{label}</a>
       </nav>
       <div class="ua-right">
+        <.switches />
         <a class="ua-btn ua-btn--line ua-btn--sm" href={cab_url()}>{gettext("Cabinet")}</a>
       </div>
     </header>
+    """
+  end
+
+  @doc """
+  The theme button (light, auto, dark on each click, kept in this
+  browser) and the language menu, as in cab. Both work without the
+  sign-in session: the theme lives in localStorage, the language in
+  its own cookie.
+  """
+  def switches(assigns) do
+    assigns = assign(assigns, :locale, Gettext.get_locale(UadebateWeb.Gettext))
+
+    ~H"""
+    <div class="ua-switches">
+      <button
+        type="button"
+        class="cycle"
+        data-cycle="theme"
+        data-state="auto"
+        data-label-light={gettext("Theme: light")}
+        data-label-auto={gettext("Theme: auto")}
+        data-label-dark={gettext("Theme: dark")}
+        aria-label={gettext("Theme: auto")}
+        title={gettext("Theme: light, auto or dark")}
+      >
+        <svg class="i-light" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="2.6" />
+          <path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3" />
+        </svg>
+        <svg class="i-auto" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="8" r="5.5" /><path d="M8 2.5v11a5.5 5.5 0 0 0 0-11Z" class="fill" />
+        </svg>
+        <svg class="i-dark" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M13 9.6A5.2 5.2 0 0 1 6.4 3a5.2 5.2 0 1 0 6.6 6.6Z" />
+        </svg>
+      </button>
+      <details class="langs" data-langs>
+        <summary class="cycle" aria-label={gettext("Language")} title={gettext("Language")}>
+          {UadebateWeb.Locale.short(@locale)}
+        </summary>
+        <div class="menu" role="menu">
+          <a
+            :for={{code, label, name} <- UadebateWeb.Locale.names()}
+            href={"/locale/#{code}"}
+            lang={code}
+            role="menuitem"
+            aria-current={@locale == code && "true"}
+          >
+            <span class="code">{label}</span>{name}
+          </a>
+        </div>
+      </details>
+    </div>
     """
   end
 
@@ -84,7 +145,7 @@ defmodule UadebateWeb.Site do
     <footer class="ua-foot">
       <div class="ua-foot-in ua-foot-in--3">
         <div>
-          <a class="wordmark ua-foot-mark" href={~p"/"}>UAdebates</a>
+          <a class="wordmark ua-foot-mark" href={~p"/"}>UAdebates<.beta /></a>
           <p>{gettext("Debate Federation of Ukraine")}</p>
           <p>{gettext("A debate community since 2011")}</p>
         </div>

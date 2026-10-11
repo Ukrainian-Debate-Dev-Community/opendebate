@@ -5,12 +5,21 @@ defmodule UadebateWeb.Layouts do
   def root(assigns) do
     ~H"""
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang={Gettext.get_locale(UadebateWeb.Gettext)}>
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{page_title(assigns)}</title>
+        <script>
+          // the header's theme choice, applied before the first paint
+          try {
+            const theme = localStorage.getItem("uadebate-theme")
+            if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme
+          } catch (_e) {}
+        </script>
         <link rel="stylesheet" href={~p"/css/app.css"} />
+        <script defer src={~p"/js/site.js"}>
+        </script>
       </head>
       <body>
         <div class="ua">
