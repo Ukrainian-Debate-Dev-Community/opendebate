@@ -803,7 +803,7 @@ defmodule CabWeb.Ui do
         )}
         <span class="touch-hint">
           {gettext(
-            "On a touch screen, tap a person, then tap a slot; tap Waiting to take a placed person out."
+            "On a touch screen, hold a person and drag them to a slot, or tap a person, then a slot."
           )}
         </span>
       </div>

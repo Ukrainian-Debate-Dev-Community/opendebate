@@ -3109,5 +3109,5 @@ msgstr "Меню"
 
 #: lib/cab_web/components/ui.ex:805
 #, elixir-autogen, elixir-format
-msgid "On a touch screen, tap a person, then tap a slot; tap Waiting to take a placed person out."
-msgstr "На сенсорному екрані торкніться учасника, а потім слоту; торкніться «Чекають», щоб зняти учасника з місця."
+msgid "On a touch screen, hold a person and drag them to a slot, or tap a person, then a slot."
+msgstr "На сенсорному екрані утримуйте учасника й перетягніть його у слот або торкніться учасника, а потім слоту."

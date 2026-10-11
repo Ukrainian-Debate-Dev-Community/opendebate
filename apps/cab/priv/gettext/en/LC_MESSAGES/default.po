@@ -3105,5 +3105,5 @@ msgstr ""
 
 #: lib/cab_web/components/ui.ex:805
 #, elixir-autogen, elixir-format
-msgid "On a touch screen, tap a person, then tap a slot; tap Waiting to take a placed person out."
+msgid "On a touch screen, hold a person and drag them to a slot, or tap a person, then a slot."
 msgstr ""

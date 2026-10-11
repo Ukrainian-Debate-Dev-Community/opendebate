@@ -167,8 +167,97 @@ const Allocator = {
         return pick(null)
       }
     })
+
+    // finger drag: hold a person for a moment, then drag; a copy follows
+    // the finger, slots light up, and the release places (on a slot) or
+    // takes a placed person out (anywhere else) - the same events as a
+    // mouse drop. A quick swipe still scrolls; a quick tap is tap to place.
+    const HOLD = 180, MOVE = 8, EDGE = 70
+    let touch = null
+    const endTouch = () => {
+      if (!touch) return
+      clearTimeout(touch.timer)
+      cancelAnimationFrame(touch.raf)
+      if (touch.ghost) touch.ghost.remove()
+      touch.chip.classList.remove("dragging")
+      clearOver()
+      touch = null
+    }
+    const targetAt = (x, y) => {
+      const el = document.elementFromPoint(x, y)
+      return el && el.closest(".slot")
+    }
+    const follow = () => {
+      touch.ghost.style.transform = `translate(${touch.x - touch.dx}px, ${touch.y - touch.dy}px)`
+    }
+    const autoscroll = () => {
+      if (!touch || !touch.ghost) return
+      const h = window.innerHeight
+      const dy = touch.y < EDGE ? -(EDGE - touch.y) / 4 : touch.y > h - EDGE ? (touch.y - (h - EDGE)) / 4 : 0
+      if (dy) window.scrollBy(0, dy)
+      touch.raf = requestAnimationFrame(autoscroll)
+    }
+    this.el.addEventListener("touchstart", e => {
+      const chip = e.target.closest(".chip")
+      if (!chip || e.touches.length > 1) return
+      const t = e.touches[0]
+      touch = {chip, x: t.clientX, y: t.clientY, x0: t.clientX, y0: t.clientY, ghost: null}
+      touch.timer = setTimeout(() => {
+        if (!touch) return
+        const r = chip.getBoundingClientRect()
+        const ghost = chip.cloneNode(true)
+        ghost.classList.add("ghost")
+        ghost.style.width = `${r.width}px`
+        touch.dx = touch.x - r.left
+        touch.dy = touch.y - r.top
+        document.body.appendChild(ghost)
+        touch.ghost = ghost
+        chip.classList.add("dragging")
+        pick(null)
+        follow()
+        autoscroll()
+        if (navigator.vibrate) navigator.vibrate(10)
+      }, HOLD)
+    }, {passive: true})
+    this.el.addEventListener("touchmove", e => {
+      if (!touch) return
+      const t = e.touches[0]
+      touch.x = t.clientX
+      touch.y = t.clientY
+      if (!touch.ghost) {
+        if (Math.hypot(touch.x - touch.x0, touch.y - touch.y0) > MOVE) endTouch()
+        return
+      }
+      e.preventDefault()
+      follow()
+      clearOver()
+      const slot = targetAt(touch.x, touch.y)
+      if (slot) slot.classList.add("over")
+    }, {passive: false})
+    this.el.addEventListener("touchend", e => {
+      if (!touch) return
+      if (!touch.ghost) return endTouch()
+      e.preventDefault()
+      const id = parseInt(touch.chip.dataset.id, 10)
+      const slot = targetAt(touch.x, touch.y)
+      if (slot) this.pushEvent("place", {id, slot: slot.dataset.slot})
+      else if (touch.chip.closest(".slot")) this.pushEvent("unplace", {id})
+      endTouch()
+    })
+    this.el.addEventListener("touchcancel", endTouch)
+
+    // on touch screens the browser's own drag would fight the finger drag
+    this.touchOnly = () => {
+      if (window.matchMedia("(pointer: coarse)").matches) {
+        this.el.querySelectorAll(".chip[draggable]").forEach(c => c.removeAttribute("draggable"))
+      }
+    }
+    this.touchOnly()
   },
-  updated() { if (this.markPicked) this.markPicked() },
+  updated() {
+    if (this.markPicked) this.markPicked()
+    if (this.touchOnly) this.touchOnly()
+  },
 }
 
 // the room card: a PNG people paste into a messenger - who, when, the
