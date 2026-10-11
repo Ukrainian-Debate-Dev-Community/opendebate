@@ -196,6 +196,7 @@ msgstr "Міста"
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:11
 #: lib/uadebate_web/controllers/club_html/index.html.heex:63
+#: lib/uadebate_web/controllers/club_html/index.html.heex:74
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:62
 #, elixir-autogen, elixir-format
 msgid "City"
@@ -410,6 +411,7 @@ msgstr "Перший турнір, Кубок Федерації у Вінниц
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:29
 #: lib/uadebate_web/controllers/club_html/index.html.heex:64
+#: lib/uadebate_web/controllers/club_html/index.html.heex:75
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:66
 #, elixir-autogen, elixir-format
 msgid "Format"
@@ -479,6 +481,7 @@ msgstr "Вид"
 #: lib/uadebate_web/components/site.ex:91
 #: lib/uadebate_web/controllers/club_html/index.html.heex:36
 #: lib/uadebate_web/controllers/club_html/index.html.heex:65
+#: lib/uadebate_web/controllers/club_html/index.html.heex:76
 #, elixir-autogen, elixir-format
 msgid "Language"
 msgstr "Мова"
