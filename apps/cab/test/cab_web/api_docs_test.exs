@@ -1,6 +1,6 @@
 defmodule CabWeb.ApiDocsTest do
   @moduledoc """
-  The API reference: cab's description must match the router's /api/v1
+  The API reference: cab's description must match the router's /api/cab/v1
   routes both ways, the engine's description must be the pinned
   engine's own file, and the page loads nothing from elsewhere.
   """
@@ -11,9 +11,9 @@ defmodule CabWeb.ApiDocsTest do
 
   defp spec, do: @priv |> Path.join("cab.json") |> File.read!() |> Jason.decode!()
 
-  test "cab.json documents exactly the router's /api/v1 routes" do
+  test "cab.json documents exactly the router's /api/cab/v1 routes" do
     routed =
-      for %{verb: verb, path: "/api/v1" <> path} <- Phoenix.Router.routes(CabWeb.Router),
+      for %{verb: verb, path: "/api/cab/v1" <> path} <- Phoenix.Router.routes(CabWeb.Router),
           into: MapSet.new(),
           do: {verb |> to_string() |> String.upcase(), Regex.replace(~r/:(\w+)/, path, "{\\1}")}
 
@@ -46,7 +46,7 @@ defmodule CabWeb.ApiDocsTest do
   end
 
   test "the page and both descriptions are served without a session", %{conn: conn} do
-    page = get(conn, ~p"/api/docs")
+    page = get(conn, ~p"/api/cab/docs")
     html = html_response(page, 200)
     assert get_resp_header(page, "set-cookie") == []
     assert html =~ ~s(<title>cab API</title>)
@@ -55,14 +55,15 @@ defmodule CabWeb.ApiDocsTest do
       refute url =~ ~r{^(https?:)?//}, "the page must not load #{url} from elsewhere"
     end
 
-    engine = conn |> get(~p"/api/docs/engine") |> html_response(200)
+    engine = conn |> get(~p"/api/engine/docs") |> html_response(200)
     assert engine =~ ~s(data-doc="engine")
-    assert engine =~ ~s(href="/api/docs")
+    assert engine =~ ~s(href="/api/cab/docs")
+    assert conn |> get("/api/docs") |> redirected_to() == "/api/cab/docs"
 
-    assert conn |> get(~p"/api/docs/cab.json") |> json_response(200) |> Map.get("openapi") ==
+    assert conn |> get(~p"/api/cab/docs/openapi.json") |> json_response(200) |> Map.get("openapi") ==
              "3.1.0"
 
-    yml = get(conn, ~p"/api/docs/engine.yml")
+    yml = get(conn, ~p"/api/engine/docs/openapi.yml")
     assert response(yml, 200) =~ "openapi:"
     assert get_resp_header(yml, "content-type") |> hd() =~ "yaml"
   end

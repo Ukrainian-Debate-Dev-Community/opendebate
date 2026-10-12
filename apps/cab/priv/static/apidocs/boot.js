@@ -25,10 +25,14 @@
     // try-it stays on this page
     hideClientButton: true
   }
-  // one document per page: cab's at /api/docs, the engine's at
-  // /api/docs/engine; the engine is internal, so no try-it there
+  // one document per page: cab's at /api/cab/docs, the engine's at
+  // /api/engine/docs; the engine is internal, so no try-it there
   var config = Object.assign({}, common, { url: el.dataset.spec })
-  if (el.dataset.doc === "engine") config.hideTestRequestButton = true
+  if (el.dataset.doc === "engine") {
+    // served as is, straight from the engine, under /api/engine/v2
+    config.servers = [{ url: "/api/engine/v2" }]
+    config.hideTestRequestButton = true
+  }
   Scalar.createApiReference("#api-docs", config)
 
   // keep the "Powered by Scalar" credit, without its tracking tags

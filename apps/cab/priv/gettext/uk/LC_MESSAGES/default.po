@@ -3118,19 +3118,19 @@ msgstr "Який формат, напр. Карл Поппер"
 msgid "Which language, e.g. Polish"
 msgstr "Яка мова, напр. польська"
 
-#: lib/cab_web/controllers/api_docs_controller.ex:13
+#: lib/cab_web/controllers/api_docs_controller.ex:17
 #: lib/cab_web/controllers/api_docs_html/show.html.heex:14
 #, elixir-autogen, elixir-format
 msgid "Engine API"
 msgstr ""
 
-#: lib/cab_web/controllers/api_docs_html/show.html.heex:17
-#, elixir-autogen, elixir-format
-msgid "The engine API is internal today; approved partners will reach it through keys."
-msgstr ""
-
-#: lib/cab_web/controllers/api_docs_controller.ex:10
+#: lib/cab_web/controllers/api_docs_controller.ex:11
 #: lib/cab_web/controllers/api_docs_html/show.html.heex:13
 #, elixir-autogen, elixir-format
 msgid "cab API"
+msgstr ""
+
+#: lib/cab_web/controllers/api_docs_html/show.html.heex:17
+#, elixir-autogen, elixir-format
+msgid "The engine's own API, version 2, served as is at /api/engine/v2. Not open to the public yet."
 msgstr ""

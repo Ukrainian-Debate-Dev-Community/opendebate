@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1"
+      "url": "/api/cab/v1"
     }
   ],
   "tags": [
