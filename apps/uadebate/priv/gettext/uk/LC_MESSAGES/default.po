@@ -948,8 +948,8 @@ msgstr "Вт"
 
 #: lib/uadebate_web/components/layouts.ex:45
 #, elixir-autogen, elixir-format
-msgid "UAdebates, the Debate Federation of Ukraine"
-msgstr "UAdebates, Федерація дебатів України"
+msgid "UAdebate, the Debate Federation of Ukraine"
+msgstr "UAdebate, Федерація дебатів України"
 
 #: lib/uadebate_web/controllers/page_html/home.html.heex:23
 #, elixir-autogen, elixir-format
