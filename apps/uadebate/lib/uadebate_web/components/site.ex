@@ -247,8 +247,15 @@ defmodule UadebateWeb.Site do
   slot :inner_block
 
   def event_row(assigns) do
+    assigns = assign(assigns, phase: event_phase(assigns.event, Date.utc_today()))
+
     ~H"""
-    <div class={["ua-ev", @event.visibility == "private" && "ua-ev--priv"]}>
+    <div class={[
+      "ua-ev",
+      @event.visibility == "private" && "ua-ev--priv",
+      @phase == :past && "ua-ev--past",
+      @phase == :today && "ua-ev--today"
+    ]}>
       <.date_badge date={@event.starts_on} />
       <div class="ua-ev-body">
         <h4>
@@ -289,6 +296,7 @@ defmodule UadebateWeb.Site do
     assigns =
       assign(assigns,
         weeks: weeks,
+        today: Date.utc_today(),
         heads: [
           gettext("Mon"),
           gettext("Tue"),
@@ -304,11 +312,18 @@ defmodule UadebateWeb.Site do
     <div class="ua-cal">
       <div class="ua-cal-h"><span :for={h <- @heads}>{h}</span></div>
       <div :for={week <- @weeks} class="ua-cal-w">
-        <div :for={day <- week} class={["ua-day", day.month != @first.month && "out"]}>
+        <div
+          :for={day <- week}
+          class={["ua-day", day.month != @first.month && "out", day == @today && "today"]}
+        >
           <span class="n">{day.day}</span>
           <span
             :for={e <- Enum.filter(@events, &on_day?(&1, day))}
-            class={["ua-chip", e.visibility == "private" && "ua-chip--priv"]}
+            class={[
+              "ua-chip",
+              e.visibility == "private" && "ua-chip--priv",
+              event_phase(e, @today) == :past && "ua-chip--past"
+            ]}
           >
             {e.title}
           </span>
@@ -316,6 +331,15 @@ defmodule UadebateWeb.Site do
       </div>
     </div>
     """
+  end
+
+  # an event is past once its last day is over, and on today while it runs
+  defp event_phase(event, today) do
+    cond do
+      Date.compare(event.ends_on || event.starts_on, today) == :lt -> :past
+      Date.compare(event.starts_on, today) != :gt -> :today
+      true -> :upcoming
+    end
   end
 
   defp on_day?(event, day),

@@ -31,16 +31,22 @@
   </span>
 </div>
 
-<UadebateWeb.CalendarHTML.toolbar first={@first} kind={@kind} tag={@tag} base={~p"/manage/calendar"} />
+<UadebateWeb.CalendarHTML.toolbar
+  period={@period}
+  kind={@kind}
+  tag={@tag}
+  base={~p"/manage/calendar"}
+/>
 <.tag_filter
   tags={@tags}
   selected={@tag}
-  href={&UadebateWeb.CalendarHTML.link(~p"/manage/calendar", @first, @kind, &1)}
+  href={&UadebateWeb.CalendarHTML.link(~p"/manage/calendar", @period, @kind, &1)}
 />
-<.month_grid first={@first} events={@events} />
+<.month_grid :if={@period.view == :month} first={@period.first} events={@events} />
 
-<div class="ua-sec">{month_name(@first.month)}</div>
-<.event_row :for={event <- @events} event={event}>
+<%= for {heading, events} <- UadebateWeb.CalendarHTML.groups(@period, @events) do %>
+<div class="ua-sec">{heading}</div>
+<.event_row :for={event <- events} event={event}>
   <.tag_chips tags={event.tags} />
   <span class="ua-vis">
     <.form
@@ -68,4 +74,5 @@
     {gettext("Edit")}
   </a>
 </.event_row>
-<div :if={@events == []} class="ua-card ua-empty">{gettext("Nothing planned this month.")}</div>
+<% end %>
+<div :if={@events == []} class="ua-card ua-empty">{UadebateWeb.CalendarHTML.empty_text(@period)}</div>

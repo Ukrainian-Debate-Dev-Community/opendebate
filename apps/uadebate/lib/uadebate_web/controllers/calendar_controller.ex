@@ -3,19 +3,19 @@ defmodule UadebateWeb.CalendarController do
 
   alias Uadebate.Events
   alias Uadebate.Events.Event
-  alias UadebateWeb.Month
+  alias UadebateWeb.Period
 
   def index(conn, params) do
-    first = Month.parse(params["month"])
+    period = Period.parse(params)
     kind = if params["kind"] in Event.kinds(), do: params["kind"]
 
     render(conn, :index,
       active: :calendar,
       page_title: gettext("Calendar"),
-      first: first,
+      period: period,
       kind: kind,
       calendar_public: Uadebate.Settings.calendar_public?(),
-      events: Events.public_in_month(first, kind)
+      events: Events.public_in(Period.range(period), kind)
     )
   end
 

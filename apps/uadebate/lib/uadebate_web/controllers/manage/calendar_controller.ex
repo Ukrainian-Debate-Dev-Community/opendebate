@@ -3,10 +3,10 @@ defmodule UadebateWeb.Manage.CalendarController do
 
   alias Uadebate.Events
   alias Uadebate.Events.Event
-  alias UadebateWeb.Month
+  alias UadebateWeb.Period
 
   def index(conn, params) do
-    first = Month.parse(params["month"])
+    period = Period.parse(params)
     kind = if params["kind"] in Event.kinds(), do: params["kind"]
     tag = Uadebate.Tags.find(params["tag"])
 
@@ -15,12 +15,12 @@ defmodule UadebateWeb.Manage.CalendarController do
     |> render(:calendar,
       manage_active: :calendar,
       page_title: gettext("Calendar"),
-      first: first,
+      period: period,
       kind: kind,
       tag: tag,
       tags: Uadebate.Tags.list(),
       calendar_public: Uadebate.Settings.calendar_public?(),
-      events: Events.all_in_month(first, kind, tag)
+      events: Events.all_in(Period.range(period), kind, tag)
     )
   end
 
