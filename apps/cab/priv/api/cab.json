@@ -3,7 +3,7 @@
   "info": {
     "title": "cab API",
     "version": "1",
-    "description": "The JSON API of cab, debate clubs and their sessions. Every page action has an API twin with the same access rules. Signed-in calls use the cab session cookie: sign in on cab in the same browser. Public calls need nothing. Errors are JSON with an `error` text (and `details` per field on validation failures).",
+    "description": "The JSON API of cab, debate clubs and their sessions. Every page action has an API twin with the same access rules. Signed-in calls use the cab session cookie: sign in on cab in the same browser. Public calls need nothing. Errors are JSON with an `error` text (and `details` per field on validation failures). Rate limits: 60 requests a minute per signed-in account (bursts of up to 20) and 20 a minute per anonymous IP; over the limit the answer is 429 with Retry-After, and every answer carries RateLimit-Limit, RateLimit-Remaining and RateLimit-Reset.",
     "license": {
       "name": "MIT"
     }
@@ -59,6 +59,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": []
@@ -96,6 +99,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": []
@@ -204,6 +210,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -260,6 +269,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -330,6 +342,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -402,6 +417,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -485,6 +503,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -576,6 +597,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -618,6 +642,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": []
@@ -677,6 +704,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -767,6 +797,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -830,6 +863,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -893,6 +929,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -959,6 +998,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1025,6 +1067,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1103,6 +1148,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1176,6 +1224,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1256,6 +1307,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1313,6 +1367,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1417,6 +1474,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1506,6 +1566,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1605,6 +1668,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1695,6 +1761,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1771,6 +1840,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1849,6 +1921,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1905,6 +1980,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -1975,6 +2053,9 @@
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "security": [
@@ -2599,6 +2680,55 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too many requests: the caller's bucket is empty. Wait Retry-After seconds.",
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds until the next request is allowed.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "RateLimit-Limit": {
+            "description": "Requests per minute for this caller.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "RateLimit-Remaining": {
+            "description": "Requests left in the bucket.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          "RateLimit-Reset": {
+            "description": "Seconds until the bucket is full again.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "too many requests"
+                },
+                "retry_after": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "error",
+                "retry_after"
+              ]
             }
           }
         }

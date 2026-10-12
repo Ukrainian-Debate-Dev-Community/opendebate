@@ -24,6 +24,7 @@ defmodule CabWeb.Router do
     plug :accepts, ["json"]
     plug :fetch_session
     plug :fetch_current_user
+    plug CabWeb.RateLimit
   end
 
   # the API references: /api/<name>/docs beside each API's /api/<name>/v1
