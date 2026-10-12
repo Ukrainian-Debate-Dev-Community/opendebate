@@ -28,7 +28,7 @@ defmodule CabWeb.OwnerController do
   @profile_fields ~w(name city meeting_info description contacts is_private formats languages audiences format_other language_other)
 
   # POST /c/:club_uuid/owner/club - the in-place save; twin of
-  # PATCH /api/v1/clubs/:uuid
+  # PATCH /api/cab/v1/clubs/:uuid
   def update_club(conn, params) do
     # an unticked group sends nothing, so the form means "none of them"
     attrs =
@@ -339,6 +339,11 @@ defmodule CabWeb.OwnerController do
             |> put_flash(:info, gettext("Session cancelled."))
             |> redirect(to: ~p"/c/#{conn.assigns.club.uuid}/owner")
 
+          {:error, :conflict, message} ->
+            conn
+            |> put_flash(:error, message)
+            |> redirect(to: ~p"/c/#{conn.assigns.club.uuid}/owner/s/#{session.uuid}")
+
           {:error, message} ->
             conn
             |> put_flash(:error, error_message(message))
@@ -360,6 +365,11 @@ defmodule CabWeb.OwnerController do
             conn
             |> put_flash(:info, gettext("Session finished."))
             |> redirect(to: ~p"/c/#{conn.assigns.club.uuid}/s/#{session.uuid}")
+
+          {:error, :conflict, message} ->
+            conn
+            |> put_flash(:error, message)
+            |> redirect(to: ~p"/c/#{conn.assigns.club.uuid}/owner/s/#{session.uuid}")
 
           {:error, message} ->
             conn
