@@ -1,17 +1,65 @@
 defmodule UadebateWeb.ErrorHTML do
-  @moduledoc "Error pages: a short page in the site's colours."
+  @moduledoc """
+  Error pages inside the site's own frame: header, footer, the theme and
+  language switches. A 404 never says why, so /manage stays unknown to
+  anyone without access.
+  """
   use UadebateWeb, :html
 
   def render(template, _assigns) do
-    status = Phoenix.Controller.status_message_from_template(template)
+    code = template |> String.split(".") |> hd()
 
-    """
-    <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>#{status} | UAdebate</title><link rel="stylesheet" href="/css/app.css"></head>
-    <body><div class="ua"><main class="ua-main"><span class="ua-kicker">UAdebate</span>
-    <h1>#{status}</h1><p class="ua-lead"><a href="/">#{gettext("Back to the home page")}</a></p>
-    </main></div></body></html>
+    assigns = %{
+      code: code,
+      title: title(code),
+      lead: lead(code),
+      locale: Gettext.get_locale(UadebateWeb.Gettext)
+    }
+
+    ~H"""
+    <!DOCTYPE html>
+    <html lang={@locale}>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{@title} | UAdebate</title>
+        <script>
+          try {
+            const theme = localStorage.getItem("uadebate-theme")
+            if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme
+          } catch (_e) {}
+        </script>
+        <link rel="stylesheet" href={~p"/css/app.css"} />
+        <script defer src={~p"/js/site.js"}>
+        </script>
+      </head>
+      <body>
+        <div class="ua">
+          <.site_header />
+          <main class="ua-main">
+            <div class="ua-error">
+              <span class="ua-kicker">{@code}</span>
+              <h1>{@title}</h1>
+              <p class="ua-lead">{@lead}</p>
+              <div class="ua-error-act">
+                <a class="ua-btn ua-btn--gold" href={~p"/"}>{gettext("Back to the home page")}</a>
+                <a class="ua-btn ua-btn--line" href={~p"/calendar"}>{gettext("Calendar")}</a>
+                <a class="ua-btn ua-btn--line" href={~p"/news"}>{gettext("News")}</a>
+              </div>
+            </div>
+          </main>
+          <.site_footer />
+        </div>
+      </body>
+    </html>
     """
   end
+
+  defp title("404"), do: gettext("Page not found")
+  defp title("500"), do: gettext("Something went wrong")
+  defp title(code), do: Phoenix.Controller.status_message_from_template(code <> ".html")
+
+  defp lead("404"), do: gettext("There is nothing at this address. It may have moved, or the link is mistyped.")
+  defp lead("500"), do: gettext("We could not show this page. Please try again in a minute.")
+  defp lead(_code), do: gettext("This page cannot be shown.")
 end
