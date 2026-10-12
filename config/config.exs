@@ -3,73 +3,22 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-
-# General application configuration
 import Config
 
-config :cab,
-  ecto_repos: [Cab.Repo],
-  generators: [timestamp_type: :utc_datetime]
+# cab and core: their own configuration from the cab submodule (it
+# imports cab's dev.exs / test.exs / prod.exs in turn). Only what
+# uadebate changes is overridden below and in this folder's env files.
+import_config "../cab/config/config.exs"
 
-# Mail goes through Core.Mailer: kept in memory (and shown at
-# /dev/mailbox) until runtime.exs points it at an SMTP server
-config :swoosh, :api_client, false
-config :core, Core.Mailer, adapter: Swoosh.Adapters.Local
-config :cab, :mail_from, {"cab", "noreply@localhost"}
+# cab's asset builders find phoenix, phoenix_html and phoenix_live_view
+# in the deps folder: here it is this umbrella's, not the submodule's
+node_path = %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
+config :esbuild, :cab, env: node_path
+config :tailwind, :cab, env: node_path
 
-# cab's JSON API: requests per minute and burst, per signed-in account
-# or per anonymous IP (runtime.exs reads RATE_LIMIT_* in production)
-config :cab, CabWeb.RateLimit,
-  enabled: true,
-  signed_in: {60, 20},
-  anonymous: {20, 20},
-  trust_cf_ip: false
-
-# Policy and Terms are the deployment's own documents, one folder per
-# language (en/policy.md, en/terms.md, ...); cab only serves them
-# (in development: the opendebate-server checkout next to this repo)
-config :cab, :legal_dir, Path.expand("../../opendebate-server/legal", __DIR__)
-
-# Configure the endpoint
-# English by default; Ukrainian when the browser or the footer asks
-config :cab, CabWeb.Gettext, default_locale: "en", locales: ~w(en uk)
-
-config :cab, CabWeb.Endpoint,
-  url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
-  render_errors: [
-    formats: [html: CabWeb.ErrorHTML, json: CabWeb.ErrorJSON],
-    layout: false
-  ],
-  pubsub_server: Cab.PubSub,
-  live_view: [signing_salt: "ubjlL7er"]
-
-# Configure LiveView
-config :phoenix_live_view,
-  # the attribute set on all root tags. Used for Phoenix.LiveView.ColocatedCSS.
-  root_tag_attribute: "phx-r"
-
-# Configure esbuild (the version is required)
-config :esbuild,
-  version: "0.25.4",
-  cab: [
-    args:
-      ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
-    cd: Path.expand("../apps/cab/assets", __DIR__),
-    env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
-  ]
-
-# Configure tailwind (the version is required)
-config :tailwind,
-  version: "4.3.0",
-  cab: [
-    args: ~w(
-      --input=assets/css/app.css
-      --output=priv/static/assets/css/app.css
-    ),
-    cd: Path.expand("../apps/cab", __DIR__),
-    env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
-  ]
+# Who runs this cab: the name, links and addresses in cab's footer, on
+# its sign-in and account pages
+config :cab, :operator, UadebateWeb.CabOperator
 
 # uadebate.com: its own repo (news, events, roles) and endpoint. It
 # reads cab downward; :cab_url is where its Cabinet links point.
@@ -86,22 +35,6 @@ config :uadebate, UadebateWeb.Endpoint,
 
 config :uadebate, :cab_url, "http://localhost:4000"
 
-# Configure Elixir's Logger
-config :logger, :default_formatter,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
-
-# OAuth sign-in providers. Google asks only for the basic scopes:
-# the account's id, name, e-mail and picture.
-config :ueberauth, Ueberauth,
-  providers: [
-    github: {Ueberauth.Strategy.Github, [default_scope: "read:user user:email"]},
-    google: {Ueberauth.Strategy.Google, [default_scope: "openid email profile"]}
-  ]

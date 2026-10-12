@@ -1,9 +1,10 @@
 defmodule Dfu.MixProject do
   use Mix.Project
 
-  # L2 of the umbrella: NGO cabinet (dfu.uadebate.com) - digital post,
-  # cases, votes (Danish document-handling model). Depends on core and
-  # cab (identity/SSO); uadebate above aggregates its public subset.
+  # NGO cabinet (dfu.uadebate.com) - digital post, cases, votes
+  # (Danish document-handling model). Depends on core and cab
+  # (identity/SSO) from the cab submodule; uadebate above aggregates its
+  # public subset.
   def project do
     [
       app: :dfu,
@@ -26,8 +27,8 @@ defmodule Dfu.MixProject do
 
   defp deps do
     [
-      {:core, in_umbrella: true},
-      {:cab, in_umbrella: true}
+      {:core, path: "../../cab/apps/core", env: Mix.env()},
+      {:cab, path: "../../cab/apps/cab", env: Mix.env()}
     ]
   end
 end

@@ -1,5 +1,9 @@
 import Config
 
+# One runtime.exs for the whole release: runtime.exs cannot import_config,
+# so the cab part below mirrors cab/config/runtime.exs (keep them in step
+# when the cab pin moves); the uadebate.com parts are marked as such.
+
 # In dev, load the repo root's .env into the environment ourselves: `source
 # .env` only creates shell variables, it does not export them to the
 # mix process. The path is fixed to the umbrella root so mix tasks run
@@ -47,8 +51,6 @@ if config_env() != :test do
   config :core, Core.Engine,
     base_url: System.get_env("ENGINE_URL", "http://localhost:3100"),
     jwt_secret: engine_secret
-
-  config :cab, :portal_api_token, System.get_env("PORTAL_API_TOKEN")
 
   if legal_dir = System.get_env("LEGAL_DIR") do
     config :cab, :legal_dir, legal_dir

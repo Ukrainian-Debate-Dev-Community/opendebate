@@ -1,7 +1,7 @@
 defmodule Uadebate.MixProject do
   use Mix.Project
 
-  # L3 of the umbrella: the public site (uadebate.com), at the top.
+  # The public site (uadebate.com), at the top.
   # It reads cab downward (clubs, accounts, the session cookie) and
   # keeps its own news, events and content-manager roles; nothing
   # depends on uadebate.
@@ -34,8 +34,8 @@ defmodule Uadebate.MixProject do
 
   defp deps do
     [
-      {:core, in_umbrella: true},
-      {:cab, in_umbrella: true},
+      {:core, path: "../../cab/apps/core", env: Mix.env()},
+      {:cab, path: "../../cab/apps/cab", env: Mix.env()},
       {:dfu, in_umbrella: true},
       {:phoenix, "~> 1.8.13"},
       {:phoenix_ecto, "~> 4.5"},

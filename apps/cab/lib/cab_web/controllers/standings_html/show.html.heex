@@ -1,9 +1,0 @@
-<Layouts.app flash={@flash} current_user={@current_user} active="standings">
-  <.chrome here={gettext("Standings")}></.chrome>
-  <.standings_tabs base="/standings" active={@tab} />
-
-  <div class="pbody">
-    <.flash_banners flash={@flash} />
-    <.standings_body tab={@tab} scope={@scope} rows={@rows} club={@club} />
-  </div>
-</Layouts.app>

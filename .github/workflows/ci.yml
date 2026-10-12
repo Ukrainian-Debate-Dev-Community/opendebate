@@ -15,6 +15,7 @@ env:
   OTP_VERSION: "27"
 
 jobs:
+  # dfu's and uadebate's tests; cab's own run in opendebate-cab
   test:
     runs-on: ubuntu-latest
     services:
@@ -29,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
       - uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ env.ELIXIR_VERSION }}
@@ -48,6 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ env.ELIXIR_VERSION }}
@@ -60,9 +63,8 @@ jobs:
           key: mix-${{ runner.os }}-${{ env.OTP_VERSION }}-${{ env.ELIXIR_VERSION }}-${{ hashFiles('mix.lock') }}
       - run: mix deps.get
       - run: mix format --check-formatted
-      # per app: from the umbrella root a clean build extracts every reference twice
-      - run: mix gettext.extract --check-up-to-date
-        working-directory: apps/cab
+      # per app: from the umbrella root a clean build extracts every reference
+      # twice; cab's own texts are checked in opendebate-cab
       - run: mix gettext.extract --check-up-to-date
         working-directory: apps/uadebate
       - run: mix hex.audit
@@ -86,6 +88,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:

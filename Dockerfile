@@ -1,5 +1,6 @@
-# The platform image: the `full` release (cab, dfu, uadebate) in one container.
-# cab listens on 4000, uadebate.com on 4001. Policy and Terms are not baked
+# The uadebate image: the `full` release (cab and core from the cab
+# submodule, dfu, uadebate) in one container. cab listens on 4000,
+# uadebate.com on 4001. Policy and Terms are not baked
 # in: the server mounts its legal/ folder and points LEGAL_DIR at it.
 
 ARG ELIXIR_IMAGE=hexpm/elixir:1.18.5-erlang-27.3.4.18-debian-bookworm-20261005-slim
@@ -19,19 +20,27 @@ RUN mix local.hex --force && mix local.rebar --force
 
 # dependencies first, so code changes reuse this layer
 COPY mix.exs mix.lock ./
-COPY apps/core/mix.exs apps/core/mix.exs
-COPY apps/cab/mix.exs apps/cab/mix.exs
+COPY cab/apps/core/mix.exs cab/apps/core/mix.exs
+COPY cab/apps/cab/mix.exs cab/apps/cab/mix.exs
 COPY apps/dfu/mix.exs apps/dfu/mix.exs
 COPY apps/uadebate/mix.exs apps/uadebate/mix.exs
+COPY cab/config/config.exs cab/config/prod.exs cab/config/
 COPY config/config.exs config/prod.exs config/
 RUN mix deps.get --only prod && mix deps.compile
 
+COPY cab/apps cab/apps
 COPY apps apps
 COPY config/runtime.exs config/
 RUN mix compile
 
-# cab's assets need the compiled app (colocated hooks), then digesting
-RUN cd apps/cab && mix assets.setup && mix assets.deploy
+# cab's assets need the compiled app (colocated hooks), then digesting.
+# Built from this umbrella: cab's own assets.deploy alias would use the
+# submodule's build and deps folders. phx.digest runs in one app, as from
+# the umbrella root it would run once per app.
+RUN mix tailwind.install --if-missing && mix esbuild.install --if-missing \
+ && mix tailwind cab --minify && mix esbuild cab --minify \
+ && cd apps/uadebate \
+ && mix phx.digest ../../cab/apps/cab/priv/static -o ../../cab/apps/cab/priv/static
 
 RUN mix release full
 

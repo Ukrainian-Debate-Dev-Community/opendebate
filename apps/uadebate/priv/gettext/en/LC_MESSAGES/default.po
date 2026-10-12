@@ -269,6 +269,7 @@ msgstr ""
 msgid "Content managers"
 msgstr ""
 
+#: lib/uadebate_web/cab_operator.ex:29
 #: lib/uadebate_web/components/site.ex:150
 #: lib/uadebate_web/controllers/page_html/about.html.heex:3
 #: lib/uadebate_web/controllers/page_html/home.html.heex:21
@@ -1558,4 +1559,19 @@ msgstr ""
 #: lib/uadebate_web/controllers/calendar_html.ex:29
 #, elixir-autogen, elixir-format
 msgid "Year"
+msgstr ""
+
+#: lib/uadebate_web/cab_operator.ex:19
+#, elixir-autogen, elixir-format
+msgid "Clubs across Ukraine run weekly practice rounds — pick one and come debate. Free for every Ukrainian club."
+msgstr ""
+
+#: lib/uadebate_web/cab_operator.ex:25
+#, elixir-autogen, elixir-format
+msgid "DFU"
+msgstr ""
+
+#: lib/uadebate_web/cab_operator.ex:24
+#, elixir-autogen, elixir-format
+msgid "Run by the NGO Debate Federation of Ukraine (ВМГО «Федерація Дебатів України»)."
 msgstr ""

@@ -2,15 +2,18 @@
 # requires-python = ">=3.11"
 # dependencies = ["playwright"]
 # ///
-"""Render key cab and uadebate.com pages as an iPhone 15 against the
+"""Render the uadebate.com pages, and the cab pages its visitors reach
+(home, sign-in, My page, account, a club), as an iPhone 15 against the
 running dev stack (make up) and fail if any page scrolls sideways.
+cab's own full page list is checked in opendebate-cab.
 
     uv run tools/phone/phone_check.py [--shots DIR]
 
-Signs in through cab's dev-only /dev/switch-user. The first run may
+Signs in as $DEV_USER through cab's dev-only /dev/switch-user. The first run may
 need the browser: uv run --with playwright playwright install chromium
 """
 import argparse
+import os
 import subprocess
 import sys
 
@@ -18,7 +21,7 @@ from playwright.sync_api import sync_playwright
 
 CAB = "http://localhost:4000"
 UA = "http://localhost:4001"
-USER = "oleksii-stroganov"
+USER = os.environ["DEV_USER"]
 
 
 def first(sql):
@@ -30,18 +33,13 @@ def first(sql):
 
 def pages():
     club = first("select uuid from clubs where archived_at is null order by id limit 1")
-    session = first("select uuid from sessions order by inserted_at desc limit 1")
     found = [
-        CAB + "/", CAB + "/signin", CAB + "/standings/teams", CAB + "/me", CAB + "/account",
-        CAB + "/admin", CAB + "/policy",
+        CAB + "/", CAB + "/signin", CAB + "/me", CAB + "/account", CAB + "/policy",
         UA + "/", UA + "/news", UA + "/calendar", UA + "/clubs", UA + "/about",
         UA + "/manage", UA + "/manage/calendar",
     ]
     if club:
-        found += [f"{CAB}/c/{club}", f"{CAB}/c/{club}/standings", f"{CAB}/c/{club}/members",
-                  f"{CAB}/c/{club}/owner", f"{CAB}/c/{club}/owner/members", f"{UA}/clubs/{club}"]
-        if session:
-            found += [f"{CAB}/c/{club}/owner/s/{session}", f"{CAB}/c/{club}/s/{session}"]
+        found += [f"{UA}/clubs/{club}", f"{CAB}/c/{club}"]
     return found
 
 
