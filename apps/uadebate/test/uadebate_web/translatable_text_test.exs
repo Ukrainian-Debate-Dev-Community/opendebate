@@ -15,7 +15,7 @@ defmodule UadebateWeb.TranslatableTextTest do
 
   # literals that are the same in every language: the wordmark, cab,
   # the language codes and the parts of the t.me/fdu_ua address
-  @allowed MapSet.new(~w(UAdebates cab EN UA fdu ua))
+  @allowed MapSet.new(~w(UAdebate cab EN UA fdu ua))
 
   test "no template shows bare, untranslatable text" do
     offences =

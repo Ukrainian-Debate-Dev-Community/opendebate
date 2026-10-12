@@ -41,8 +41,8 @@ defmodule UadebateWeb.Layouts do
     """
   end
 
-  defp page_title(%{page_title: title}) when is_binary(title), do: "#{title} | UAdebates"
-  defp page_title(_assigns), do: gettext("UAdebates, the Debate Federation of Ukraine")
+  defp page_title(%{page_title: title}) when is_binary(title), do: "#{title} | UAdebate"
+  defp page_title(_assigns), do: gettext("UAdebate, the Debate Federation of Ukraine")
 
   attr :flash, :map, required: true
 
