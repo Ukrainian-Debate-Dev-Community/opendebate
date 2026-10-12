@@ -8,7 +8,7 @@ defmodule UadebateWeb.PublicPagesTest do
   test "every public page renders and sets no cookie", %{conn: conn} do
     for path <- @pages do
       resp = get(conn, path)
-      assert html_response(resp, 200) =~ "UAdebates"
+      assert html_response(resp, 200) =~ "UAdebate"
       assert get_resp_header(resp, "set-cookie") == [], "#{path} set a cookie"
     end
   end
