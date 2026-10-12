@@ -31,11 +31,17 @@
   </span>
 </div>
 
-<UadebateWeb.CalendarHTML.toolbar first={@first} kind={@kind} base={~p"/manage/calendar"} />
+<UadebateWeb.CalendarHTML.toolbar first={@first} kind={@kind} tag={@tag} base={~p"/manage/calendar"} />
+<.tag_filter
+  tags={@tags}
+  selected={@tag}
+  href={&UadebateWeb.CalendarHTML.link(~p"/manage/calendar", @first, @kind, &1)}
+/>
 <.month_grid first={@first} events={@events} />
 
 <div class="ua-sec">{month_name(@first.month)}</div>
 <.event_row :for={event <- @events} event={event}>
+  <.tag_chips tags={event.tags} />
   <span class="ua-vis">
     <.form
       for={%{}}

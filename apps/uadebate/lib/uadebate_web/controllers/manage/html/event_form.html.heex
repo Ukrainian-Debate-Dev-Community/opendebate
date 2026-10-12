@@ -68,6 +68,31 @@
       </div>
     </div>
   </div>
+  <div class="f-block ua-lang">
+    <label class="q">{gettext("Language")}</label>
+    <div class="opts ua-opts-row">
+      <label :for={code <- Uadebate.Events.Event.languages()}>
+        <input
+          type="radio"
+          name="event[language]"
+          value={code}
+          checked={@form[:language].value == code}
+        /> {if code == "other", do: gettext("Other"), else: language_label(code)}
+      </label>
+    </div>
+    <div class="ua-lang-other">
+      <label class="q" for="event_language_other">{gettext("Which language")}</label>
+      <input
+        type="text"
+        id="event_language_other"
+        name="event[language_other]"
+        value={@form[:language_other].value}
+        placeholder={gettext("e.g. Polish")}
+      />
+    </div>
+    <.errors form={@form} field={:language} />
+    <.errors form={@form} field={:language_other} />
+  </div>
   <div class="f-block">
     <label class="q" for="event_link">{gettext("Link")}</label>
     <input type="url" id="event_link" name="event[link]" value={@form[:link].value} />
@@ -99,6 +124,7 @@
       </label>
     </div>
   </div>
+  <.tag_picker name="event[tag_ids][]" tags={@tags} selected={@selected_tags} />
   <div class="f-block">
     <button type="submit" class="ua-btn ua-btn--gold">{gettext("Save")}</button>
   </div>

@@ -115,7 +115,8 @@ defmodule UadebateWeb.Site do
     items = [
       {:dash, ~p"/manage", gettext("Overview")},
       {:news, ~p"/manage/news", gettext("News")},
-      {:calendar, ~p"/manage/calendar", gettext("Calendar")}
+      {:calendar, ~p"/manage/calendar", gettext("Calendar")},
+      {:tags, ~p"/manage/tags", gettext("Tags")}
     ]
 
     items =
@@ -209,9 +210,9 @@ defmodule UadebateWeb.Site do
   def news_card(assigns) do
     ~H"""
     <article class="ua-card ua-news">
-      <div class={["ua-cover", "c#{rem(@post.id, 3) + 1}"]}>
+      <.cover post={@post}>
         <.tag kind="cover">{rubric_label(@post.rubric)}</.tag>
-      </div>
+      </.cover>
       <div class="ua-pad">
         <h3><a href={~p"/news/#{@post.slug}"}>{@post.title}</a></h3>
         <div class="ua-meta">
@@ -219,6 +220,26 @@ defmodule UadebateWeb.Site do
         </div>
       </div>
     </article>
+    """
+  end
+
+  attr :post, :map, required: true
+  attr :class, :string, default: nil
+  slot :inner_block
+
+  @doc "A post's cover: its image when it has one, else one of three gradients."
+  def cover(assigns) do
+    ~H"""
+    <div
+      :if={@post.image}
+      class={["ua-cover", "ua-cover--img", @class]}
+    >
+      <img src={Uadebate.Uploads.url(@post.image)} alt={@post.image_alt || ""} loading="lazy" />
+      {render_slot(@inner_block)}
+    </div>
+    <div :if={!@post.image} class={["ua-cover", "c#{rem(@post.id, 3) + 1}", @class]}>
+      {render_slot(@inner_block)}
+    </div>
     """
   end
 
@@ -416,8 +437,15 @@ defmodule UadebateWeb.Site do
   def audience_label("university"), do: gettext("University students")
   def audience_label(_), do: gettext("Open to all")
 
+  @doc "An event's language: Ukrainian, English or the name given for other."
+  def event_language(%{language: "other", language_other: name}) when name not in [nil, ""],
+    do: name
+
+  def event_language(%{language: nil}), do: nil
+  def event_language(%{language: code}), do: language_label(code)
+
   def event_meta(event) do
-    [kind_label(event.kind), event.city, event.format]
+    [kind_label(event.kind), event.city, event.format, event_language(event)]
     |> Enum.reject(&(&1 in [nil, ""]))
     |> Enum.join(", ")
   end

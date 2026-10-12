@@ -3,6 +3,12 @@
   <div class="seg"><a class="go" href={~p"/manage/news/new"}>{gettext("Write news")}</a></div>
 </div>
 
+<.tag_filter
+  tags={@tags}
+  selected={@tag}
+  href={fn tag -> if tag, do: ~p"/manage/news?#{[tag: tag.id]}", else: ~p"/manage/news" end}
+/>
+
 <div class="ua-card">
   <table :if={@posts != []} class="ua-t">
     <thead>
@@ -10,6 +16,7 @@
         <th>{gettext("Title")}</th>
         <th>{gettext("Rubric")}</th>
         <th>{gettext("Status")}</th>
+        <th>{gettext("Tags")}</th>
         <th></th>
       </tr>
     </thead>
@@ -23,6 +30,7 @@
           </.tag>
           <.tag :if={!post.published_at}>{gettext("Draft")}</.tag>
         </td>
+        <td data-label={gettext("Tags")}><.tag_chips tags={post.tags} /></td>
         <td class="r">
           <.button_to :if={!post.published_at} action={~p"/manage/news/#{post.id}/publish"}>
             {gettext("Publish")}
@@ -34,5 +42,8 @@
       </tr>
     </tbody>
   </table>
-  <div :if={@posts == []} class="ua-empty">{gettext("No news yet. Write the first one.")}</div>
+  <div :if={@posts == [] && !@tag} class="ua-empty">
+    {gettext("No news yet. Write the first one.")}
+  </div>
+  <div :if={@posts == [] && @tag} class="ua-empty">{gettext("No news with this tag.")}</div>
 </div>

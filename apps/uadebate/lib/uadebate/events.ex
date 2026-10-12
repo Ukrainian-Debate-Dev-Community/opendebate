@@ -8,7 +8,7 @@ defmodule Uadebate.Events do
   import Ecto.Query
 
   alias Uadebate.Events.Event
-  alias Uadebate.{Repo, Settings}
+  alias Uadebate.{Repo, Settings, Tags}
 
   def public_in_month(%Date{} = first, kind \\ nil) do
     if Settings.calendar_public?(),
@@ -16,7 +16,12 @@ defmodule Uadebate.Events do
       else: []
   end
 
-  def all_in_month(%Date{} = first, kind \\ nil), do: in_month(Event, first, kind)
+  def all_in_month(%Date{} = first, kind \\ nil, tag \\ nil) do
+    Event
+    |> Tags.only(tag, {"event_tags", :event_id})
+    |> preload(:tags)
+    |> in_month(first, kind)
+  end
 
   def upcoming_public(%Date{} = today, limit \\ 5) do
     if Settings.calendar_public?(), do: upcoming_public!(today, limit), else: []
@@ -35,7 +40,8 @@ defmodule Uadebate.Events do
     Repo.all(
       from e in Event,
         where: coalesce(e.ends_on, e.starts_on) >= ^today,
-        order_by: [asc: e.starts_on]
+        order_by: [asc: e.starts_on],
+        preload: :tags
     )
   end
 
@@ -45,17 +51,19 @@ defmodule Uadebate.Events do
       else: []
   end
 
-  def get!(id), do: Repo.get!(Event, id)
+  def get!(id), do: Event |> Repo.get!(id) |> Repo.preload(:tags)
 
   def change(event \\ %Event{}, attrs \\ %{}), do: Event.changeset(event, attrs)
 
   def create(attrs, user_id) do
     %Event{created_by_user_id: user_id}
     |> Event.changeset(attrs)
+    |> Tags.put(attrs)
     |> Repo.insert()
   end
 
-  def update(%Event{} = event, attrs), do: event |> Event.changeset(attrs) |> Repo.update()
+  def update(%Event{} = event, attrs),
+    do: event |> Event.changeset(attrs) |> Tags.put(attrs) |> Repo.update()
 
   def set_visibility(%Event{} = event, visibility) when visibility in ~w(public private),
     do: event |> Ecto.Changeset.change(visibility: visibility) |> Repo.update()

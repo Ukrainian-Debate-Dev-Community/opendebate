@@ -4,6 +4,7 @@ defmodule Uadebate.Events.Event do
 
   @kinds ~w(tournament training club other)
   @visibilities ~w(public private)
+  @languages ~w(uk en other)
 
   schema "events" do
     field :title, :string
@@ -14,23 +15,50 @@ defmodule Uadebate.Events.Event do
     field :format, :string
     field :details, :string
     field :link, :string
+    # uk, en or other; language_other names it (Polish) only for other
+    field :language, :string
+    field :language_other, :string
     # private events exist only under /manage
     field :visibility, :string, default: "public"
     field :created_by_user_id, :integer
+    # private labels, loaded only under /manage
+    many_to_many :tags, Uadebate.Tags.Tag, join_through: "event_tags", on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
 
   def kinds, do: @kinds
+  def languages, do: @languages
 
   def changeset(event, attrs) do
     event
-    |> cast(attrs, [:title, :kind, :starts_on, :ends_on, :city, :format, :details, :link, :visibility])
+    |> cast(attrs, [
+      :title,
+      :kind,
+      :starts_on,
+      :ends_on,
+      :city,
+      :format,
+      :details,
+      :link,
+      :visibility,
+      :language,
+      :language_other
+    ])
     |> validate_required([:title, :kind, :starts_on, :visibility])
     |> validate_inclusion(:kind, @kinds)
+    |> validate_inclusion(:language, @languages)
+    |> clear_language_other()
+    |> validate_length(:language_other, max: 60)
     |> validate_inclusion(:visibility, @visibilities)
     |> validate_format(:link, ~r{^https?://}, message: "must start with http:// or https://")
     |> validate_end()
+  end
+
+  defp clear_language_other(changeset) do
+    if get_field(changeset, :language) == "other",
+      do: changeset,
+      else: put_change(changeset, :language_other, nil)
   end
 
   defp validate_end(changeset) do

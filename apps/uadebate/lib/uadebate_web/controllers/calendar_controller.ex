@@ -23,6 +23,11 @@ defmodule UadebateWeb.CalendarController do
   def ics(conn, _params) do
     conn
     |> put_resp_content_type("text/calendar")
-    |> send_resp(200, Uadebate.ICal.feed(Events.all_public(), conn.host))
+    |> send_resp(200, Uadebate.ICal.feed(Events.all_public(), conn.host, &language_line/1))
+  end
+
+  defp language_line(event) do
+    if language = UadebateWeb.Site.event_language(event),
+      do: gettext("Language: %{language}", language: language)
   end
 end

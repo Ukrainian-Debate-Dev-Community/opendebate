@@ -515,3 +515,76 @@ a { color:var(--brand); }
 
   .ua-foot a { padding:8px 0; }
 }
+
+/* private tags (/manage only): a fixed palette of eight, light and dark */
+:root {
+  --tag-gray:#F0EEF2; --tag-gray-ink:#4F4756;
+  --tag-red:#FCE8E8; --tag-red-ink:#A12626;
+  --tag-orange:#FDEEDF; --tag-orange-ink:#9A4A10;
+  --tag-yellow:#FBF3D0; --tag-yellow-ink:#735600;
+  --tag-green:#E5F4E8; --tag-green-ink:#23683A;
+  --tag-teal:#E0F3F2; --tag-teal-ink:#136862;
+  --tag-blue:#E4EEFB; --tag-blue-ink:#1F4F94;
+  --tag-purple:#F1E8F8; --tag-purple-ink:#5E2E80;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --tag-gray:#2A2530; --tag-gray-ink:#CFC6D6;
+    --tag-red:#3A1C1E; --tag-red-ink:#F2A7A7;
+    --tag-orange:#3A2616; --tag-orange-ink:#F4B98A;
+    --tag-yellow:#35300F; --tag-yellow-ink:#EBD27A;
+    --tag-green:#183022; --tag-green-ink:#96D9A8;
+    --tag-teal:#142F2E; --tag-teal-ink:#8AD5CF;
+    --tag-blue:#18263A; --tag-blue-ink:#9CC0F0;
+    --tag-purple:#2C2036; --tag-purple-ink:#D3B2EA;
+  }
+}
+:root[data-theme="dark"] {
+  --tag-gray:#2A2530; --tag-gray-ink:#CFC6D6;
+  --tag-red:#3A1C1E; --tag-red-ink:#F2A7A7;
+  --tag-orange:#3A2616; --tag-orange-ink:#F4B98A;
+  --tag-yellow:#35300F; --tag-yellow-ink:#EBD27A;
+  --tag-green:#183022; --tag-green-ink:#96D9A8;
+  --tag-teal:#142F2E; --tag-teal-ink:#8AD5CF;
+  --tag-blue:#18263A; --tag-blue-ink:#9CC0F0;
+  --tag-purple:#2C2036; --tag-purple-ink:#D3B2EA;
+}
+.ua-labels { display:inline-flex; flex-wrap:wrap; gap:4px; }
+.ua-label { display:inline-flex; align-items:center; gap:6px; font-size:.68rem; font-weight:700; line-height:1.2;
+            border-radius:6px; padding:3px 8px; white-space:nowrap; border:1px solid transparent; }
+.ua-label--gray { background:var(--tag-gray); color:var(--tag-gray-ink) !important; }
+.ua-label--red { background:var(--tag-red); color:var(--tag-red-ink) !important; }
+.ua-label--orange { background:var(--tag-orange); color:var(--tag-orange-ink) !important; }
+.ua-label--yellow { background:var(--tag-yellow); color:var(--tag-yellow-ink) !important; }
+.ua-label--green { background:var(--tag-green); color:var(--tag-green-ink) !important; }
+.ua-label--teal { background:var(--tag-teal); color:var(--tag-teal-ink) !important; }
+.ua-label--blue { background:var(--tag-blue); color:var(--tag-blue-ink) !important; }
+.ua-label--purple { background:var(--tag-purple); color:var(--tag-purple-ink) !important; }
+.ua-label--all { background:var(--surface); color:var(--muted) !important; border-color:var(--line); }
+.ua-tagbar { display:flex; flex-wrap:wrap; gap:6px; margin:-4px 0 14px; }
+.ua-tagbar .ua-label { padding:5px 10px; font-size:.74rem; }
+.ua-tagbar .ua-label.on { border-color:currentColor; box-shadow:inset 0 0 0 1px currentColor; }
+.ua-tagpick, .ua-swatches { display:flex; flex-wrap:wrap; gap:8px; }
+.ua-tagpick .ua-label, .ua-swatches .ua-label { padding:6px 10px; font-size:.78rem; cursor:pointer; }
+.ua-tagpick input, .ua-swatches input { margin:0; accent-color:currentColor; }
+.ua .form .hint a { margin-left:6px; font-weight:650; }
+
+/* event language: the name field only when other is chosen */
+.ua-lang-other { display:none; margin-top:12px; }
+.ua-lang:has(input[value="other"]:checked) .ua-lang-other { display:block; }
+
+/* news cover images, the gradient when there is none */
+.ua-cover--img { position:relative; overflow:hidden; background:var(--surface-2); }
+.ua-cover--img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.ua-cover--img > :not(img) { position:relative; }
+.ua-cover--wide.ua-cover--img { height:auto; aspect-ratio:16 / 9; max-height:380px; }
+.ua-cover--preview { height:120px; max-width:260px; border-radius:8px; margin-bottom:8px; }
+.ua .form .ua-check { display:flex; align-items:center; gap:8px; font-size:.82rem; margin-bottom:10px; }
+.ua .form .ua-q-gap { margin-top:14px; }
+.ua .form input[type=file] { font:inherit; font-size:.82rem; max-width:100%; }
+
+@media (max-width:760px) {
+  .ua-tagbar { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+  .ua-tagbar .ua-label { flex:none; min-height:40px; }
+  .ua-tagpick .ua-label, .ua-swatches .ua-label { min-height:40px; }
+}
