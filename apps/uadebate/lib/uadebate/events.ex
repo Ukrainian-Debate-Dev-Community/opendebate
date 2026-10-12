@@ -10,17 +10,18 @@ defmodule Uadebate.Events do
   alias Uadebate.Events.Event
   alias Uadebate.{Repo, Settings, Tags}
 
-  def public_in_month(%Date{} = first, kind \\ nil) do
+  # `range` is `{first, last}`, the dates to cover, or nil for every event
+  def public_in(range, kind \\ nil) do
     if Settings.calendar_public?(),
-      do: in_month(from(e in Event, where: e.visibility == "public"), first, kind),
+      do: in_range(from(e in Event, where: e.visibility == "public"), range, kind),
       else: []
   end
 
-  def all_in_month(%Date{} = first, kind \\ nil, tag \\ nil) do
+  def all_in(range, kind \\ nil, tag \\ nil) do
     Event
     |> Tags.only(tag, {"event_tags", :event_id})
     |> preload(:tags)
-    |> in_month(first, kind)
+    |> in_range(range, kind)
   end
 
   def upcoming_public(%Date{} = today, limit \\ 5) do
@@ -70,16 +71,17 @@ defmodule Uadebate.Events do
 
   def delete(%Event{} = event), do: Repo.delete(event)
 
-  defp in_month(query, first, kind) do
-    last = Date.end_of_month(first)
-
-    from(e in query,
-      where: e.starts_on <= ^last and coalesce(e.ends_on, e.starts_on) >= ^first,
-      order_by: [asc: e.starts_on]
-    )
+  defp in_range(query, range, kind) do
+    from(e in query, order_by: [asc: e.starts_on])
+    |> between(range)
     |> by_kind(kind)
     |> Repo.all()
   end
+
+  defp between(query, nil), do: query
+
+  defp between(query, {first, last}),
+    do: from(e in query, where: e.starts_on <= ^last and coalesce(e.ends_on, e.starts_on) >= ^first)
 
   defp by_kind(query, kind) when kind in [nil, ""], do: query
   defp by_kind(query, kind), do: from(e in query, where: e.kind == ^kind)

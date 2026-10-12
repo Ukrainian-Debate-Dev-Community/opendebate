@@ -87,7 +87,7 @@ msgstr "Адреса"
 msgid "Admin"
 msgstr "Адміністратор"
 
-#: lib/uadebate_web/controllers/calendar_html.ex:28
+#: lib/uadebate_web/controllers/calendar_html.ex:45
 #: lib/uadebate_web/controllers/club_html.ex:19
 #: lib/uadebate_web/controllers/news_html/index.html.heex:9
 #, elixir-autogen, elixir-format
@@ -326,7 +326,7 @@ msgstr "Чернетка"
 msgid "Drafts"
 msgstr "Чернетки"
 
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:68
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:74
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:27
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:4
 #: lib/uadebate_web/controllers/manage/html/tags.html.heex:72
@@ -609,8 +609,7 @@ msgstr "Новин поки немає. Напишіть першу."
 msgid "Nobody holds the role yet."
 msgstr "Цієї ролі поки ні в кого немає."
 
-#: lib/uadebate_web/controllers/calendar_html/index.html.heex:17
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:71
+#: lib/uadebate_web/controllers/calendar_html.ex:79
 #, elixir-autogen, elixir-format
 msgid "Nothing planned this month."
 msgstr "Цього місяця нічого не заплановано."
@@ -702,7 +701,7 @@ msgid "Privacy policy"
 msgstr "Політика конфіденційності"
 
 #: lib/uadebate_web/components/site.ex:261
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:63
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:69
 #, elixir-autogen, elixir-format
 msgid "Private"
 msgstr "Приватна"
@@ -712,7 +711,7 @@ msgstr "Приватна"
 msgid "Private: only content managers see it"
 msgstr "Приватна: її бачать лише контент-менеджери"
 
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:53
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:59
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:115
 #, elixir-autogen, elixir-format
 msgid "Public"
@@ -1106,7 +1105,7 @@ msgstr "Вимк."
 msgid "On"
 msgstr "Увімк."
 
-#: lib/uadebate_web/controllers/calendar_html/index.html.heex:20
+#: lib/uadebate_web/controllers/calendar_html/index.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "The calendar is not public yet. Tournaments will appear here soon."
 msgstr "Календар поки не публічний. Турніри скоро з'являться тут."
@@ -1538,3 +1537,28 @@ msgstr "Жовтий"
 #, elixir-autogen, elixir-format
 msgid "e.g. Polish"
 msgstr "наприклад, польська"
+
+#: lib/uadebate_web/controllers/calendar_html.ex:32
+#, elixir-autogen, elixir-format
+msgid "All events"
+msgstr "Усі події"
+
+#: lib/uadebate_web/controllers/calendar_html.ex:26
+#, elixir-autogen, elixir-format
+msgid "Month"
+msgstr "Місяць"
+
+#: lib/uadebate_web/controllers/calendar_html.ex:81
+#, elixir-autogen, elixir-format
+msgid "No events yet."
+msgstr "Подій поки немає."
+
+#: lib/uadebate_web/controllers/calendar_html.ex:80
+#, elixir-autogen, elixir-format
+msgid "Nothing planned this year."
+msgstr "Цього року нічого не заплановано."
+
+#: lib/uadebate_web/controllers/calendar_html.ex:29
+#, elixir-autogen, elixir-format
+msgid "Year"
+msgstr "Рік"

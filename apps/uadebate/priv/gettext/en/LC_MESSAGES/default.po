@@ -85,7 +85,7 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: lib/uadebate_web/controllers/calendar_html.ex:28
+#: lib/uadebate_web/controllers/calendar_html.ex:45
 #: lib/uadebate_web/controllers/club_html.ex:19
 #: lib/uadebate_web/controllers/news_html/index.html.heex:9
 #, elixir-autogen, elixir-format
@@ -324,7 +324,7 @@ msgstr ""
 msgid "Drafts"
 msgstr ""
 
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:68
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:74
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:27
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:4
 #: lib/uadebate_web/controllers/manage/html/tags.html.heex:72
@@ -607,8 +607,7 @@ msgstr ""
 msgid "Nobody holds the role yet."
 msgstr ""
 
-#: lib/uadebate_web/controllers/calendar_html/index.html.heex:17
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:71
+#: lib/uadebate_web/controllers/calendar_html.ex:79
 #, elixir-autogen, elixir-format
 msgid "Nothing planned this month."
 msgstr ""
@@ -700,7 +699,7 @@ msgid "Privacy policy"
 msgstr ""
 
 #: lib/uadebate_web/components/site.ex:261
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:63
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:69
 #, elixir-autogen, elixir-format
 msgid "Private"
 msgstr ""
@@ -710,7 +709,7 @@ msgstr ""
 msgid "Private: only content managers see it"
 msgstr ""
 
-#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:53
+#: lib/uadebate_web/controllers/manage/html/calendar.html.heex:59
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:115
 #, elixir-autogen, elixir-format
 msgid "Public"
@@ -1104,7 +1103,7 @@ msgstr ""
 msgid "On"
 msgstr ""
 
-#: lib/uadebate_web/controllers/calendar_html/index.html.heex:20
+#: lib/uadebate_web/controllers/calendar_html/index.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "The calendar is not public yet. Tournaments will appear here soon."
 msgstr ""
@@ -1534,4 +1533,29 @@ msgstr ""
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:90
 #, elixir-autogen, elixir-format
 msgid "e.g. Polish"
+msgstr ""
+
+#: lib/uadebate_web/controllers/calendar_html.ex:32
+#, elixir-autogen, elixir-format
+msgid "All events"
+msgstr ""
+
+#: lib/uadebate_web/controllers/calendar_html.ex:26
+#, elixir-autogen, elixir-format
+msgid "Month"
+msgstr ""
+
+#: lib/uadebate_web/controllers/calendar_html.ex:81
+#, elixir-autogen, elixir-format
+msgid "No events yet."
+msgstr ""
+
+#: lib/uadebate_web/controllers/calendar_html.ex:80
+#, elixir-autogen, elixir-format
+msgid "Nothing planned this year."
+msgstr ""
+
+#: lib/uadebate_web/controllers/calendar_html.ex:29
+#, elixir-autogen, elixir-format
+msgid "Year"
 msgstr ""

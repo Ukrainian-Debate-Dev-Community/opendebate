@@ -9,12 +9,14 @@
 </.page_head>
 
 <%= if @calendar_public do %>
-  <.toolbar first={@first} kind={@kind} base={~p"/calendar"} />
-  <.month_grid first={@first} events={@events} />
+  <.toolbar period={@period} kind={@kind} base={~p"/calendar"} />
+  <.month_grid :if={@period.view == :month} first={@period.first} events={@events} />
 
-  <div class="ua-sec">{month_name(@first.month)}</div>
-  <.event_row :for={event <- @events} event={event} />
-  <div :if={@events == []} class="ua-card ua-empty">{gettext("Nothing planned this month.")}</div>
+  <%= for {heading, events} <- groups(@period, @events) do %>
+    <div class="ua-sec">{heading}</div>
+    <.event_row :for={event <- events} event={event} />
+  <% end %>
+  <div :if={@events == []} class="ua-card ua-empty">{empty_text(@period)}</div>
 <% else %>
   <div class="ua-card ua-empty" id="calendar-not-public">
     {gettext("The calendar is not public yet. Tournaments will appear here soon.")}
