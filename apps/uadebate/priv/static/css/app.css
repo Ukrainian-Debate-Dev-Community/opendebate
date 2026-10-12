@@ -519,3 +519,13 @@ a { color:var(--brand); }
 /* event language: the name field only when other is chosen */
 .ua-lang-other { display:none; margin-top:12px; }
 .ua-lang:has(input[value="other"]:checked) .ua-lang-other { display:block; }
+
+/* news cover images, the gradient when there is none */
+.ua-cover--img { position:relative; overflow:hidden; background:var(--surface-2); }
+.ua-cover--img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.ua-cover--img > :not(img) { position:relative; }
+.ua-cover--wide.ua-cover--img { height:auto; aspect-ratio:16 / 9; max-height:380px; }
+.ua-cover--preview { height:120px; max-width:260px; border-radius:8px; margin-bottom:8px; }
+.ua .form .ua-check { display:flex; align-items:center; gap:8px; font-size:.82rem; margin-bottom:10px; }
+.ua .form .ua-q-gap { margin-top:14px; }
+.ua .form input[type=file] { font:inherit; font-size:.82rem; max-width:100%; }

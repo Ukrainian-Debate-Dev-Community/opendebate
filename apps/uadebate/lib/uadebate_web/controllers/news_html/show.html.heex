@@ -7,7 +7,7 @@
   <div class="ua-meta">
     {long_date(@post.published_at)}, {gettext("%{n} min read", n: read_minutes(@post.body))}
   </div>
-  <div class={["ua-cover", "ua-cover--wide", "c#{rem(@post.id, 3) + 1}"]}></div>
+  <.cover post={@post} class="ua-cover--wide" />
   <p :if={@post.summary} class="ua-lead">{@post.summary}</p>
   {Phoenix.HTML.raw(@body)}
 </article>

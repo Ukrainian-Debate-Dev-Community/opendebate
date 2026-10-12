@@ -15,6 +15,9 @@ defmodule Uadebate.News.Post do
     # cab account ids, read downward; never a foreign key into cab
     field :author_user_id, :integer
     field :editor_user_id, :integer
+    # a file name in Uadebate.Uploads; nil shows the gradient
+    field :image, :string
+    field :image_alt, :string
 
     timestamps(type: :utc_datetime)
   end
@@ -23,11 +26,12 @@ defmodule Uadebate.News.Post do
 
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:title, :slug, :rubric, :summary, :body])
+    |> cast(attrs, [:title, :slug, :rubric, :summary, :body, :image_alt])
     |> update_change(:slug, &slugify/1)
     |> put_slug()
     |> validate_required([:title, :slug, :rubric])
     |> validate_inclusion(:rubric, @rubrics)
+    |> validate_length(:image_alt, max: 200)
     |> validate_format(:slug, ~r/^[a-z0-9]+(-[a-z0-9]+)*$/)
     |> unique_constraint(:slug)
   end

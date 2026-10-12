@@ -12,6 +12,7 @@ defmodule UadebateWeb.Endpoint do
   ]
 
   plug Plug.Static, at: "/", from: :uadebate, gzip: false, only: UadebateWeb.static_paths()
+  plug UadebateWeb.UploadsStatic
 
   if code_reloading? do
     plug Phoenix.CodeReloader
