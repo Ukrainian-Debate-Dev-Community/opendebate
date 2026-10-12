@@ -135,16 +135,28 @@
                     "type": "string"
                   },
                   "city": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "meeting_info": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "description": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "contacts": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "null"
+                    ]
                   },
                   "is_private": {
                     "type": "boolean",
@@ -161,6 +173,14 @@
                       ]
                     }
                   },
+                  "format_other": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 60,
+                    "description": "Kept only when formats holds \"other\"; trimmed, blank becomes null"
+                  },
                   "languages": {
                     "type": "array",
                     "items": {
@@ -171,6 +191,14 @@
                         "other"
                       ]
                     }
+                  },
+                  "language_other": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 60,
+                    "description": "Kept only when languages holds \"other\"; trimmed, blank becomes null"
                   },
                   "audiences": {
                     "type": "array",
@@ -652,7 +680,7 @@
           "Sessions"
         ],
         "summary": "Cancel a session",
-        "description": "The head cancels: the session is removed.",
+        "description": "The head cancels: the session is removed. A finished session cannot be cancelled (409).",
         "parameters": [
           {
             "name": "uuid",
@@ -696,6 +724,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
@@ -2140,6 +2171,13 @@
               ]
             }
           },
+          "format_other": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The typed format when formats holds \"other\" (trimmed, at most 60 characters); null otherwise"
+          },
           "languages": {
             "type": "array",
             "items": {
@@ -2150,6 +2188,13 @@
                 "other"
               ]
             }
+          },
+          "language_other": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The typed language when languages holds \"other\" (trimmed, at most 60 characters); null otherwise"
           },
           "audiences": {
             "type": "array",
@@ -2168,7 +2213,9 @@
           "name",
           "formats",
           "languages",
-          "audiences"
+          "audiences",
+          "format_other",
+          "language_other"
         ],
         "description": "A club's public profile"
       },
