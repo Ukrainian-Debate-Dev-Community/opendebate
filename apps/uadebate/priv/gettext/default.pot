@@ -194,6 +194,7 @@ msgstr ""
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:11
 #: lib/uadebate_web/controllers/club_html/index.html.heex:63
+#: lib/uadebate_web/controllers/club_html/index.html.heex:74
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:62
 #, elixir-autogen, elixir-format
 msgid "City"
@@ -408,6 +409,7 @@ msgstr ""
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:29
 #: lib/uadebate_web/controllers/club_html/index.html.heex:64
+#: lib/uadebate_web/controllers/club_html/index.html.heex:75
 #: lib/uadebate_web/controllers/manage/html/event_form.html.heex:66
 #, elixir-autogen, elixir-format
 msgid "Format"
@@ -434,6 +436,7 @@ msgid "Grant the role"
 msgstr ""
 
 #: lib/uadebate_web/controllers/manage/html/people.html.heex:27
+#: lib/uadebate_web/controllers/manage/html/people.html.heex:38
 #, elixir-autogen, elixir-format
 msgid "Granted by"
 msgstr ""
@@ -477,6 +480,7 @@ msgstr ""
 #: lib/uadebate_web/components/site.ex:91
 #: lib/uadebate_web/controllers/club_html/index.html.heex:36
 #: lib/uadebate_web/controllers/club_html/index.html.heex:65
+#: lib/uadebate_web/controllers/club_html/index.html.heex:76
 #, elixir-autogen, elixir-format
 msgid "Language"
 msgstr ""
@@ -753,6 +757,7 @@ msgstr ""
 
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:40
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:11
+#: lib/uadebate_web/controllers/manage/html/news_index.html.heex:19
 #, elixir-autogen, elixir-format
 msgid "Rubric"
 msgstr ""
@@ -804,6 +809,7 @@ msgid "Sign out"
 msgstr ""
 
 #: lib/uadebate_web/controllers/manage/html/people.html.heex:26
+#: lib/uadebate_web/controllers/manage/html/people.html.heex:37
 #, elixir-autogen, elixir-format
 msgid "Since"
 msgstr ""
@@ -819,6 +825,7 @@ msgid "Starts"
 msgstr ""
 
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:12
+#: lib/uadebate_web/controllers/manage/html/news_index.html.heex:20
 #, elixir-autogen, elixir-format
 msgid "Status"
 msgstr ""

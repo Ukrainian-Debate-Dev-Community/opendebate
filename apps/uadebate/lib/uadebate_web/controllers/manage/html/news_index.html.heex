@@ -16,8 +16,8 @@
     <tbody>
       <tr :for={post <- @posts}>
         <td><a href={~p"/manage/news/#{post.id}/edit"}><b>{post.title}</b></a></td>
-        <td>{rubric_label(post.rubric)}</td>
-        <td>
+        <td data-label={gettext("Rubric")}>{rubric_label(post.rubric)}</td>
+        <td data-label={gettext("Status")}>
           <.tag :if={post.published_at} kind="ok">
             {gettext("Published %{date}", date: long_date(post.published_at))}
           </.tag>
