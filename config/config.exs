@@ -16,6 +16,10 @@ node_path = %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build
 config :esbuild, :cab, env: node_path
 config :tailwind, :cab, env: node_path
 
+# Who runs this cab: the name, links and addresses in cab's footer, on
+# its sign-in and account pages
+config :cab, :operator, UadebateWeb.CabOperator
+
 # uadebate.com: its own repo (news, events, roles) and endpoint. It
 # reads cab downward; :cab_url is where its Cabinet links point.
 config :uadebate,
