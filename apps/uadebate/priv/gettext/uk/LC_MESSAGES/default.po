@@ -277,7 +277,7 @@ msgstr "Контент-менеджери"
 #: lib/uadebate_web/controllers/page_html/home.html.heex:21
 #, elixir-autogen, elixir-format
 msgid "Debate Federation of Ukraine"
-msgstr "Федерація дебатів України"
+msgstr "Федерація Дебатів України"
 
 #: lib/uadebate_web/controllers/club_html/index.html.heex:3
 #, elixir-autogen, elixir-format
@@ -400,7 +400,7 @@ msgstr "Перший дебатний турнір, Кубок Федераці�
 #: lib/uadebate_web/controllers/page_html.ex:22
 #, elixir-autogen, elixir-format
 msgid "First founding conference of the All-Ukrainian youth organisation \"Debate Federation of Ukraine\""
-msgstr "Перша установча конференція Всеукраїнської молодіжної організації «Федерація дебатів України»"
+msgstr "Перша установча конференція Всеукраїнської молодіжної організації «Федерація Дебатів України»"
 
 #: lib/uadebate_web/controllers/page_html.ex:9
 #, elixir-autogen, elixir-format
@@ -953,7 +953,7 @@ msgstr "Вт"
 #: lib/uadebate_web/components/layouts.ex:45
 #, elixir-autogen, elixir-format
 msgid "UAdebate, the Debate Federation of Ukraine"
-msgstr "UAdebate, Федерація дебатів України"
+msgstr "UAdebate, Федерація Дебатів України"
 
 #: lib/uadebate_web/controllers/page_html/home.html.heex:23
 #, elixir-autogen, elixir-format
