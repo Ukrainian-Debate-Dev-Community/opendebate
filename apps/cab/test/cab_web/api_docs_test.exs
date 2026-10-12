@@ -62,4 +62,16 @@ defmodule CabWeb.ApiDocsTest do
     assert response(yml, 200) =~ "openapi:"
     assert get_resp_header(yml, "content-type") |> hd() =~ "yaml"
   end
+
+  test "nothing on the page links out to Scalar's services" do
+    static = Path.expand("../../priv/static/apidocs", __DIR__)
+    boot = File.read!(Path.join(static, "boot.js"))
+    theme = File.read!(Path.join(static, "theme.css"))
+
+    common = boot |> String.split("var cab =") |> hd()
+    assert common =~ "hideClientButton: true", "no button out to client.scalar.com"
+    assert common =~ "telemetry: false"
+    assert common =~ "withDefaultFonts: false"
+    assert theme =~ ~s(a[href*="scalar.com"]), "the Powered by link stays hidden"
+  end
 end

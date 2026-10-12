@@ -92,3 +92,8 @@ body { margin: 0; background: var(--scalar-background-1); font-family: var(--sca
 .cab-api-name { font-weight: 700; font-size: .95rem; }
 .cab-api-note { color: var(--cab-top-muted); font-size: .8rem; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 760px) { .cab-api-note { display: none; } }
+
+/* Scalar's "Powered by" line links out to scalar.com with tracking
+   tags and has no setting of its own; the MIT licence travels in
+   vendor/scalar/LICENSE, so the page leaves the link out */
+.darklight-reference div:has(> a[href*="scalar.com"]) { display: none; }
