@@ -3122,15 +3122,15 @@ msgstr "Яка мова, напр. польська"
 #: lib/cab_web/controllers/api_docs_html/show.html.heex:14
 #, elixir-autogen, elixir-format
 msgid "Engine API"
-msgstr ""
+msgstr "API двіжка"
 
 #: lib/cab_web/controllers/api_docs_controller.ex:11
 #: lib/cab_web/controllers/api_docs_html/show.html.heex:13
 #, elixir-autogen, elixir-format
 msgid "cab API"
-msgstr ""
+msgstr "API cab"
 
 #: lib/cab_web/controllers/api_docs_html/show.html.heex:17
 #, elixir-autogen, elixir-format
 msgid "The engine's own API, version 2, served as is at /api/engine/v2. Not open to the public yet."
-msgstr ""
+msgstr "Власний API двіжка, версія 2, доступний без змін за адресою /api/engine/v2. Поки що закритий для публіки."

@@ -91,7 +91,7 @@ defmodule CabWeb.ClubProfileTest do
     assert page =~ "Language: Ukrainian, Polish"
     assert conn |> get(~p"/") |> html_response(200) =~ "BP, Karl Popper"
 
-    %{"clubs" => [api]} = conn |> get(~p"/api/v1/clubs") |> json_response(200)
+    %{"clubs" => [api]} = conn |> get(~p"/api/cab/v1/clubs") |> json_response(200)
     assert api["format_other"] == "Karl Popper"
     assert api["language_other"] == "Polish"
   end
