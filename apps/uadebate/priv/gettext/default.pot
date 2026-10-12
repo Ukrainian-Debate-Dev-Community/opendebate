@@ -48,7 +48,7 @@ msgstr ""
 msgid "A debate community since 2011"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:429
+#: lib/uadebate_web/components/site.ex:453
 #, elixir-autogen, elixir-format
 msgid "APF"
 msgstr ""
@@ -102,7 +102,7 @@ msgstr ""
 msgid "All news"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:412
+#: lib/uadebate_web/components/site.ex:436
 #, elixir-autogen, elixir-format
 msgid "Announcements"
 msgstr ""
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Announcements, tournament results, interviews and tips for debaters."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:465
+#: lib/uadebate_web/components/site.ex:489
 #, elixir-autogen, elixir-format
 msgid "April"
 msgstr ""
@@ -122,12 +122,12 @@ msgstr ""
 msgid "Audience"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:469
+#: lib/uadebate_web/components/site.ex:493
 #, elixir-autogen, elixir-format
 msgid "August"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:428
+#: lib/uadebate_web/components/site.ex:452
 #, elixir-autogen, elixir-format
 msgid "BP"
 msgstr ""
@@ -148,7 +148,7 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:368
+#: lib/uadebate_web/components/site.ex:392
 #, elixir-autogen, elixir-format
 msgid "Branches of the federation"
 msgstr ""
@@ -216,7 +216,7 @@ msgstr ""
 msgid "Club details are kept by the club in cab."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:420
+#: lib/uadebate_web/components/site.ex:444
 #, elixir-autogen, elixir-format
 msgid "Club event"
 msgstr ""
@@ -245,7 +245,7 @@ msgstr ""
 msgid "Coming up"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:416
+#: lib/uadebate_web/components/site.ex:440
 #: lib/uadebate_web/controllers/page_html/home.html.heex:74
 #, elixir-autogen, elixir-format
 msgid "Community"
@@ -286,7 +286,7 @@ msgstr ""
 msgid "Debate is a game where you can develop the skills of argumentation across a wide range of topics."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:473
+#: lib/uadebate_web/components/site.ex:497
 #, elixir-autogen, elixir-format
 msgid "December"
 msgstr ""
@@ -313,7 +313,7 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:499
+#: lib/uadebate_web/components/site.ex:523
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:31
 #, elixir-autogen, elixir-format
 msgid "Draft"
@@ -342,12 +342,12 @@ msgstr ""
 msgid "Ends"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:439
+#: lib/uadebate_web/components/site.ex:463
 #, elixir-autogen, elixir-format
 msgid "English"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:421
+#: lib/uadebate_web/components/site.ex:445
 #, elixir-autogen, elixir-format
 msgid "Event"
 msgstr ""
@@ -363,7 +363,7 @@ msgstr ""
 msgid "Event saved."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:463
+#: lib/uadebate_web/components/site.ex:487
 #, elixir-autogen, elixir-format
 msgid "February"
 msgstr ""
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Format"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:297
+#: lib/uadebate_web/components/site.ex:305
 #, elixir-autogen, elixir-format
 msgid "Fri"
 msgstr ""
@@ -453,22 +453,22 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:414
+#: lib/uadebate_web/components/site.ex:438
 #, elixir-autogen, elixir-format
 msgid "Interviews"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:462
+#: lib/uadebate_web/components/site.ex:486
 #, elixir-autogen, elixir-format
 msgid "January"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:468
+#: lib/uadebate_web/components/site.ex:492
 #, elixir-autogen, elixir-format
 msgid "July"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:467
+#: lib/uadebate_web/components/site.ex:491
 #, elixir-autogen, elixir-format
 msgid "June"
 msgstr ""
@@ -499,12 +499,12 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:344
+#: lib/uadebate_web/components/site.ex:368
 #, elixir-autogen, elixir-format
 msgid "Map of debate clubs in Ukraine"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:464
+#: lib/uadebate_web/components/site.ex:488
 #, elixir-autogen, elixir-format
 msgid "March"
 msgstr ""
@@ -534,7 +534,7 @@ msgstr ""
 msgid "Mission"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:293
+#: lib/uadebate_web/components/site.ex:301
 #, elixir-autogen, elixir-format
 msgid "Mon"
 msgstr ""
@@ -618,12 +618,12 @@ msgstr ""
 msgid "Nothing planned yet."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:472
+#: lib/uadebate_web/components/site.ex:496
 #, elixir-autogen, elixir-format
 msgid "November"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:471
+#: lib/uadebate_web/components/site.ex:495
 #, elixir-autogen, elixir-format
 msgid "October"
 msgstr ""
@@ -648,17 +648,17 @@ msgstr ""
 msgid "Open in cab"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:444
+#: lib/uadebate_web/components/site.ex:468
 #, elixir-autogen, elixir-format
 msgid "Open to all"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:430
+#: lib/uadebate_web/components/site.ex:454
 #, elixir-autogen, elixir-format
 msgid "Other format"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:440
+#: lib/uadebate_web/components/site.ex:464
 #, elixir-autogen, elixir-format
 msgid "Other language"
 msgstr ""
@@ -698,7 +698,7 @@ msgstr ""
 msgid "Privacy policy"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:261
+#: lib/uadebate_web/components/site.ex:268
 #: lib/uadebate_web/controllers/manage/html/calendar.html.heex:69
 #, elixir-autogen, elixir-format
 msgid "Private"
@@ -746,7 +746,7 @@ msgstr ""
 msgid "Registration or the tournament's page, https://..."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:413
+#: lib/uadebate_web/components/site.ex:437
 #, elixir-autogen, elixir-format
 msgid "Results"
 msgstr ""
@@ -763,7 +763,7 @@ msgstr ""
 msgid "Rubric"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:298
+#: lib/uadebate_web/components/site.ex:306
 #, elixir-autogen, elixir-format
 msgid "Sat"
 msgstr ""
@@ -790,12 +790,12 @@ msgstr ""
 msgid "Saved."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:442
+#: lib/uadebate_web/components/site.ex:466
 #, elixir-autogen, elixir-format
 msgid "School students"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:470
+#: lib/uadebate_web/components/site.ex:494
 #, elixir-autogen, elixir-format
 msgid "September"
 msgstr ""
@@ -842,7 +842,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:299
+#: lib/uadebate_web/components/site.ex:307
 #, elixir-autogen, elixir-format
 msgid "Sun"
 msgstr ""
@@ -899,12 +899,12 @@ msgstr ""
 msgid "Their exact cab username or e-mail."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:296
+#: lib/uadebate_web/components/site.ex:304
 #, elixir-autogen, elixir-format
 msgid "Thu"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:415
+#: lib/uadebate_web/components/site.ex:439
 #, elixir-autogen, elixir-format
 msgid "Tips"
 msgstr ""
@@ -921,7 +921,7 @@ msgstr ""
 msgid "To a person who has signed in to cab at least once."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:418
+#: lib/uadebate_web/components/site.ex:442
 #, elixir-autogen, elixir-format
 msgid "Tournament"
 msgstr ""
@@ -937,12 +937,12 @@ msgstr ""
 msgid "Tournaments first, plus trainings and club events across Ukraine."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:419
+#: lib/uadebate_web/components/site.ex:443
 #, elixir-autogen, elixir-format
 msgid "Training"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:294
+#: lib/uadebate_web/components/site.ex:302
 #, elixir-autogen, elixir-format
 msgid "Tue"
 msgstr ""
@@ -957,12 +957,12 @@ msgstr ""
 msgid "Ukraine's debate community:"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:438
+#: lib/uadebate_web/components/site.ex:462
 #, elixir-autogen, elixir-format
 msgid "Ukrainian"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:443
+#: lib/uadebate_web/components/site.ex:467
 #, elixir-autogen, elixir-format
 msgid "University students"
 msgstr ""
@@ -999,7 +999,7 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:295
+#: lib/uadebate_web/components/site.ex:303
 #, elixir-autogen, elixir-format
 msgid "Wed"
 msgstr ""
@@ -1037,22 +1037,22 @@ msgstr ""
 msgid "tournaments, clubs, growth"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:425
+#: lib/uadebate_web/components/site.ex:449
 #, elixir-autogen, elixir-format
 msgid "Club events"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:426
+#: lib/uadebate_web/components/site.ex:450
 #, elixir-autogen, elixir-format
 msgid "Other events"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:423
+#: lib/uadebate_web/components/site.ex:447
 #, elixir-autogen, elixir-format
 msgid "Tournaments"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:424
+#: lib/uadebate_web/components/site.ex:448
 #, elixir-autogen, elixir-format
 msgid "Trainings"
 msgstr ""
@@ -1123,231 +1123,231 @@ msgstr ""
 msgid "The whole calendar is private: no event reaches the public site, the home page or the iCal feed. You can still prepare events here."
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:393
+#: lib/uadebate_web/components/site.ex:417
 #, elixir-autogen, elixir-format
 msgid "Chernihiv"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:394
+#: lib/uadebate_web/components/site.ex:418
 #, elixir-autogen, elixir-format
 msgid "Chernivtsi"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:395
+#: lib/uadebate_web/components/site.ex:419
 #, elixir-autogen, elixir-format
 msgid "Dnipro"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:396
+#: lib/uadebate_web/components/site.ex:420
 #, elixir-autogen, elixir-format
 msgid "Ivano-Frankivsk"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:397
+#: lib/uadebate_web/components/site.ex:421
 #, elixir-autogen, elixir-format
 msgid "Kharkiv"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:398
+#: lib/uadebate_web/components/site.ex:422
 #, elixir-autogen, elixir-format
 msgid "Khmelnytskyi"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:399
+#: lib/uadebate_web/components/site.ex:423
 #, elixir-autogen, elixir-format
 msgid "Kremenchuk"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:400
+#: lib/uadebate_web/components/site.ex:424
 #, elixir-autogen, elixir-format
 msgid "Krolevets"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:401
+#: lib/uadebate_web/components/site.ex:425
 #, elixir-autogen, elixir-format
 msgid "Kyiv"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:402
+#: lib/uadebate_web/components/site.ex:426
 #, elixir-autogen, elixir-format
 msgid "Lutsk"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:403
+#: lib/uadebate_web/components/site.ex:427
 #, elixir-autogen, elixir-format
 msgid "Lviv"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:404
+#: lib/uadebate_web/components/site.ex:428
 #, elixir-autogen, elixir-format
 msgid "Odesa"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:405
+#: lib/uadebate_web/components/site.ex:429
 #, elixir-autogen, elixir-format
 msgid "Ostroh"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:406
+#: lib/uadebate_web/components/site.ex:430
 #, elixir-autogen, elixir-format
 msgid "Poltava"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:407
+#: lib/uadebate_web/components/site.ex:431
 #, elixir-autogen, elixir-format
 msgid "Rivne"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:408
+#: lib/uadebate_web/components/site.ex:432
 #, elixir-autogen, elixir-format
 msgid "Vinnytsia"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:409
+#: lib/uadebate_web/components/site.ex:433
 #, elixir-autogen, elixir-format
 msgid "Zaporizhzhia"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:511
+#: lib/uadebate_web/components/site.ex:535
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "April"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:515
+#: lib/uadebate_web/components/site.ex:539
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "August"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:519
+#: lib/uadebate_web/components/site.ex:543
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "December"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:509
+#: lib/uadebate_web/components/site.ex:533
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "February"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:508
+#: lib/uadebate_web/components/site.ex:532
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "January"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:514
+#: lib/uadebate_web/components/site.ex:538
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "July"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:513
+#: lib/uadebate_web/components/site.ex:537
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "June"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:510
+#: lib/uadebate_web/components/site.ex:534
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "March"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:512
+#: lib/uadebate_web/components/site.ex:536
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "May"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:518
+#: lib/uadebate_web/components/site.ex:542
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "November"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:517
+#: lib/uadebate_web/components/site.ex:541
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "October"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:516
+#: lib/uadebate_web/components/site.ex:540
 #, elixir-autogen, elixir-format
 msgctxt "in a date"
 msgid "September"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:485
+#: lib/uadebate_web/components/site.ex:509
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Apr"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:489
+#: lib/uadebate_web/components/site.ex:513
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Aug"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:493
+#: lib/uadebate_web/components/site.ex:517
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Dec"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:483
+#: lib/uadebate_web/components/site.ex:507
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Feb"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:482
+#: lib/uadebate_web/components/site.ex:506
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Jan"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:488
+#: lib/uadebate_web/components/site.ex:512
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Jul"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:487
+#: lib/uadebate_web/components/site.ex:511
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Jun"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:484
+#: lib/uadebate_web/components/site.ex:508
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Mar"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:466
-#: lib/uadebate_web/components/site.ex:486
+#: lib/uadebate_web/components/site.ex:490
+#: lib/uadebate_web/components/site.ex:510
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "May"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:492
+#: lib/uadebate_web/components/site.ex:516
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Nov"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:491
+#: lib/uadebate_web/components/site.ex:515
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Oct"
 msgstr ""
 
-#: lib/uadebate_web/components/site.ex:490
+#: lib/uadebate_web/components/site.ex:514
 #, elixir-autogen, elixir-format
 msgctxt "short month"
 msgid "Sep"
