@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang={Gettext.get_locale(CabWeb.Gettext)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{@page_title}</title>
+    <link rel="stylesheet" href={~p"/apidocs/theme.css"} />
+  </head>
+  <body>
+    <header class="cab-api-top">
+      <a class="cab-api-mark" href={~p"/"}>cab<span class="cab-api-beta">{gettext("beta")}</span></a>
+      <span class="cab-api-name">{gettext("API")}</span>
+      <span class="cab-api-note">
+        {gettext(
+          "The engine API is internal today; approved partners will reach it through keys."
+        )}
+      </span>
+    </header>
+    <div
+      id="api-docs"
+      data-cab-title={gettext("cab API")}
+      data-cab-spec={~p"/api/docs/cab.json"}
+      data-engine-title={gettext("Engine API")}
+      data-engine-spec={~p"/api/docs/engine.yml"}
+    >
+    </div>
+    <script src={~p"/vendor/scalar/standalone.js"}>
+    </script>
+    <script src={~p"/apidocs/boot.js"}>
+    </script>
+  </body>
+</html>

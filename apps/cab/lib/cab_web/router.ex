@@ -14,10 +14,24 @@ defmodule CabWeb.Router do
     plug CabWeb.Locale
   end
 
+  # the API reference: no session, the same for everyone
+  pipeline :docs do
+    plug :accepts, ["html", "json"]
+    plug :put_secure_browser_headers
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
     plug :fetch_current_user
+  end
+
+  scope "/api/docs", CabWeb do
+    pipe_through :docs
+
+    get "/", ApiDocsController, :show
+    get "/cab.json", ApiDocsController, :cab_spec
+    get "/engine.yml", ApiDocsController, :engine_spec
   end
 
   # the container health check: no pipeline, so no session or cookie
