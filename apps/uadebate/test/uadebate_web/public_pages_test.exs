@@ -98,6 +98,25 @@ defmodule UadebateWeb.PublicPagesTest do
     assert page =~ "Club details are kept by the club in cab."
   end
 
+  test "a club's own words for other show on its card and page", %{conn: conn} do
+    head = cab_user()
+
+    club =
+      cab_club(head, %{
+        name: "Popper Club",
+        formats: ["other"],
+        format_other: "Karl Popper",
+        languages: ["other"],
+        language_other: "Polish"
+      })
+
+    list = conn |> get(~p"/clubs") |> html_response(200)
+    assert list =~ "Karl Popper" and list =~ "Polish"
+
+    page = conn |> get(~p"/clubs/#{club.uuid}") |> html_response(200)
+    assert page =~ "Karl Popper" and page =~ "Polish"
+  end
+
   test "an archived or unknown club is not found", %{conn: conn} do
     club = cab_club(cab_user())
     {:ok, _} = Cab.Clubs.archive_club(club)
