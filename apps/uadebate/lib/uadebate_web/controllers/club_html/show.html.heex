@@ -9,8 +9,8 @@
 </.page_head>
 
 <div class="ua-tags">
-  <.tag :for={f <- @club.formats || []} kind="info">{format_label(f)}</.tag>
-  <.tag :for={l <- @club.languages || []} kind="info">{language_label(l)}</.tag>
+  <.tag :for={f <- @club.formats || []} kind="info">{format_label(f, @club.format_other)}</.tag>
+  <.tag :for={l <- @club.languages || []} kind="info">{language_label(l, @club.language_other)}</.tag>
   <.tag :for={a <- @club.audiences || []} kind="info">{audience_label(a)}</.tag>
 </div>
 

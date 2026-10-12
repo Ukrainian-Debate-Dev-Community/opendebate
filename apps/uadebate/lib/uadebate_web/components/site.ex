@@ -429,6 +429,12 @@ defmodule UadebateWeb.Site do
   def format_label("apf"), do: gettext("APF")
   def format_label(_), do: gettext("Other format")
 
+  @doc "A club's format or language, with the club's own words for other."
+  def format_label("other", text) when is_binary(text) and text != "", do: text
+  def format_label(value, _text), do: format_label(value)
+  def language_label("other", text) when is_binary(text) and text != "", do: text
+  def language_label(value, _text), do: language_label(value)
+
   def language_label("uk"), do: gettext("Ukrainian")
   def language_label("en"), do: gettext("English")
   def language_label(_), do: gettext("Other language")
