@@ -468,3 +468,44 @@ a { color:var(--brand); }
   .ua-t td:not(:first-child):not([data-label]) { grid-row:1; grid-column:2; justify-self:end; align-self:start; }
   .ua-t td:not(:first-child):not([data-label]) ~ td:not([data-label]) { grid-column:3; }
 }
+
+/* phones, from iPhone screenshots: the menu stays one scrollable line,
+   page heads stack their actions under the text, event rows put tags and
+   actions on a second line, the month grid gives way to the list under
+   it, the ribbon is one scrollable line, form fields are 16px (no zoom)
+   and links are thumb-sized */
+@media (max-width:760px) {
+  .ua-nav { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .ua-nav::-webkit-scrollbar { display:none; }
+  .ua-nav a { flex:none; white-space:nowrap; }
+
+  .ua-head { flex-direction:column; align-items:stretch; gap:14px; }
+  .ua-head-act { flex-wrap:wrap; }
+  .ua-head-act > * { flex:1 1 auto; justify-content:center; text-align:center; min-height:44px;
+                     display:inline-flex; align-items:center; }
+
+  .ua-ev { flex-wrap:wrap; row-gap:10px; }
+  .ua-ev-body { flex:1 1 0; min-width:60%; }
+  .ua-ev > :not(.ua-date):not(.ua-ev-body) { flex:none; }
+  .ua-ev > .ua-ev-body ~ * { order:3; }
+  .ua-ev::after { content:""; order:2; flex-basis:100%; height:0; }
+
+  .ua-cal { display:none; }
+
+  .ua-cmbar { flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+              white-space:nowrap; }
+  .ua-cmbar::-webkit-scrollbar { display:none; }
+  .ua-cmbar > * { flex:none; }
+  /* a soft fade on the right says the line scrolls */
+  .ua-nav { -webkit-mask-image:linear-gradient(to right, #000 85%, transparent);
+            mask-image:linear-gradient(to right, #000 85%, transparent); padding-right:28px; }
+  .ua-cmbar a { min-height:40px; display:inline-flex; align-items:center; }
+
+  .ua-calswitch { flex-wrap:wrap; }
+  .ua-vis button { min-height:40px; padding:4px 14px; }
+
+  .ua .form input[type=text], .ua .form input[type=date], .ua .form input[type=email],
+  .ua .form input[type=url], .ua .form textarea, .ua .form select, .ua select, .ua input { font-size:16px; }
+
+  .ua-foot a { padding:8px 0; }
+}
