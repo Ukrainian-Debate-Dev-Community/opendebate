@@ -2359,7 +2359,16 @@
             "description": "The room's number in the session (R1, R2...)"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "pending",
+              "live",
+              "judging",
+              "completed",
+              "confirmed",
+              "void"
+            ],
+            "description": "The ballot's state: completed once the ballot is submitted, confirmed once the head locks it"
           },
           "motion": {
             "oneOf": [
@@ -2396,9 +2405,10 @@
             "type": "string"
           },
           "role": {
-            "type": [
-              "string",
-              "null"
+            "type": "string",
+            "enum": [
+              "speaker",
+              "adjudicator"
             ]
           },
           "id": {
@@ -2430,7 +2440,7 @@
               "signup",
               "closed",
               "running",
-              "finished"
+              "done"
             ]
           },
           "scheduled_at": {
