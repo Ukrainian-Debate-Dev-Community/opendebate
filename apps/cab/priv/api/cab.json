@@ -229,7 +229,7 @@
           "Clubs"
         ],
         "summary": "The roster",
-        "description": "Members of the club. Public clubs: anyone signed in; members-only clubs: members.",
+        "description": "Members of the club. Public clubs: anyone, signed in or not; members-only clubs: members.",
         "parameters": [
           {
             "name": "uuid",
@@ -275,6 +275,7 @@
           }
         },
         "security": [
+          {},
           {
             "cabSession": []
           }
@@ -592,9 +593,6 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
           },
@@ -654,7 +652,7 @@
           "Sessions"
         ],
         "summary": "Cancel a session",
-        "description": "The head cancels: the session is removed and the club has no session again.",
+        "description": "The head cancels: the session is removed.",
         "parameters": [
           {
             "name": "uuid",
@@ -698,9 +696,6 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
@@ -1127,7 +1122,8 @@
                       "type": "integer"
                     },
                     "username": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Only when the head registered someone by username"
                     }
                   }
                 }
@@ -1756,9 +1752,6 @@
           "401": {
             "$ref": "#/components/responses/Unauthenticated"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
@@ -1918,6 +1911,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           },
           "422": {
             "$ref": "#/components/responses/Unprocessable"
@@ -2638,7 +2634,8 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Only in the list"
           }
         }
       }
