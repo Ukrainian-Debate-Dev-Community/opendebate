@@ -3,16 +3,18 @@ defmodule Uadebate.ICal do
 
   alias Uadebate.Events.Event
 
-  def feed(events, host) do
+  @doc "`language` gives an event's language line for the description, or nil."
+  def feed(events, host, language \\ fn _event -> nil end) do
     lines =
       ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//uadebate//calendar//EN", "CALSCALE:GREGORIAN"] ++
-        Enum.flat_map(events, &event(&1, host)) ++ ["END:VCALENDAR"]
+        Enum.flat_map(events, &event(&1, host, language.(&1))) ++ ["END:VCALENDAR"]
 
     Enum.map_join(lines, "", &(fold(&1) <> "\r\n"))
   end
 
-  defp event(%Event{} = e, host) do
+  defp event(%Event{} = e, host, language) do
     last = e.ends_on || e.starts_on
+    description = [language, e.details] |> Enum.reject(&(&1 in [nil, ""])) |> Enum.join("\n\n")
 
     [
       "BEGIN:VEVENT",
@@ -23,7 +25,7 @@ defmodule Uadebate.ICal do
       "SUMMARY:" <> escape(e.title)
     ] ++
       if(e.city, do: ["LOCATION:" <> escape(e.city)], else: []) ++
-      if(e.details, do: ["DESCRIPTION:" <> escape(e.details)], else: []) ++
+      if(description != "", do: ["DESCRIPTION:" <> escape(description)], else: []) ++
       if(e.link, do: ["URL:" <> e.link], else: []) ++ ["END:VEVENT"]
   end
 

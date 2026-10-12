@@ -416,8 +416,15 @@ defmodule UadebateWeb.Site do
   def audience_label("university"), do: gettext("University students")
   def audience_label(_), do: gettext("Open to all")
 
+  @doc "An event's language: Ukrainian, English or the name given for other."
+  def event_language(%{language: "other", language_other: name}) when name not in [nil, ""],
+    do: name
+
+  def event_language(%{language: nil}), do: nil
+  def event_language(%{language: code}), do: language_label(code)
+
   def event_meta(event) do
-    [kind_label(event.kind), event.city, event.format]
+    [kind_label(event.kind), event.city, event.format, event_language(event)]
     |> Enum.reject(&(&1 in [nil, ""]))
     |> Enum.join(", ")
   end

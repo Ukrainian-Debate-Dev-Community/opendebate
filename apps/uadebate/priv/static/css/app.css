@@ -515,3 +515,7 @@ a { color:var(--brand); }
 
   .ua-foot a { padding:8px 0; }
 }
+
+/* event language: the name field only when other is chosen */
+.ua-lang-other { display:none; margin-top:12px; }
+.ua-lang:has(input[value="other"]:checked) .ua-lang-other { display:block; }
