@@ -4,7 +4,7 @@ NIX     = nix develop --command
 # cab's database lives in no app of this umbrella: name both repos
 REPOS   = -r Cab.Repo -r Uadebate.Repo
 
-.PHONY: setup dev build test test-all test-e2e test-phone lint fmt clean up down restart fresh backfill logs status sync-cab cab-mix release image
+.PHONY: setup dev build test test-all test-e2e test-phone lint fmt clean up down restart fresh backfill logs status sync-cab release image
 
 # ---------------------------------------------------------------
 # Standard targets
@@ -84,11 +84,6 @@ down:
 
 restart: down up
 
-# cab's scripts (demo data, the walkthrough) run mix inside the cab
-# submodule as its own project: fetch its deps there once
-cab-mix:
-	cd cab && $(NIX) sh -c 'mix local.hex --force --if-missing && mix local.rebar --force --if-missing && mix deps.get'
-
 # Wipe the engine's, cab's and uadebate.com's databases, reseed the
 # engine, migrate, restart the stack and load fresh demo data around
 # your own account:
@@ -96,7 +91,6 @@ cab-mix:
 fresh:
 	@test -n "$(DEV_USER)" || { echo "usage: make fresh DEV_USER=<your cab username>"; exit 1; }
 	@$(MAKE) down
-	@$(MAKE) cab-mix
 	@echo "== wiping engine db (cab_dev) =="
 	$(PSQL) -d postgres -c 'DROP DATABASE IF EXISTS cab_dev;' -c 'CREATE DATABASE cab_dev OWNER postgres;'
 	$(ENGINE_SHELL) npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all
@@ -104,7 +98,7 @@ fresh:
 	$(NIX) sh -c 'cd apps/uadebate && mix ecto.drop --force $(REPOS) && mix ecto.create $(REPOS) && mix ecto.migrate $(REPOS)'
 	@$(MAKE) up
 	@echo "== loading demo data =="
-	set -a; [ -f .env ] && . ./.env; set +a; cab/apps/cab/priv/prime_demo.sh $(DEV_USER)
+	set -a; [ -f .env ] && . ./.env; set +a; MIX_ROOT=$(CURDIR) cab/apps/cab/priv/prime_demo.sh $(DEV_USER)
 	@echo "fresh demo ready: http://localhost:4000/ and http://localhost:4001/"
 
 # Record lifecycle facts on cab session rows that predate them.
@@ -112,10 +106,11 @@ fresh:
 backfill:
 	$(NIX) mix cab.backfill_sessions
 
-# cab's full session roundtrip (from the submodule) against the running
-# local stack (make up). Re-runnable; every run makes its own demo club.
-test-e2e: cab-mix
-	set -a; [ -f .env ] && . ./.env; set +a; cab/apps/cab/priv/walkthrough_rest.sh
+# cab's full session roundtrip (from the submodule, with this project's
+# build) against the running local stack (make up). Re-runnable; every
+# run makes its own demo club.
+test-e2e:
+	set -a; [ -f .env ] && . ./.env; set +a; MIX_ROOT=$(CURDIR) cab/apps/cab/priv/walkthrough_rest.sh
 
 # The uadebate.com pages and the cab pages its visitors reach, as an
 # iPhone 15 against the running stack (make up): fails when a page
