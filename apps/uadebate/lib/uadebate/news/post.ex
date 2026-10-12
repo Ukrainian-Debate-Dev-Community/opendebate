@@ -18,6 +18,11 @@ defmodule Uadebate.News.Post do
     # a file name in Uadebate.Uploads; nil shows the gradient
     field :image, :string
     field :image_alt, :string
+    # private labels, loaded only under /manage
+    many_to_many :tags, Uadebate.Tags.Tag,
+      join_through: "news_tags",
+      join_keys: [post_id: :id, tag_id: :id],
+      on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

@@ -8,6 +8,7 @@ defmodule UadebateWeb.Manage.CalendarController do
   def index(conn, params) do
     first = Month.parse(params["month"])
     kind = if params["kind"] in Event.kinds(), do: params["kind"]
+    tag = Uadebate.Tags.find(params["tag"])
 
     conn
     |> put_view(UadebateWeb.Manage.HTML)
@@ -16,8 +17,10 @@ defmodule UadebateWeb.Manage.CalendarController do
       page_title: gettext("Calendar"),
       first: first,
       kind: kind,
+      tag: tag,
+      tags: Uadebate.Tags.list(),
       calendar_public: Uadebate.Settings.calendar_public?(),
-      events: Events.all_in_month(first, kind)
+      events: Events.all_in_month(first, kind, tag)
     )
   end
 

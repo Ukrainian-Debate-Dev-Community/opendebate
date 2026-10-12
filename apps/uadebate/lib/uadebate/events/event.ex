@@ -21,6 +21,8 @@ defmodule Uadebate.Events.Event do
     # private events exist only under /manage
     field :visibility, :string, default: "public"
     field :created_by_user_id, :integer
+    # private labels, loaded only under /manage
+    many_to_many :tags, Uadebate.Tags.Tag, join_through: "event_tags", on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

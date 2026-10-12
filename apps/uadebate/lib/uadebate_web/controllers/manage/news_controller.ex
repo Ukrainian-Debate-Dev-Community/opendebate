@@ -1,12 +1,21 @@
 defmodule UadebateWeb.Manage.NewsController do
   use UadebateWeb, :controller
 
-  alias Uadebate.{News, Uploads}
+  alias Uadebate.{News, Tags, Uploads}
+  alias UadebateWeb.Manage.HTML
 
   plug :put_view, UadebateWeb.Manage.HTML
 
-  def index(conn, _params) do
-    render(conn, :news_index, manage_active: :news, page_title: gettext("News"), posts: News.list_all())
+  def index(conn, params) do
+    tag = Tags.find(params["tag"])
+
+    render(conn, :news_index,
+      manage_active: :news,
+      page_title: gettext("News"),
+      posts: News.list_all(tag),
+      tags: Tags.list(),
+      tag: tag
+    )
   end
 
   def new(conn, _params), do: render_form(conn, nil, News.change())
@@ -18,7 +27,7 @@ defmodule UadebateWeb.Manage.NewsController do
       |> put_flash(:info, gettext("Saved as a draft."))
       |> redirect(to: ~p"/manage/news/#{post.id}/edit")
     else
-      {:error, changeset} -> render_form(conn, nil, refused(changeset, nil, attrs))
+      {:error, changeset} -> render_form(conn, nil, refused(changeset, nil, attrs), attrs)
     end
   end
 
@@ -36,7 +45,7 @@ defmodule UadebateWeb.Manage.NewsController do
       |> put_flash(:info, gettext("Saved."))
       |> redirect(to: ~p"/manage/news/#{post.id}/edit")
     else
-      {:error, changeset} -> render_form(conn, post, refused(changeset, post, attrs))
+      {:error, changeset} -> render_form(conn, post, refused(changeset, post, attrs), attrs)
     end
   end
 
@@ -77,12 +86,14 @@ defmodule UadebateWeb.Manage.NewsController do
 
   defp refused(%Ecto.Changeset{} = changeset, _post, _attrs), do: changeset
 
-  defp render_form(conn, post, changeset) do
+  defp render_form(conn, post, changeset, attrs \\ %{}) do
     render(conn, :news_form,
       manage_active: :news,
       page_title: if(post, do: post.title, else: gettext("Write news")),
       post: post,
       form: to_form(changeset, as: :post),
+      tags: Tags.list(),
+      selected_tags: HTML.selected_tag_ids(attrs, post),
       max_mb: div(Uploads.max_bytes(), 1024 * 1024)
     )
   end

@@ -1,18 +1,12 @@
 defmodule UadebateWeb.Manage.EventController do
   use UadebateWeb, :controller
 
-  alias Uadebate.Events
+  alias Uadebate.{Events, Tags}
+  alias UadebateWeb.Manage.HTML
 
   plug :put_view, UadebateWeb.Manage.HTML
 
-  def new(conn, _params) do
-    render(conn, :event_form,
-      manage_active: :calendar,
-      page_title: gettext("New event"),
-      event: nil,
-      form: to_form(Events.change(), as: :event)
-    )
-  end
+  def new(conn, _params), do: render_form(conn, nil, Events.change())
 
   def create(conn, %{"event" => attrs}) do
     case Events.create(attrs, conn.assigns.manager.id) do
@@ -22,24 +16,13 @@ defmodule UadebateWeb.Manage.EventController do
         |> redirect(to: back_to(event))
 
       {:error, changeset} ->
-        render(conn, :event_form,
-          manage_active: :calendar,
-          page_title: gettext("New event"),
-          event: nil,
-          form: to_form(changeset, as: :event)
-        )
+        render_form(conn, nil, changeset, attrs)
     end
   end
 
   def edit(conn, %{"id" => id}) do
     event = Events.get!(id)
-
-    render(conn, :event_form,
-      manage_active: :calendar,
-      page_title: event.title,
-      event: event,
-      form: to_form(Events.change(event), as: :event)
-    )
+    render_form(conn, event, Events.change(event))
   end
 
   def update(conn, %{"id" => id, "event" => attrs}) do
@@ -52,12 +35,7 @@ defmodule UadebateWeb.Manage.EventController do
         |> redirect(to: back_to(event))
 
       {:error, changeset} ->
-        render(conn, :event_form,
-          manage_active: :calendar,
-          page_title: event.title,
-          event: event,
-          form: to_form(changeset, as: :event)
-        )
+        render_form(conn, event, changeset, attrs)
     end
   end
 
@@ -75,6 +53,17 @@ defmodule UadebateWeb.Manage.EventController do
     event = Events.get!(id)
     {:ok, event} = Events.set_visibility(event, visibility)
     redirect(conn, to: back_to(event))
+  end
+
+  defp render_form(conn, event, changeset, attrs \\ %{}) do
+    render(conn, :event_form,
+      manage_active: :calendar,
+      page_title: if(event, do: event.title, else: gettext("New event")),
+      event: event,
+      form: to_form(changeset, as: :event),
+      tags: Tags.list(),
+      selected_tags: HTML.selected_tag_ids(attrs, event)
+    )
   end
 
   defp back_to(event),

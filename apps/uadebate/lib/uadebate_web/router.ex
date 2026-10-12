@@ -65,6 +65,12 @@ defmodule UadebateWeb.Router do
     delete "/events/:id", EventController, :delete
     post "/events/:id/visibility", EventController, :visibility
 
+    get "/tags", TagController, :index
+    post "/tags", TagController, :create
+    get "/tags/:id/edit", TagController, :edit
+    put "/tags/:id", TagController, :update
+    delete "/tags/:id", TagController, :delete
+
     get "/people", PeopleController, :index
     post "/people", PeopleController, :grant
     delete "/people/:user_id", PeopleController, :revoke

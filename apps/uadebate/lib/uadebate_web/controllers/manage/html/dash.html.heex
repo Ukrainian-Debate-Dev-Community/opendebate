@@ -22,6 +22,7 @@
   {gettext("Coming up")} <a href={~p"/manage/calendar"}>{gettext("Calendar")}</a>
 </div>
 <.event_row :for={event <- @upcoming} event={event}>
+  <.tag_chips tags={event.tags} />
   <a class="ua-btn ua-btn--line ua-btn--sm" href={~p"/manage/events/#{event.id}/edit"}>
     {gettext("Edit")}
   </a>

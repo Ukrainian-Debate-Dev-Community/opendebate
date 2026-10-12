@@ -115,7 +115,8 @@ defmodule UadebateWeb.Site do
     items = [
       {:dash, ~p"/manage", gettext("Overview")},
       {:news, ~p"/manage/news", gettext("News")},
-      {:calendar, ~p"/manage/calendar", gettext("Calendar")}
+      {:calendar, ~p"/manage/calendar", gettext("Calendar")},
+      {:tags, ~p"/manage/tags", gettext("Tags")}
     ]
 
     items =
