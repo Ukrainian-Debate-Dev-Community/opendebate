@@ -30,6 +30,7 @@ defmodule CabWeb.Router do
     pipe_through :docs
 
     get "/", ApiDocsController, :show
+    get "/engine", ApiDocsController, :show_engine
     get "/cab.json", ApiDocsController, :cab_spec
     get "/engine.yml", ApiDocsController, :engine_spec
   end

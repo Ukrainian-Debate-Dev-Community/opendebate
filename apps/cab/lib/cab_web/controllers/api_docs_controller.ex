@@ -1,13 +1,18 @@
 defmodule CabWeb.ApiDocsController do
   @moduledoc """
-  GET /api/docs - the API reference: Scalar, served from cab itself, with
-  two descriptions: cab's own API (priv/api/cab.json) and the engine's
+  The API reference: Scalar, served from cab itself. GET /api/docs shows
+  cab's own API (priv/api/cab.json), GET /api/docs/engine the engine's
   (priv/api/engine.yml, a copy of the pinned engine's docs/openapi.yml).
   No session: the page and the files are the same for everyone.
   """
   use CabWeb, :controller
 
-  def show(conn, _params) do
+  def show(conn, _params), do: page(conn, :cab, gettext("cab API"))
+
+  # GET /api/docs/engine
+  def show_engine(conn, _params), do: page(conn, :engine, gettext("Engine API"))
+
+  defp page(conn, doc, title) do
     conn = fetch_cookies(conn)
     # the language cab's footer chose, read from its cookie (no session here)
     if conn.cookies["cab_locale"] in ~w(en uk),
@@ -16,7 +21,7 @@ defmodule CabWeb.ApiDocsController do
     conn
     |> put_root_layout(false)
     |> put_layout(false)
-    |> render(:show, page_title: gettext("cab API"))
+    |> render(:show, doc: doc, page_title: title)
   end
 
   # GET /api/docs/cab.json

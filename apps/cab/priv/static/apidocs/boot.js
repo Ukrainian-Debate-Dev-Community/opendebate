@@ -1,7 +1,8 @@
 // cab's API reference: Scalar, served by cab itself. Nothing is loaded
 // from other companies: no default fonts, no telemetry, no AI agent or
-// MCP, no request proxy (try-it calls go straight to cab) and no button
-// out to Scalar's hosted client. The
+// MCP, no request proxy (try-it calls go straight to cab), no button
+// out to Scalar's hosted client, and the Powered by credit links to
+// scalar.com without tracking tags. The
 // engine is internal, so its description has no try-it client.
 (function () {
   var stored = null
@@ -24,12 +25,20 @@
     // try-it stays on this page
     hideClientButton: true
   }
-  var cab = Object.assign({}, common, {
-    title: el.dataset.cabTitle, slug: "cab", url: el.dataset.cabSpec, default: true
-  })
-  var engine = Object.assign({}, common, {
-    title: el.dataset.engineTitle, slug: "engine", url: el.dataset.engineSpec,
-    hideTestRequestButton: true
-  })
-  Scalar.createApiReference("#api-docs", [cab, engine])
+  // one document per page: cab's at /api/docs, the engine's at
+  // /api/docs/engine; the engine is internal, so no try-it there
+  var config = Object.assign({}, common, { url: el.dataset.spec })
+  if (el.dataset.doc === "engine") config.hideTestRequestButton = true
+  Scalar.createApiReference("#api-docs", config)
+
+  // keep the "Powered by Scalar" credit, without its tracking tags
+  var clean = function () {
+    document.querySelectorAll('a[href*="scalar.com"]').forEach(function (a) {
+      if (a.getAttribute("href") !== "https://scalar.com/") a.setAttribute("href", "https://scalar.com/")
+      a.setAttribute("target", "_blank")
+      a.setAttribute("rel", "noopener noreferrer")
+    })
+  }
+  new MutationObserver(clean).observe(document.body, { childList: true, subtree: true })
+  clean()
 })()

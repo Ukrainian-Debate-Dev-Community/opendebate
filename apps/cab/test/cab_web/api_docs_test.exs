@@ -55,6 +55,10 @@ defmodule CabWeb.ApiDocsTest do
       refute url =~ ~r{^(https?:)?//}, "the page must not load #{url} from elsewhere"
     end
 
+    engine = conn |> get(~p"/api/docs/engine") |> html_response(200)
+    assert engine =~ ~s(data-doc="engine")
+    assert engine =~ ~s(href="/api/docs")
+
     assert conn |> get(~p"/api/docs/cab.json") |> json_response(200) |> Map.get("openapi") ==
              "3.1.0"
 
@@ -72,6 +76,9 @@ defmodule CabWeb.ApiDocsTest do
     assert common =~ "hideClientButton: true", "no button out to client.scalar.com"
     assert common =~ "telemetry: false"
     assert common =~ "withDefaultFonts: false"
-    assert theme =~ ~s(a[href*="scalar.com"]), "the Powered by link stays hidden"
+    refute theme =~ ~s(a[href*="scalar.com"]), "the Powered by credit stays visible"
+
+    assert boot =~ ~s{setAttribute("href", "https://scalar.com/")},
+           "the credit drops its tracking tags"
   end
 end
