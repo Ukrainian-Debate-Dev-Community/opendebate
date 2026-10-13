@@ -1,8 +1,8 @@
 defmodule UadebateWeb.ErrorHTML do
   @moduledoc """
-  Error pages inside the site's own frame: header, footer, the theme and
-  language switches. A 404 never says why, so /manage stays unknown to
-  anyone without access.
+  Error pages: one centered block under the UAdebate wordmark, with
+  plain links back into the site. A 404 never says why, so /manage
+  stays unknown to anyone without access.
   """
   use UadebateWeb, :html
 
@@ -30,25 +30,20 @@ defmodule UadebateWeb.ErrorHTML do
           } catch (_e) {}
         </script>
         <link rel="stylesheet" href={~p"/css/app.css"} />
-        <script defer src={~p"/js/site.js"}>
-        </script>
       </head>
       <body>
         <div class="ua">
-          <.site_header />
-          <main class="ua-main">
-            <div class="ua-error">
-              <span class="ua-kicker">{@code}</span>
-              <h1>{@title}</h1>
-              <p class="ua-lead">{@lead}</p>
-              <div class="ua-error-act">
-                <a class="ua-btn ua-btn--gold" href={~p"/"}>{gettext("Back to the home page")}</a>
-                <a class="ua-btn ua-btn--line" href={~p"/calendar"}>{gettext("Calendar")}</a>
-                <a class="ua-btn ua-btn--line" href={~p"/news"}>{gettext("News")}</a>
-              </div>
-            </div>
+          <main class="ua-error">
+            <a class="wordmark ua-error-mark" href={~p"/"}>UAdebate<.beta /></a>
+            <span class="ua-kicker">{@code}</span>
+            <h1>{@title}</h1>
+            <p>{@lead}</p>
+            <nav class="ua-error-links">
+              <a href={~p"/"}>{gettext("Back to the home page")}</a>
+              <a href={~p"/calendar"}>{gettext("Calendar")}</a>
+              <a href={~p"/news"}>{gettext("News")}</a>
+            </nav>
           </main>
-          <.site_footer />
         </div>
       </body>
     </html>

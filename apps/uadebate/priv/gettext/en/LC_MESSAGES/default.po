@@ -137,7 +137,7 @@ msgstr ""
 msgid "Back to draft: only content managers see it."
 msgstr ""
 
-#: lib/uadebate_web/controllers/error_html.ex:45
+#: lib/uadebate_web/controllers/error_html.ex:42
 #, elixir-autogen, elixir-format
 msgid "Back to the home page"
 msgstr ""
@@ -178,7 +178,7 @@ msgstr ""
 #: lib/uadebate_web/components/site.ex:156
 #: lib/uadebate_web/controllers/calendar_controller.ex:14
 #: lib/uadebate_web/controllers/calendar_html/index.html.heex:2
-#: lib/uadebate_web/controllers/error_html.ex:46
+#: lib/uadebate_web/controllers/error_html.ex:43
 #: lib/uadebate_web/controllers/manage/calendar_controller.ex:17
 #: lib/uadebate_web/controllers/manage/html/calendar.html.heex:2
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:22
@@ -563,7 +563,7 @@ msgstr ""
 #: lib/uadebate_web/components/site.ex:37
 #: lib/uadebate_web/components/site.ex:117
 #: lib/uadebate_web/components/site.ex:155
-#: lib/uadebate_web/controllers/error_html.ex:47
+#: lib/uadebate_web/controllers/error_html.ex:44
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:3
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:2
 #: lib/uadebate_web/controllers/manage/news_controller.ex:14
@@ -1578,27 +1578,27 @@ msgstr ""
 msgid "Run by the NGO Debate Federation of Ukraine (ВМГО «Федерація Дебатів України»)."
 msgstr ""
 
-#: lib/uadebate_web/controllers/error_html.ex:58
+#: lib/uadebate_web/controllers/error_html.ex:53
 #, elixir-autogen, elixir-format
 msgid "Page not found"
 msgstr ""
 
-#: lib/uadebate_web/controllers/error_html.ex:59
+#: lib/uadebate_web/controllers/error_html.ex:54
 #, elixir-autogen, elixir-format
 msgid "Something went wrong"
 msgstr ""
 
-#: lib/uadebate_web/controllers/error_html.ex:62
+#: lib/uadebate_web/controllers/error_html.ex:57
 #, elixir-autogen, elixir-format
 msgid "There is nothing at this address. It may have moved, or the link is mistyped."
 msgstr ""
 
-#: lib/uadebate_web/controllers/error_html.ex:64
+#: lib/uadebate_web/controllers/error_html.ex:59
 #, elixir-autogen, elixir-format
 msgid "This page cannot be shown."
 msgstr ""
 
-#: lib/uadebate_web/controllers/error_html.ex:63
+#: lib/uadebate_web/controllers/error_html.ex:58
 #, elixir-autogen, elixir-format
 msgid "We could not show this page. Please try again in a minute."
 msgstr ""
