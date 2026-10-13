@@ -139,7 +139,7 @@ msgstr "БПФ"
 msgid "Back to draft: only content managers see it."
 msgstr "Знову чернетка: її бачать лише контент-менеджери."
 
-#: lib/uadebate_web/controllers/error_html.ex:42
+#: lib/uadebate_web/controllers/error_html.ex:46
 #, elixir-autogen, elixir-format
 msgid "Back to the home page"
 msgstr "На головну"
@@ -180,7 +180,7 @@ msgstr "Підтримка кабінету"
 #: lib/uadebate_web/components/site.ex:156
 #: lib/uadebate_web/controllers/calendar_controller.ex:14
 #: lib/uadebate_web/controllers/calendar_html/index.html.heex:2
-#: lib/uadebate_web/controllers/error_html.ex:43
+#: lib/uadebate_web/controllers/error_html.ex:47
 #: lib/uadebate_web/controllers/manage/calendar_controller.ex:17
 #: lib/uadebate_web/controllers/manage/html/calendar.html.heex:2
 #: lib/uadebate_web/controllers/manage/html/dash.html.heex:22
@@ -565,7 +565,7 @@ msgstr "Нова подія"
 #: lib/uadebate_web/components/site.ex:37
 #: lib/uadebate_web/components/site.ex:117
 #: lib/uadebate_web/components/site.ex:155
-#: lib/uadebate_web/controllers/error_html.ex:44
+#: lib/uadebate_web/controllers/error_html.ex:48
 #: lib/uadebate_web/controllers/manage/html/news_form.html.heex:3
 #: lib/uadebate_web/controllers/manage/html/news_index.html.heex:2
 #: lib/uadebate_web/controllers/manage/news_controller.ex:14
@@ -1581,27 +1581,27 @@ msgstr "ФДУ"
 msgid "Run by the NGO Debate Federation of Ukraine (ВМГО «Федерація Дебатів України»)."
 msgstr "Проєкт ВМГО «Федерація Дебатів України»."
 
-#: lib/uadebate_web/controllers/error_html.ex:53
+#: lib/uadebate_web/controllers/error_html.ex:59
 #, elixir-autogen, elixir-format
 msgid "Page not found"
 msgstr "Сторінку не знайдено"
 
-#: lib/uadebate_web/controllers/error_html.ex:54
+#: lib/uadebate_web/controllers/error_html.ex:60
 #, elixir-autogen, elixir-format
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: lib/uadebate_web/controllers/error_html.ex:57
+#: lib/uadebate_web/controllers/error_html.ex:63
 #, elixir-autogen, elixir-format
 msgid "There is nothing at this address. It may have moved, or the link is mistyped."
 msgstr "За цією адресою нічого немає. Можливо, сторінку перенесено або посилання введено з помилкою."
 
-#: lib/uadebate_web/controllers/error_html.ex:59
+#: lib/uadebate_web/controllers/error_html.ex:65
 #, elixir-autogen, elixir-format
 msgid "This page cannot be shown."
 msgstr "Цю сторінку неможливо показати."
 
-#: lib/uadebate_web/controllers/error_html.ex:58
+#: lib/uadebate_web/controllers/error_html.ex:64
 #, elixir-autogen, elixir-format
 msgid "We could not show this page. Please try again in a minute."
 msgstr "Не вдалося показати цю сторінку. Спробуйте ще раз за хвилину."
