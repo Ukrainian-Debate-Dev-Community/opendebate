@@ -145,8 +145,7 @@ a { color:var(--brand); }
 .ua-error-mark { display:inline-block; font-size:2.4rem; text-decoration:none; margin-bottom:10px; }
 .ua-error h1 { font-size:1.4rem; margin:4px 0 8px; }
 .ua-error p { color:var(--muted); margin:0 0 22px; }
-.ua-error-links { display:flex; flex-direction:column; gap:10px; }
-.ua-error-links .ua-btn { display:block; padding:11px 18px; }
+.ua-error .ua-error-back { display:block; padding:11px 18px; }
 .ua-meta { font-size:.74rem; color:var(--muted); }
 .ua-sec { display:flex; justify-content:space-between; align-items:baseline; font-size:.66rem; letter-spacing:.12em;
           text-transform:uppercase; font-weight:750; color:var(--muted); margin:26px 0 10px; }

@@ -1,7 +1,7 @@
 defmodule UadebateWeb.ErrorHTML do
   @moduledoc """
   Error pages in the site's frame: one centered card under the UAdebate
-  wordmark with ways back into the site, like the sign-in card. A 404
+  wordmark with the way back home, like the sign-in card. A 404
   never says why, so /manage stays unknown to anyone without access.
   """
   use UadebateWeb, :html
@@ -38,15 +38,13 @@ defmodule UadebateWeb.ErrorHTML do
           <.site_header />
           <main class="ua-main">
             <div class="ua-error">
-              <a class="wordmark ua-error-mark" href={~p"/"}>UAdebate</a>
+              <.wordmark class="ua-error-mark" />
               <span class="ua-kicker">{@code}</span>
               <h1>{@title}</h1>
               <p>{@lead}</p>
-              <nav class="ua-error-links">
-                <a class="ua-btn ua-btn--line" href={~p"/"}>{gettext("Back to the home page")}</a>
-                <a class="ua-btn ua-btn--line" href={~p"/calendar"}>{gettext("Calendar")}</a>
-                <a class="ua-btn ua-btn--line" href={~p"/news"}>{gettext("News")}</a>
-              </nav>
+              <a class="ua-btn ua-btn--line ua-error-back" href={~p"/"}>
+                {gettext("Back to the home page")}
+              </a>
             </div>
           </main>
           <.site_footer />
